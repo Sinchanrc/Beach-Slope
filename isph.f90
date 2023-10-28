@@ -56,10 +56,10 @@ module isph
                 do k=1,dpcell(i,j)%ptot
                 ! Free Surface Identification
                 if (dpcell(i,j)%plist(k)%tid==3) then
-                dpcell(i,j)%plist(k)%free=.false.
-                dpcell(i,j)%pplist(k)%gradvx=0.0_dp
-                term1=0.0_dp
-                term2=0.0_dp
+                ! dpcell(i,j)%plist(k)%free=.false.
+                ! dpcell(i,j)%pplist(k)%gradvx=0.0_dp
+                ! term1=0.0_dp
+                ! term2=0.0_dp
 
                 ! if (dpcell(i,j)%pplist(k)%inpore) then
 
@@ -71,32 +71,32 @@ module isph
 
                 ! end if
 
-                do m=1,dpcell(i,j)%list(k)%count
-                    associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-                    y=>dpcell(i,j)%list(k)%interlist(2,m), &
-                    pp=>dpcell(i,j)%list(k)%interlist(3,m))
+                ! do m=1,dpcell(i,j)%list(k)%count
+                !     associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
+                !     y=>dpcell(i,j)%list(k)%interlist(2,m), &
+                !     pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
-                    if ((dpcell(y,x)%plist(pp)%tid/=4).and. &
-                    (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
+                !     if ((dpcell(y,x)%plist(pp)%tid/=4).and. &
+                !     (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
 
-                    term1=term1+((dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%plist(pp)%x- &
-                    dpcell(i,j)%plist(k)%x)*Wabx(dpcell(y,x)%plist(pp),&
-                    dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))/&
-                    dpcell(y,x)%plist(pp)%density)
+                !     term1=term1+((dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%plist(pp)%x- &
+                !     dpcell(i,j)%plist(k)%x)*Wabx(dpcell(y,x)%plist(pp),&
+                !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))/&
+                !     dpcell(y,x)%plist(pp)%density)
 
-                    term2=term2+((dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%plist(pp)%y- &
-                    dpcell(i,j)%plist(k)%y)*Waby(dpcell(y,x)%plist(pp),&
-                    dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))/&
-                    dpcell(y,x)%plist(pp)%density)
+                !     term2=term2+((dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%plist(pp)%y- &
+                !     dpcell(i,j)%plist(k)%y)*Waby(dpcell(y,x)%plist(pp),&
+                !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))/&
+                !     dpcell(y,x)%plist(pp)%density)
 
-                    end if
+                !     end if
 
-                    end associate
-                end do
+                !     end associate
+                ! end do
 
-                dpcell(i,j)%pplist(k)%gradvx=term1+term2
+                ! dpcell(i,j)%pplist(k)%gradvx=term1+term2
                 if(dpcell(i,j)%pplist(k)%gradvx<=(lamfs*maxdivr)) then
-                    dpcell(i,j)%plist(k)%free=.true.
+                    ! dpcell(i,j)%plist(k)%free=.true.
                 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
@@ -448,7 +448,7 @@ module isph
         end do
         !$omp end parallel do
 
-        call pformat(fmatrix,fval,frow,fcol,finmax)
+        call format(fmatrix,fval,frow,fcol,finmax)
         call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
         
         ! Assigning pressures

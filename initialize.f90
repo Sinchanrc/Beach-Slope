@@ -52,7 +52,7 @@ type(matrixsetup),allocatable,public :: bmatrix(:),fmatrix(:)
 integer,public ::sx,ex,sy,ey,threads,modifier=1000,fac=1,iter=0,icount=0
 integer,parameter,public :: ghost=1 ! 0=> No ghost boundary,1=>ghost + fixed,2=> only ghost boundary
 character(len=70),public:: result
-type(cell),allocatable,dimension(:,:),public :: dpcell
+type(cell),allocatable,dimension(:,:),public,target :: dpcell
 type(particles),save ,public:: bcor1,bcor2,ref1,ref2
 logical ::swcsph=.false.,lid=.true.
 

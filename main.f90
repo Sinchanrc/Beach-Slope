@@ -57,16 +57,13 @@ program dam_break
         ! end if
 
         !$omp parallel default(shared)
-        ! call neighbour
-        ! call compden
+
         call projection 
         call cellshift
         call neighbour
         ! call effpor
         call freesurf
-        call compcorr(3,1)
-        ! call comp_ghost
-        ! call boun_vel
+        ! call compcorr(3,1)
         call eddyvis
         ! call ghost_en
         call int_vel
@@ -81,22 +78,22 @@ program dam_break
         call neighbour
         ! call effpor
         call freesurf
-        call compcorr(3,1)
+        ! call compcorr(3,1)
         ! call comp_ghost
         ! call boun_vel 
-        ! call opt2_shift
-        ! ! call massupdate
-        ! call timestep
+        call opt2_shift
+        ! call massupdate
+        call timestep
         ! call eddyvis 
         !$omp end parallel
 
-        call implicit_shift()
+        ! call implicit_shift()
 
-        !$omp parallel default(shared)
-        ! call massupdate
-        call timestep
-        call eddyvis
-        !$omp end parallel
+        ! !$omp parallel default(shared)
+        ! ! call massupdate
+        ! call timestep
+        ! call eddyvis
+        ! !$omp end parallel
 
         ! if (((told*sqrt(abs(g)/wc))<iter*displaytime).and. &
         ! ((t*sqrt(abs(g)/wc))>=iter*displaytime)) then
