@@ -50,8 +50,8 @@ mls.f90 scalar.f90
 
 gfortran-12 -ffree-line-length-512 -Ofast -fprefetch-loop-arrays -fopenmp -march=native -mtune=native \
 -mavx2 -std=f2008 -funroll-loops -flto=auto -ftree-vectorize -fstack-arrays \
--L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_gf_lp64 -lmkl_gnu_thread \
--lmkl_core -lgomp -lpthread -lm -ldl \
+-L${MKLROOT}/lib/intel64 -Wl,--no-as-needed -lmkl_gf_lp64 -lmkl_intel_thread \
+-lmkl_core -liomp5 -lpthread -lm -ldl \
 particle.o interactions.o transfer.o domain.o initialize.o kernel.o functions.o \
 search.o gradient.o setup.o solver.o boundary.o output.o internal.o \
 memory.o isph.o integrator.o turbulence.o part_shift.o \

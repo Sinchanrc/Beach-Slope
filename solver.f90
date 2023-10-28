@@ -279,5 +279,41 @@ module solver
 
     end subroutine     
 
+    subroutine fgmres()
+
+        use mkl_rci
+        use initialize
+        ! use blas95
+
+        implicit none
+
+        call dfgmres_init(finmax,fsol,fvec,rci_request,ipar,dpar,tmp)
+
+            ipar(9)=1
+            ipar(10)=0
+            ipar(12)=1
+            dpar(1)=0.001
+
+
+
+        11   call dfgmres(finmax,fsol,fvec,rci_request,ipar,dpar,tmp)
+
+            if (rci_request==0) then
+
+                call dfgmres_get(finmax,fsol,fvec,rci_request,ipar,dpar,tmp,gmresct)
+
+            elseif (rci_request==1) then
+
+                ! call mkl_dcsrgemv('N',finmax, fval,frow, fcol, tmp(ipar(22)), tmp(ipar(23)))
+                ! call spmv (finmax,fval,frow,fcol,tmp(ipar(22)),tmp(ipar(23)))
+                call spmv2(finmax,tmp(ipar(22)),tmp(ipar(23)))
+
+                goto 11
+
+
+            end if
+        
+    end subroutine
+
     
 end module solver

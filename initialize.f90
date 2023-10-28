@@ -1,3 +1,6 @@
+include 'mkl_rci.f90'
+include 'mkl_blas.f90'
+
 module initialize
 
 use particle
@@ -61,5 +64,8 @@ integer :: pt(64),maxfct=1,mnum=1,mtype=11,phase=33, &
 integer,allocatable :: perm(:)
 
 type(pprob),allocatable :: probe(:)
+
+integer :: ipar(128),rci_request,gmresct=0 
+real(dp),allocatable :: dpar(:),tmp(:)
 
 end module initialize
