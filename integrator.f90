@@ -465,13 +465,13 @@ module integrator
                         y=>dpcell(i,j)%list(k)%interlist(2,m), &
                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
-                        ! term1=2*((dpcell(y,x)%plist(pp)%mass*dpcell(i,j)%pplist(k)%porosity/dpcell(y,x)%plist(pp)%density)*&
-                        ! ((dpcell(y,x)%plist(pp)%pressure*dpcell(i,j)%plist(k)%density)+&
-                        ! (dpcell(i,j)%plist(k)%pressure*dpcell(y,x)%plist(pp)%density))* &
-                        ! (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                        ! dpcell(i,j)%list(k)%dist(m),h1))) &
-                        ! /((dpcell(i,j)%plist(k)%density)*((dpcell(y,x)%plist(pp)%density/dpcell(y,x)%pplist(pp)%porosity) &
-                        ! +(dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)))
+                        term1=2*((dpcell(y,x)%plist(pp)%mass*dpcell(i,j)%pplist(k)%porosity/dpcell(y,x)%plist(pp)%density)*&
+                        ((dpcell(y,x)%plist(pp)%pressure*dpcell(i,j)%plist(k)%density)+&
+                        (dpcell(i,j)%plist(k)%pressure*dpcell(y,x)%plist(pp)%density))* &
+                        (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                        dpcell(i,j)%list(k)%dist(m),h1))) &
+                        /((dpcell(y,x)%plist(pp)%density)*((dpcell(y,x)%plist(pp)%density/dpcell(y,x)%pplist(pp)%porosity) &
+                        +(dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)))
 
                 !         term1=2*((dpcell(y,x)%plist(pp)%mass*dpcell(i,j)%pplist(k)%porosity/dpcell(y,x)%plist(pp)%density)*&
                 !         ((dpcell(y,x)%plist(pp)%pressure*dpcell(i,j)%plist(k)%density)+&
@@ -493,23 +493,23 @@ module integrator
 
                 !         else
 
-                            term1=((dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        ((dpcell(y,x)%plist(pp)%pressure)+&
-                        (dpcell(i,j)%plist(k)%pressure))* &
-                        (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))&
-                        /((dpcell(i,j)%plist(k)%density))
+                        !     term1=((dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        ! ((dpcell(y,x)%plist(pp)%pressure)+&
+                        ! (dpcell(i,j)%plist(k)%pressure))* &
+                        ! (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))&
+                        ! /((dpcell(y,x)%plist(pp)%density))
 
                 !         end if
 
                         dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx-term1*dt
 
-                        ! term1=2*((dpcell(y,x)%plist(pp)%mass*dpcell(i,j)%pplist(k)%porosity/dpcell(y,x)%plist(pp)%density)*&
-                        ! ((dpcell(y,x)%plist(pp)%pressure*dpcell(i,j)%plist(k)%density)+&
-                        ! (dpcell(i,j)%plist(k)%pressure*dpcell(y,x)%plist(pp)%density))* &
-                        ! (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                        ! dpcell(i,j)%list(k)%dist(m),h1))) &
-                        ! /((dpcell(i,j)%plist(k)%density)*((dpcell(y,x)%plist(pp)%density/dpcell(y,x)%pplist(pp)%porosity) &
-                        ! +(dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)))
+                        term1=2*((dpcell(y,x)%plist(pp)%mass*dpcell(i,j)%pplist(k)%porosity/dpcell(y,x)%plist(pp)%density)*&
+                        ((dpcell(y,x)%plist(pp)%pressure*dpcell(i,j)%plist(k)%density)+&
+                        (dpcell(i,j)%plist(k)%pressure*dpcell(y,x)%plist(pp)%density))* &
+                        (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                        dpcell(i,j)%list(k)%dist(m),h1))) &
+                        /((dpcell(y,x)%plist(pp)%density)*((dpcell(y,x)%plist(pp)%density/dpcell(y,x)%pplist(pp)%porosity) &
+                        +(dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)))
 
                 !         term1=2*((dpcell(y,x)%plist(pp)%mass*dpcell(i,j)%pplist(k)%porosity/dpcell(y,x)%plist(pp)%density)*&
                 !         ((dpcell(y,x)%plist(pp)%pressure*dpcell(i,j)%plist(k)%density)+&
@@ -530,11 +530,11 @@ module integrator
                 ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/((dpcell(i,j)%plist(k)%density))
 
                 !         else 
-                            term1=((dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                            ((dpcell(y,x)%plist(pp)%pressure)+&
-                            (dpcell(i,j)%plist(k)%pressure))* &
-                            (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))&
-                            /((dpcell(i,j)%plist(k)%density))
+                            ! term1=((dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                            ! ((dpcell(y,x)%plist(pp)%pressure)+&
+                            ! (dpcell(i,j)%plist(k)%pressure))* &
+                            ! (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))&
+                            ! /((dpcell(y,x)%plist(pp)%density))
 
                 !         end if
 
@@ -594,33 +594,6 @@ module integrator
         !$omp end do        
         
     end subroutine comp_pos
-
-    subroutine updatepos
-        
-        ! New position calculations for fluid particles
-        !$omp parallel do schedule (runtime) private(i,k) collapse(2) default(shared)      
-        do j=sx,ex
-            do i=sy,ey
-                if(dpcell(i,j)%ptot/=0) then
-
-                do k=1,dpcell(i,j)%ptot
-
-                    if (dpcell(i,j)%plist(k)%tid==3) then
-
-                    dpcell(i,j)%plist(k)%x=dpcell(i,j)%plist(k)%xs
-
-                    dpcell(i,j)%plist(k)%y=dpcell(i,j)%plist(k)%ys
-
-                    end if
-
-                end do
-
-                end if
-            end do
-        end do
-        !$omp end parallel do 
-        
-    end subroutine updatepos
 
     subroutine timestep
 

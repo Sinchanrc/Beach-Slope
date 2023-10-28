@@ -80,8 +80,8 @@ module internal
                         !                                             dpcell(i,j)%plist(dpcell(i,j)%ptot)%density
                         ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%con=0.50_dp
                         ! else
-                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass
-                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass*1.05
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho*1.05
                         ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%ovol=dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass/&
                         !                                             dpcell(i,j)%plist(dpcell(i,j)%ptot)%density
                         ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%con=-0.50_dp
