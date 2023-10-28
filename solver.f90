@@ -81,6 +81,36 @@ module solver
 
     end subroutine
 
+    subroutine spmv2(ls,b,res) ! Sparse Matrix-vector multiplication in CSR format
+        use initialize
+        implicit none
+        integer,intent(in) :: ls
+        integer:: is,js
+        real(dp),intent(in) :: b(ls)
+        real(dp),intent(out) :: res(ls)
+        real(dp) :: comp
+
+        is=0
+        js=0
+        res(1:ls)=0.0_dp
+
+        !$omp parallel do private(js,is,comp) default(shared) schedule(static)
+            do is=1,ls
+                comp=0.0_dp
+            !$omp simd reduction(+:comp)
+            do js=1,fmatrix(is)%sz               
+
+                comp=comp+real(fmatrix(is)%val(js),dp)*real(b(fmatrix(is)%col(js)),dp)
+
+            end do
+            !$omp end simd
+            res(is)=comp
+            end do
+        !$omp end parallel do
+
+
+    end subroutine
+
     subroutine bicgstab(tls,guess,ls,val,row,col,bvecs,sl) ! BiCGStab iterative solver
         implicit none
         integer,intent(in) :: ls
@@ -111,7 +141,8 @@ module solver
         res(1:ls)=0.0_dp
         ks=0
 
-        call spmv(ls,val,row,col,guess,res)
+        ! call spmv(ls,val,row,col,guess,res)
+        call spmv2(ls,guess,res)
         !$omp parallel do simd default(shared) schedule(static)
             do ks=1,ls
             rs(ks)=real(bvecs(ks),dp)-real(res(ks),dp)
@@ -132,7 +163,8 @@ module solver
         do while(tcal==1)
             
             n=n+1
-            call spmv(ls,val,row,col,p,mm1)
+            ! call spmv(ls,val,row,col,p,mm1)
+            call spmv2(ls,p,mm1)
             prevr=real(kahanvecvec(ls,res,rs),dp)
             alpha=(prevr/real(kahanvecvec(ls,mm1,res),dp))
 
@@ -142,7 +174,8 @@ module solver
             end do
             !$omp end parallel do simd
 
-            call spmv(ls,val,row,col,si,mm2)
+            ! call spmv(ls,val,row,col,si,mm2)
+            call spmv2(ls,si,mm2)
             wi=(real(kahanvecvec(ls,mm2,si),dp)/real(kahanvecvec(ls,mm2,mm2),dp))
 
             !$omp parallel do simd default(shared) schedule(static)

@@ -448,7 +448,7 @@ module isph
         end do
         !$omp end parallel do
 
-        call format(fmatrix,fval,frow,fcol,finmax)
+        ! call format(fmatrix,fval,frow,fcol,finmax)
         call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
         
         ! Assigning pressures
