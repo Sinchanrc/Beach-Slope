@@ -85,8 +85,9 @@ module mls
         implicit none
 
         ! logical :: error
+        real(dp) :: t1,t2
 
-        !$omp do schedule(runtime) private(m,i,k,term1) collapse(2)
+        !$omp do schedule(runtime) private(m,i,k,t1) collapse(2)
         do j=sx,ex
             do i=sy,ey
                 if(dpcell(i,j)%ptot/=0) then
@@ -98,7 +99,7 @@ module mls
                         ! dpcell(i,j)%plist(k)%pressure=0.0d0
                         dpcell(i,j)%plist(k)%vx=0.0_dp
                         dpcell(i,j)%plist(k)%vy=0.0_dp
-                        term1=0.0_dp
+                        t1=0.0_dp
                         if (dpcell(i,j)%list(k)%count/=0) then
                             ! call Wmls(j,i,k,h1,error)
 
@@ -109,7 +110,7 @@ module mls
                             !     y=>dpcell(i,j)%list2(k)%interlist(2,m), &
                             !     pp=>dpcell(i,j)%list2(k)%interlist(3,m))
 
-                            !     term1=Wab(dpcell(i,j)%list2(k)%dist(m),blen*h1)*&
+                            !     t1=Wab(dpcell(i,j)%list2(k)%dist(m),blen*h1)*&
                             !     (dpcell(i,j)%pplist(k)%bmls(1)+dpcell(i,j)%pplist(k)%bmls(2)* &
                             !     (dpcell(i,j)%plist(k)%x&
                             !     +dpcell(i,j)%plist(k)%posshift(1)-dpcell(y,x)%plist(pp)%x)+ &
@@ -118,10 +119,10 @@ module mls
                             !     (dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
 
                             !     dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx- &
-                            !     (dpcell(y,x)%plist(pp)%vx)*term1
+                            !     (dpcell(y,x)%plist(pp)%vx)*t1
 
                             !     dpcell(i,j)%plist(k)%vy=dpcell(i,j)%plist(k)%vy- &
-                            !     (dpcell(y,x)%plist(pp)%vy)*term1
+                            !     (dpcell(y,x)%plist(pp)%vy)*t1
 
                             !     end associate
                             ! end do
@@ -146,15 +147,15 @@ module mls
                                 Wab(dpcell(i,j)%list2(k)%dist(m),h1)*dpcell(y,x)%plist(pp)%vy* &
                                 dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density
 
-                                term1=term1+dpcell(y,x)%plist(pp)%mass* &
+                                t1=t1+dpcell(y,x)%plist(pp)%mass* &
                                 Wab(dpcell(i,j)%list2(k)%dist(m),h1)/dpcell(y,x)%plist(pp)%density
 
                             end associate
                             end do
 
                 
-                            dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx/term1                            
-                            dpcell(i,j)%plist(k)%vy=dpcell(i,j)%plist(k)%vy/term1
+                            dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx/t1                            
+                            dpcell(i,j)%plist(k)%vy=dpcell(i,j)%plist(k)%vy/t1
                             
                             ! if (dpcell(i,j)%plist(k)%tid==1) then
                                 ! dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx!0.0_dp
@@ -172,7 +173,7 @@ module mls
         end do
         !$omp end do
 
-        ! !$omp parallel do schedule(runtime) private(term2,i,k) collapse(2) default(shared)
+        ! !$omp parallel do schedule(runtime) private(t2,i,k) collapse(2) default(shared)
         ! do j=sx,ex
         !     do i=sy,ey
         !         if(dpcell(i,j)%btot/=0) then
@@ -181,16 +182,16 @@ module mls
         !                 if ((dpcell(i,j)%plist(k)%tid==2).and.(dpcell(i,j)%list(k)%count/=0)) then
 
         !                     if ((dpcell(i,j)%plist(k)%xnorm==1).and.(dpcell(i,j)%plist(k)%ynorm==0)) then
-        !                         term2=0.0d0
+        !                         t2=0.0d0
 
         !                         elseif ((dpcell(i,j)%plist(k)%ynorm==1).and.(dpcell(i,j)%plist(k)%xnorm==0)) then
-        !                         term2=-g*rho*dpcell(i,j)%plist(k)%posshift(2)
+        !                         t2=-g*rho*dpcell(i,j)%plist(k)%posshift(2)
 
         !                         elseif ((dpcell(i,j)%plist(k)%ynorm==1).and.(dpcell(i,j)%plist(k)%xnorm==1)) then
-        !                         term2=-g*rho*dpcell(i,j)%plist(k)%posshift(2)
+        !                         t2=-g*rho*dpcell(i,j)%plist(k)%posshift(2)
         !                     end if
 
-        !                     dpcell(i,j)%plist(k)%pressure=dpcell(i,j)%plist(k)%pressure+term2
+        !                     dpcell(i,j)%plist(k)%pressure=dpcell(i,j)%plist(k)%pressure+t2
 
         !                 end if
         !             end do
@@ -206,7 +207,9 @@ module mls
 
         implicit none
 
-        !$omp do schedule(runtime) private(m,i,k,term1) collapse(2)
+        real(dp) :: t1
+
+        !$omp do schedule(runtime) private(m,i,k,t1) collapse(2)
         do j=sx,ex
             do i=sy,ey
                 if(dpcell(i,j)%ptot/=0) then
@@ -218,7 +221,7 @@ module mls
                         ! dpcell(i,j)%plist(k)%pressure=0.0d0
                         dpcell(i,j)%pplist(k)%tke=0.0_dp
                         dpcell(i,j)%pplist(k)%nut=0.0_dp
-                        term1=0.0_dp
+                        t1=0.0_dp
                         if (dpcell(i,j)%list(k)%count/=0) then
 
                             do m=1,dpcell(i,j)%list2(k)%count                           
@@ -235,15 +238,15 @@ module mls
                                 dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density
 
 
-                                term1=term1+dpcell(y,x)%plist(pp)%mass* &
+                                t1=t1+dpcell(y,x)%plist(pp)%mass* &
                                 Wab(dpcell(i,j)%list2(k)%dist(m),h1)/dpcell(y,x)%plist(pp)%density
 
                             end associate
                             end do
 
                 
-                            dpcell(i,j)%pplist(k)%tke=dpcell(i,j)%pplist(k)%tke/term1 
-                            dpcell(i,j)%pplist(k)%nut=dpcell(i,j)%pplist(k)%nut/term1                            
+                            dpcell(i,j)%pplist(k)%tke=dpcell(i,j)%pplist(k)%tke/t1 
+                            dpcell(i,j)%pplist(k)%nut=dpcell(i,j)%pplist(k)%nut/t1                            
                             
                         end if
 

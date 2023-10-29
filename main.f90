@@ -37,7 +37,7 @@ program dam_break
     ! write(*,*)brrealx
 
     ! do while((t*sqrt(abs(g)/wc))<time)
-    do while(iter<401)
+    do while(iter<411)
 
         told=t
         t=t+dt

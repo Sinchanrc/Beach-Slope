@@ -13,7 +13,9 @@ module scalar
 
 subroutine scalart
 
-    !$omp do schedule (runtime) private(m,k,i,j,term1) collapse(2)
+    real(dp) :: t1
+
+    !$omp do schedule (runtime) private(m,k,i,j,t1) collapse(2)
         do j=sx,ex
             do i=sy,ey            
         
@@ -34,21 +36,21 @@ subroutine scalart
 
                 if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(dpcell(y,x)%pplist(pp)%nut<1e-6)) then
 
-                    term1=Dm+(dpcell(i,j)%pplist(k)%nut+dpcell(y,x)%pplist(pp)%nut)*0.50_dp/tschmidt
+                    t1=Dm+(dpcell(i,j)%pplist(k)%nut+dpcell(y,x)%pplist(pp)%nut)*0.50_dp/tschmidt
                 else
 
-                term1=2*(((Dm+dpcell(i,j)%pplist(k)%nut/tschmidt)*(Dm+dpcell(y,x)%pplist(pp)%nut/tschmidt))/&
+                t1=2*(((Dm+dpcell(i,j)%pplist(k)%nut/tschmidt)*(Dm+dpcell(y,x)%pplist(pp)%nut/tschmidt))/&
                 ((Dm+dpcell(i,j)%pplist(k)%nut/tschmidt)+(Dm+dpcell(y,x)%pplist(pp)%nut/tschmidt)))
 
                 end if
 
                 dpcell(i,j)%pplist(k)%cdiff=dpcell(i,j)%pplist(k)%cdiff + &
-                (2*term1*(dpcell(i,j)%plist(k)%con-dpcell(y,x)%plist(pp)%con)* &
+                (2*t1*(dpcell(i,j)%plist(k)%con-dpcell(y,x)%plist(pp)%con)* &
                 (dpcell(i,j)%plist(k)%x-dpcell(y,x)%plist(pp)%x)* &
                 (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                 dpcell(i,j)%list(k)%dist(m),h1))*(dpcell(y,x)%plist(pp)%mass)/&
                 ((dpcell(i,j)%list(k)%dist(m)**2+lam)*dpcell(y,x)%plist(pp)%density))+ &
-                (2*term1*(dpcell(i,j)%plist(k)%con-dpcell(y,x)%plist(pp)%con)* &
+                (2*t1*(dpcell(i,j)%plist(k)%con-dpcell(y,x)%plist(pp)%con)* &
                 (dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)* &
                 (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                 dpcell(i,j)%list(k)%dist(m),h1))*(dpcell(y,x)%plist(pp)%mass)/&
