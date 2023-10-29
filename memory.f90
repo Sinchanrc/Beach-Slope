@@ -66,11 +66,11 @@ module memory
             end do
         !$omp end parallel do
 
-        allocate(probe(pbno),ploc(2,pbno),probedata(2,160))
-        do k=1,pbno
-            allocate(probe(k)%part%interlist(3,fplistmax),probe(k)%part%dist(fplistmax))
-        end do
-        probedata(:,:)=0.0_dp
+        ! allocate(probe(pbno),ploc(2,pbno),probedata(2,160))
+        ! do k=1,pbno
+        !     allocate(probe(k)%part%interlist(3,fplistmax),probe(k)%part%dist(fplistmax))
+        ! end do
+        ! probedata(:,:)=0.0_dp
 
     
     end subroutine memalloc

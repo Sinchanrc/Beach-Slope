@@ -517,7 +517,7 @@ module part_shift
         implicit none
 
         integer :: pint=0
-        real(dp) :: heff,frac=0.030_dp!0.0420_dp
+        real(dp) :: heff,frac=0.0030_dp!0.0420_dp
         
         ! Optimized Particle Shifting
         !$omp do private(i,k,m,term1,term2,normx,normy,heff) schedule (runtime) collapse(2)

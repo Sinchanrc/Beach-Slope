@@ -449,8 +449,8 @@ module isph
         !$omp end parallel do
 
         ! call format(fmatrix,fval,frow,fcol,finmax)
-        ! call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
-        call fgmres
+        call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
+        ! call fgmres
         
         ! Assigning pressures
         !$omp parallel do schedule(runtime) default(shared) private(i,k,j) collapse(2)       

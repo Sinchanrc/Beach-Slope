@@ -1,10 +1,12 @@
 #!/usr/bin/bash
 
+ulimit -s unlimited
+
 #EXPORTING OPENMP ENVIRONMENT VARIABLES
 export OMP_NUM_THREADS=12
 export MKL_NUM_THREADS=12
 export OMP_SCHEDULE="dynamic"
-# export OMP_STACKSIZE=16M
+export OMP_STACKSIZE=16M
 # export OMP_PROC_BIND="close"
 
 
