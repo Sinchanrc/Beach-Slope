@@ -386,28 +386,28 @@ module porous
                 dpcell(i,j)%plist(k)%density=dpcell(i,j)%pplist(k)%porosity* &
                                             dpcell(i,j)%plist(k)%oden
 
-                kper=(dpcell(i,j)%pplist(k)%porosity**3)*(d50**2)/(lamk*(1.0_dp-dpcell(i,j)%pplist(k)%porosity)**2)
+                ! kper=(dpcell(i,j)%pplist(k)%porosity**3)*(d50**2)/(lamk*(1.0_dp-dpcell(i,j)%pplist(k)%porosity)**2)
                 ! kper=kper*1e6*abs(g)*3600*24.0_dp
                 ! write(*,*)kper
                 ! kper=(420.0_dp*mu/(3600*24.0_dp*abs(g)*dpcell(i,j)%plist(k)%oden))
 
                 Fch=1.750_dp/(sqrt(150*dpcell(i,j)%pplist(k)%porosity**3))
 
-                dpcell(i,j)%pplist(k)%resistx=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vx/kper) &
-                -(Fch*dpcell(i,j)%plist(k)%vx*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2))/sqrt(kper)
+                ! dpcell(i,j)%pplist(k)%resistx=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vx/kper) &
+                ! -(Fch*dpcell(i,j)%plist(k)%vx*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2))/sqrt(kper)
 
-                ! dpcell(i,j)%pplist(k)%resistx=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vx*lamk* &
-                ! ((1.0_dp-dpcell(i,j)%pplist(k)%porosity)**2)/((dpcell(i,j)%pplist(k)%porosity**3)*(d50**2))) &
-                ! -((Fch*dpcell(i,j)%plist(k)%vx*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)* &
-                ! sqrt(lamk)*(1.0_dp-dpcell(i,j)%pplist(k)%porosity))/(sqrt(dpcell(i,j)%pplist(k)%porosity**3)*d50))
+                dpcell(i,j)%pplist(k)%resistx=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vx*lamk* &
+                ((1.0_dp-dpcell(i,j)%pplist(k)%porosity)**2)/((dpcell(i,j)%pplist(k)%porosity**3)*(d50**2))) &
+                -((Fch*dpcell(i,j)%plist(k)%vx*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)* &
+                sqrt(lamk)*(1.0_dp-dpcell(i,j)%pplist(k)%porosity))/(sqrt(dpcell(i,j)%pplist(k)%porosity**3)*d50))
 
-                dpcell(i,j)%pplist(k)%resisty=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vy/kper) &
-                -(Fch*dpcell(i,j)%plist(k)%vy*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2))/sqrt(kper)
+                ! dpcell(i,j)%pplist(k)%resisty=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vy/kper) &
+                ! -(Fch*dpcell(i,j)%plist(k)%vy*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2))/sqrt(kper)
 
-                ! dpcell(i,j)%pplist(k)%resisty=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vy*lamk* &
-                ! ((1.0_dp-dpcell(i,j)%pplist(k)%porosity)**2)/((dpcell(i,j)%pplist(k)%porosity**3)*(d50**2))) &
-                ! -((Fch*dpcell(i,j)%plist(k)%vy*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)* &
-                ! sqrt(lamk)*(1.0_dp-dpcell(i,j)%pplist(k)%porosity))/(sqrt(dpcell(i,j)%pplist(k)%porosity**3)*d50))
+                dpcell(i,j)%pplist(k)%resisty=-((mu/dpcell(i,j)%plist(k)%oden)*dpcell(i,j)%plist(k)%vy*lamk* &
+                ((1.0_dp-dpcell(i,j)%pplist(k)%porosity)**2)/((dpcell(i,j)%pplist(k)%porosity**3)*(d50**2))) &
+                -((Fch*dpcell(i,j)%plist(k)%vy*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)* &
+                sqrt(lamk)*(1.0_dp-dpcell(i,j)%pplist(k)%porosity))/(sqrt(dpcell(i,j)%pplist(k)%porosity**3)*d50))
 
 
 
