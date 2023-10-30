@@ -104,7 +104,7 @@ program dam_break
         ! end if
 
     end do
-    call print_free
+    ! call print_free
     
 end program dam_break
 

@@ -12,6 +12,8 @@ module turbulence
     subroutine eddyvis
 
         implicit none
+        integer :: i,j,k,m
+        
         !Mean strain and SGS tensor calculation for fluid particles
         !$omp parallel do schedule (runtime) private(m,i,k,j) collapse(2) default(shared)
         do j=sx,ex

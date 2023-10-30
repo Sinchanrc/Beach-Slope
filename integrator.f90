@@ -10,7 +10,10 @@ module integrator
     contains
 
     subroutine cellshift
-        implicit none    
+        implicit none 
+        
+        integer :: i,j,k,m
+        
         ! Preparing particle transfers to surrounding cells    
         !$omp do private(i,j,k) schedule (runtime) collapse(2)
             do j=sx,ex
@@ -156,6 +159,8 @@ module integrator
 
         real(dp) :: t1
 
+        integer :: i,j,k,m
+
         !$omp do schedule (runtime) private(m,t1,k,i,j,pcounter) collapse(2)
         do j=sx,ex
             do i=sy,ey 
@@ -217,6 +222,8 @@ module integrator
         implicit none
 
         real(dp) :: vart,ps=1.0_dp,t1,t2
+
+        integer :: i,j,k,m
 
         vart=0.0_dp
 
@@ -449,6 +456,8 @@ module integrator
 
     subroutine comp_vel
         implicit none
+
+        integer :: i,j,k,m
         
         real(dp) :: t1 
 
@@ -571,7 +580,10 @@ module integrator
 
     subroutine comp_pos
         
-        implicit none        
+        implicit none   
+        
+        integer :: i,j,k,m
+
         ! New position calculations for fluid particles
         !$omp do schedule (runtime) private(i,k,j) collapse(2)   
         do j=sx,ex
@@ -605,6 +617,8 @@ module integrator
         use,intrinsic :: ieee_arithmetic
 
         implicit none
+
+        integer :: i,j,k,m
         
         ! Finding max velocity
         !$omp single

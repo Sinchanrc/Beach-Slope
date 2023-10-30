@@ -44,9 +44,9 @@ real(dp),allocatable,public :: fval(:),fvec(:),fsol(:),fguess(:),ploc(:,:),probe
 
 !cellx=domain cells in x dir,celly=domain cells in y dir,bl=number of boundary layers
 !maxdiv= maximun values of surface divergence
-integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,i=0,j=0,k=0,m=0,l1=0,bp=0,bl=3,num2, &
+integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2, &
                 bnx=0,bny=0,count=0,fpx=0,fpy=0,totc=0,incr=4,cout=0,tempct=0, &
-                binmax=0,binmin=0,finmax=0,finmin=0,totalct=0,pbno=1,matidct=0,solsteps=0
+                binmax=0,binmin=0,finmax=0,finmin=0,totalct=0,pbno=1,matidct=0,solsteps=0 !,i=0,j=0,k=0,m=0
 
 !frow=vector for carrying row values,fcol=vector for carrying correspomding column values
 integer,allocatable,public :: brow(:),bcol(:),frow(:),fcol(:)

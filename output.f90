@@ -12,6 +12,8 @@ module output
 
         implicit none
 
+        integer :: i,j,k,m
+
         !Boundary particle postion
         write(result,'("boundary_",i0,".txt")')(modifier+iter)
         open(11,file='boundary/'//result,status='replace')
@@ -35,6 +37,8 @@ module output
     subroutine print_ghostbd()
 
         implicit none
+
+        integer :: i,j,k,m
 
         !Ghost Boundary particle postion
         write(result,'("ghost_",i0,".txt")')(modifier+iter)
@@ -60,6 +64,8 @@ module output
 
         implicit none
 
+        integer :: i,j,k,m
+
         !Ghost Boundary particle postion
         ! write(result,'("ghost_",i0,".txt")')(modifier+iter)
         open(12,file='interpolation.txt',status='replace')
@@ -83,6 +89,8 @@ module output
     subroutine print_fluid()
 
         implicit none
+
+        integer :: i,j,k,m
 
         write(result,'("fluid_",i0,".txt")')(modifier+iter)
         open(13,file='fluid/'//result,status='replace',action='write')
@@ -128,6 +136,8 @@ module output
     subroutine print_free()
 
         implicit none
+
+        integer :: i,j,k,m
     
             ! write(result,'("free_",i0,".txt")')(modifier+iter)
             ! open(11,file='freesurf/'//result,status='replace')
@@ -146,11 +156,13 @@ module output
                 ! end do
             close(11)
             
-        end subroutine print_free
+    end subroutine print_free
 
     subroutine print_probe()
 
         implicit none
+
+        integer :: i,j,k,m
 
         ! write(result,'("free_",i0,".txt")')(modifier+iter)
         ! open(11,file='freesurf/'//result,status='replace')

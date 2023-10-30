@@ -13,6 +13,8 @@ module setup
 
         implicit none
 
+        integer :: i,j,k,m
+
         rhomax=1108.373!1090.0_dp!(1.0_dp+atwood)*rhomin/(1.0_dp-atwood)
         ! fpy=floor((wc/(2*pr))-1)+1
         ! fpx=floor((wl/(2*pr)))+1

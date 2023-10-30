@@ -4,6 +4,8 @@ module internal
     use particle
 
     implicit none
+
+    integer :: i,j,k,m
     
     contains
 

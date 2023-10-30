@@ -15,6 +15,8 @@ subroutine scalart
 
     real(dp) :: t1
 
+    integer :: i,j,k,m
+
     !$omp do schedule (runtime) private(m,k,i,j,t1) collapse(2)
         do j=sx,ex
             do i=sy,ey            
@@ -80,6 +82,7 @@ subroutine scalarupdate(stime)
 
     implicit none 
     real(dp),intent(in) :: stime
+    integer :: i,j,k,m
 
     !$omp do schedule (runtime) private(k,i,j) collapse(2)
         do j=sx,ex
@@ -101,6 +104,10 @@ subroutine scalarupdate(stime)
 end subroutine
 
 subroutine massupdate
+
+    implicit none 
+
+    integer :: i,j,k,m
 
     !$omp do schedule (runtime) private(k,i,j) collapse(2)
         do j=sx,ex

@@ -11,7 +11,7 @@ module memory
 
         implicit none
 
-        ! integer :: glist
+        integer :: i,j,k,m
 
         !Allocating arrays in the cells
         !$omp parallel do private(i,j,k) schedule (runtime) collapse(2) default(shared)
@@ -77,6 +77,10 @@ module memory
 
     subroutine matrixid()
         implicit none
+
+        integer :: i,j,k,m
+
+        
         ! Matrix id setting
         count=matidct
 

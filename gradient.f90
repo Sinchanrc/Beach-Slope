@@ -76,6 +76,7 @@ module gradient
         implicit none
 
         integer,intent(in) :: pm1,pm2
+        integer :: i,j,k,m
 
         !$omp do schedule(runtime) private(i,k,j) collapse(2)
         do j=sx,ex

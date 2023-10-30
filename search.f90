@@ -937,6 +937,8 @@ module search
 
         type(cell),pointer :: celln,cell1,cell2,cell3,cell4
 
+        integer :: i,j,k,m
+
         !$omp do private(k,i,j,cell1,cell2,cell3,cell4,celln) schedule(runtime) collapse(2)
         do j=sx,ex
             do i=sy,ey

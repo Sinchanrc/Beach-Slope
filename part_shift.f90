@@ -13,6 +13,7 @@ module part_shift
         implicit none
         
         real(dp) :: t1,t2
+        integer :: i,j,k,m
         ! Explicit particle shifting
         !$omp parallel do private(i,j,k,m,t1,t2) schedule (runtime) collapse(2) default(shared)
             do j=sx,ex
@@ -198,6 +199,7 @@ module part_shift
         implicit none
 
         integer :: pint=0
+        integer :: i,j,k,m
         real(dp) :: t1,t2
         
         ! Optimized Particle Shifting
@@ -520,6 +522,7 @@ module part_shift
         implicit none
 
         integer :: pint=0
+        integer :: i,j,k,m
         real(dp) :: heff,frac=0.0030_dp,t1,t2!0.0420_dp
         
         ! Optimized Particle Shifting
@@ -920,6 +923,7 @@ module part_shift
         implicit none
 
         integer :: pint=0
+        integer :: i,j,k,m
         real(dp) :: heff,pscshift,t1,t2
 
         pscshift=0.0_dp
@@ -1257,6 +1261,7 @@ module part_shift
         ! integer :: pint=0
 
         real(dp) :: intx,inty,heff,t1,t2
+        integer :: i,j,k,m
         
         ! Optimized Particle Shifting
         !$omp do private(i,k,m,t1,t2,normx,normy,intx,inty,heff) schedule (runtime) collapse(2)
@@ -1609,6 +1614,7 @@ module part_shift
         implicit none
 
         ! integer :: pint=0
+        integer :: i,j,k,m
         real(dp) :: A=2.0_dp,heff,frac=1.0_dp,t1,t2
         
         ! Optimized Particle Shifting
@@ -1928,6 +1934,7 @@ module part_shift
 
         ! real(dp),dimension(:) :: pguess(finmax)
         real(dp) :: heff,frac=1.0_dp,lamp,t1,t2
+        integer :: i,j,k,m
 
         heff=h1
 

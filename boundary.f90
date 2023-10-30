@@ -13,7 +13,7 @@ module boundary
 
         implicit none
 
-        ! integer :: glist
+        integer :: i,j,k,m
 
         ! Setting left hand vertical boundary positions
         !$omp parallel default(shared)
