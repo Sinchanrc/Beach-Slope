@@ -221,7 +221,7 @@ module integrator
     subroutine int_vel
         implicit none
 
-        real(dp) :: vart,ps=1.0_dp,t1,t2
+        real(dp) :: vart,ps=1.0_dp,t1,t2,pvol,p_dist
 
         integer :: i,j,k,m
 
@@ -280,7 +280,7 @@ module integrator
         !$omp end do
 
         ! Non-pressure velocity calculation for fluid particles
-        !$omp do schedule (runtime) private(m,t1,t2,k,i,j,vart) collapse(2)
+        !$omp do schedule (runtime) private(m,t1,t2,k,i,j,vart,pvol,p_dist) collapse(2)
         do j=sx,ex
             do i=sy,ey            
             
@@ -298,6 +298,9 @@ module integrator
                 y=>dpcell(i,j)%list(k)%interlist(2,m), &
                 pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
+                pvol=dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density
+                p_dist=(dpcell(i,j)%list(k)%dist(m)**2+lam)**(-1)
+
                 ! if (dpcell(y,x)%plist(pp)%tid/=4) then
 
                 if (dpcell(i,j)%plist(k)%free) then
@@ -311,22 +314,20 @@ module integrator
                 vart=0.0_dp
                 end if
 
-                    t1=(2*(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%plist(k)%vx- &
+                    t1=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
                     dpcell(y,x)%plist(pp)%vx)*(dpcell(i,j)%plist(k)%x- &
                     dpcell(y,x)%plist(pp)%x)* &
                     (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/ &
-                    ((dpcell(i,j)%list(k)%dist(m)**2+lam))
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))*p_dist
 
 
-                    t2=(2*(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%plist(k)%vx- &
+                    t2=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
                     dpcell(y,x)%plist(pp)%vx)*(dpcell(i,j)%plist(k)%y- &
                     dpcell(y,x)%plist(pp)%y)* &
                     (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/ &
-                    ((dpcell(i,j)%list(k)%dist(m)**2+lam))
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))*p_dist
 
                     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
                     (t1+t2)*((2*(mu/dpcell(i,j)%plist(k)%density)* &
@@ -354,22 +355,20 @@ module integrator
                     end if
 
 
-                    t1=(2*(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%plist(k)%vy- &
+                    t1=(2*pvol*(dpcell(i,j)%plist(k)%vy- &
                     dpcell(y,x)%plist(pp)%vy)*(dpcell(i,j)%plist(k)%x- &
                     dpcell(y,x)%plist(pp)%x)* &
                     (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/ &
-                    ((dpcell(i,j)%list(k)%dist(m)**2+lam))
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))*p_dist
 
 
-                    t2=(2*(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)*(dpcell(i,j)%plist(k)%vy- &
+                    t2=(2*pvol*(dpcell(i,j)%plist(k)%vy- &
                     dpcell(y,x)%plist(pp)%vy)*(dpcell(i,j)%plist(k)%y- &
                     dpcell(y,x)%plist(pp)%y)* &
                     (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/ &
-                    ((dpcell(i,j)%list(k)%dist(m)**2+lam))
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))*p_dist
 
                     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
                     (t1+t2)*((2*(mu/dpcell(i,j)%plist(k)%density)* &
@@ -400,7 +399,7 @@ module integrator
 
                     if (dpcell(i,j)%plist(k)%tid==3) then
 
-                    if (dpcell(y,x)%plist(pp)%tid==3) then
+                    ! if (dpcell(y,x)%plist(pp)%tid==3) then
 
                     ! t1=(dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%pplist(pp)%tke+ &
                     ! dpcell(i,j)%pplist(k)%tke)* &
@@ -408,10 +407,10 @@ module integrator
                     ! dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
                     ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/(dpcell(y,x)%plist(pp)%density)
 
-                    t1=(dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%pplist(pp)%tke- &
+                    t1=(pvol*(dpcell(y,x)%pplist(pp)%tke- &
                     dpcell(i,j)%pplist(k)%tke)* &
                     (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                    dpcell(i,j)%list(k)%dist(m),h1)))/(dpcell(y,x)%plist(pp)%density)
+                    dpcell(i,j)%list(k)%dist(m),h1)))
 
                     ! dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+(t1+t2)*dpcell(i,j)%pplist(k)%porosity
                     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs- &
@@ -423,10 +422,10 @@ module integrator
                     ! dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
                     ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))/(dpcell(y,x)%plist(pp)%density)
 
-                    t1=(dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%pplist(pp)%tke- &
+                    t1=(pvol*(dpcell(y,x)%pplist(pp)%tke- &
                     dpcell(i,j)%pplist(k)%tke)* &
                     (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                    dpcell(i,j)%list(k)%dist(m),h1)))/(dpcell(y,x)%plist(pp)%density)
+                    dpcell(i,j)%list(k)%dist(m),h1)))
 
                     ! dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+(t1+t2)*dpcell(i,j)%pplist(k)%porosity
                     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys-&
@@ -434,7 +433,7 @@ module integrator
 
                     end if
 
-                    end if
+                    ! end if
 
                 end associate
             end do
