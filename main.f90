@@ -30,7 +30,7 @@ program dam_break
     call matrixid
     iter=iter+1
 
-    do while(iter<1001)
+    do while(iter<4001)
 
         told=t
         t=t+dt

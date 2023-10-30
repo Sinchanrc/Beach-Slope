@@ -158,11 +158,11 @@ module boundary
                             dpcell(i,j)%gcount=dpcell(i,j)%gcount+1
                             dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
                             if (.not.(blist(k,m)%ynorm)) then
-                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
                             else
-                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
                             end if
                             dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
 
@@ -174,8 +174,8 @@ module boundary
                             dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
                             dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
 
-                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
 
                             dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
 
@@ -327,11 +327,11 @@ module boundary
                             dpcell(i,j)%gcount=dpcell(i,j)%gcount+1
                             dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
                             if (.not.(blist(k,m)%ynorm)) then
-                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
                             else
-                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
                             end if
                             dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
 
@@ -343,8 +343,8 @@ module boundary
                             dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
                             dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
 
-                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
 
                             dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
 
@@ -446,11 +446,11 @@ module boundary
                             dpcell(i,j)%gcount=dpcell(i,j)%gcount+1
                             dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
                             if (.not.(blist(k,m)%ynorm)) then
-                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
                             else
-                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
                             end if
                             dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
 
@@ -461,8 +461,8 @@ module boundary
                             dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
                             dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
 
-                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
-                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
 
                             dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
 

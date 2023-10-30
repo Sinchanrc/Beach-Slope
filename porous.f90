@@ -228,7 +228,7 @@ module porous
 
 
         solidfrac=0.0_dp
-        redfac=1.0_dp!0.9830_dp
+        redfac=0.9830_dp
 
             do counter2=1,cell1%porct
 
