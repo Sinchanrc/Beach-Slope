@@ -513,9 +513,9 @@ module boundary
                     !     blist(i,j)%pid=0
                     ! end if
 
-                    ! if(((blist(i,j)%y-yl)-line_grad*(blist(i,j)%x-xl))>0.0) then
-                    !     blist(i,j)%pid=0
-                    ! end if
+                    if(((blist(i,j)%y-yl)-line_grad*(blist(i,j)%x-xl))>0.0) then
+                        blist(i,j)%pid=0
+                    end if
                 
                 
                 end do
