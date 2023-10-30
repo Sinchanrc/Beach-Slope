@@ -16,9 +16,10 @@ public
 ! ,tl=solver tolerance
 real(dp),public :: wc=0.650_dp,L=3.10_dp ,H=1.0_dp,&
                     h1,pr=0.0050_dp*0.90_dp,br=0.00490_dp*0.90_dp, & !5.366*0.3 1.2
-                    wl=3.10_dp,rho=1000.0_dp,g=-9.810_dp,tl=1e-3,Dm=2e-9,&
+                    wl=3.10_dp,rho=1000.0_dp,g=-9.810_dp,tl=1e-3,Dm=1e-9,&
                     csh=0.50_dp,rx,ry,lid_driven=0.0010_dp,rhomin=1000.0_dp, &
-                    rhomax,atwood=0.25870_dp,tschmidt=1.0_dp
+                    rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.10_dp,soilh=0.750_dp,set_ht=0.20_dp,&
+                    outlet_ht=0.7_dp,coastal_ht=0.450_dp
 
 ! dt=time step,t=simulation time
 real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7.60_dp,displaytime=0.050_dp,dtsol=0.010_dp !0.00001
@@ -28,7 +29,8 @@ real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7.60_dp,displaytime=0.050_
 ! sig1,sig2=time step control coefficient
 real(dp),public :: fmass=0.0_dp,bfdist=0.0_dp,prrealx=0.0_dp,prrealy=0.0_dp,brrealx=0.0_dp,blen=1.0_dp,distfac=1.0_dp, &
                         brrealy=0.0_dp,lam=0.0_dp,mu=0.0010_dp,beta=0.010_dp,sig1=0.20_dp,&
-                        sig2=0.20_dp,delt=0.10_dp,maxshift=0.10_dp,alpha=0.010_dp,dl1=0.0_dp
+                        sig2=0.20_dp,delt=0.10_dp,maxshift=0.10_dp,alpha=0.010_dp,dl1=0.0_dp,&
+                        solidx=0.0_dp,solidy=0.0_dp,line_grad=15.0_dp,xl,yl,xu,yu
 
 ! r=particle shifting value,lamfs=surface tracking coeffincient,umax=max velocity
 real(dp),public :: r=0.0_dp,cs=0.150_dp,cv=0.080_dp,maxdivr=2.0_dp, &
@@ -44,7 +46,7 @@ real(dp),allocatable,public :: fval(:),fvec(:),fsol(:),fguess(:),ploc(:,:),probe
 
 !cellx=domain cells in x dir,celly=domain cells in y dir,bl=number of boundary layers
 !maxdiv= maximun values of surface divergence
-integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2, &
+integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=4,num2,spx,spy, &
                 bnx=0,bny=0,count=0,fpx=0,fpy=0,totc=0,incr=4,cout=0,tempct=0, &
                 binmax=0,binmin=0,finmax=0,finmin=0,totalct=0,pbno=1,matidct=0,solsteps=0 !,i=0,j=0,k=0,m=0
 

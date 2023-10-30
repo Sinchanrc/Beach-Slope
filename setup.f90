@@ -53,23 +53,23 @@ module setup
 
         allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx))
     
-        bcor1%x=((bl*2-1)*brrealx*distfac)+bcor1%x
-        bcor1%y=bcor1%y+(bl*2-1)*brrealy*distfac
-        bcor2%x=((bl*2-1)*brrealx*distfac)+bcor2%x !+2*prrealx
-        bcor2%y=bcor2%y+(bl*2-1)*brrealy*distfac
+        ! bcor1%x=((bl*2-1)*brrealx*distfac)+bcor1%x
+        ! bcor1%y=bcor1%y+(bl*2-1)*brrealy*distfac
+        ! bcor2%x=((bl*2-1)*brrealx*distfac)+bcor2%x !+2*prrealx
+        ! bcor2%y=bcor2%y+(bl*2-1)*brrealy*distfac
 
-        if (ghost==1) then
-        ref1%x=bcor1%x-brrealx*distfac
-        ref1%y=bcor1%y-brrealy*distfac
-        ref2%x=bcor2%x+brrealx*distfac
-        ref2%y=bcor2%y-brrealy*distfac
-        elseif (ghost==2) then
+        ! if (ghost==1) then
+        ! ref1%x=bcor1%x-brrealx*distfac
+        ! ref1%y=bcor1%y-brrealy*distfac
+        ! ref2%x=bcor2%x+brrealx*distfac
+        ! ref2%y=bcor2%y-brrealy*distfac
+        ! elseif (ghost==2) then
 
-        ref1%x=bcor1%x-brrealx*distfac+ (brrealx*distfac+prrealx)/2.0
-        ref1%y=bcor1%y-brrealy*distfac+(brrealy*distfac+prrealy)/2.0
-        ref2%x=bcor2%x+brrealx*distfac-(brrealx*distfac+prrealx)/2.0
-        ref2%y=bcor2%y-brrealy*distfac+(brrealy*distfac+prrealy)/2.0
-        end if 
+        ! ref1%x=bcor1%x-brrealx*distfac+ (brrealx*distfac+prrealx)/2.0
+        ! ref1%y=bcor1%y-brrealy*distfac+(brrealy*distfac+prrealy)/2.0
+        ! ref2%x=bcor2%x+brrealx*distfac-(brrealx*distfac+prrealx)/2.0
+        ! ref2%y=bcor2%y-brrealy*distfac+(brrealy*distfac+prrealy)/2.0
+        ! end if 
 
         icount=0
         count=0
@@ -88,7 +88,7 @@ module setup
             do j=1,cellx
                 do i=1,celly
                 allocate(dpcell(i,j)%plist(fac*fplistmax),dpcell(i,j)%ftemp(fac*fplistmax), &
-                dpcell(i,j)%cellid(2))
+                dpcell(i,j)%cellid(2),dpcell(i,j)%porlist(fplistmax))
                 end do
             end do
         !$omp end do
