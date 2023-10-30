@@ -18,14 +18,22 @@ module internal
         !$omp do schedule(runtime) private(i,j) collapse(2) 
             do j =1,fpx
             do i=fpy,1,-1
-            flist(i,j)%y=((brrealy)*((2*bl)-1))+(fpy-i)*2*prrealy+prrealy
-            ! if (mod(i,2)==0) then
-            ! flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx+2*prrealx
-            ! else
-            flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx+prrealx
-            ! end if
+                flist(i,j)%y=((brrealy)*((2*bl)-1))+(fpy-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
+                if (mod(i,2)==0) then
+                flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
+                else
+                flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)
+                end if
             flist(i,j)%vx=0.0_dp
             flist(i,j)%vy=0.0_dp
+
+            if (i==1) then
+                flist(i,j)%pressure=0.0_dp
+
+            else
+                flist(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy/sqrt(por))*rho*abs(g)
+            
+            end if
 
             end do
             end do
@@ -38,22 +46,22 @@ module internal
             do j =1,fpx
                 do i=fpy,1,-1
     
-                ! if ((mod(i,2)/=0)) then
+                if ((mod(i,2)/=0)) then
                     count=count+1
                     flist(i,j)%pid=count
                     flist(i,j)%tid=3
-                ! else 
-                !     if (j/=fpx) then
-                !         count=count+1
-                !     flist(i,j)%pid=count
-                !     flist(i,j)%tid=3
-                !     else 
+                else 
+                    if (j/=fpx) then
+                        count=count+1
+                    flist(i,j)%pid=count
+                    flist(i,j)%tid=3
+                    else 
 
-                !     flist(i,j)%tid=0
+                    flist(i,j)%tid=0
 
-                !     end if
+                    end if
 
-                ! end if
+                end if
                 
                 end do
             end do
@@ -84,8 +92,10 @@ module internal
                         ! else
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass*1.05
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho*1.05
-                        ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%ovol=dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass/&
-                        !                                             dpcell(i,j)%plist(dpcell(i,j)%ptot)%density
+
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%oden=dpcell(i,j)%plist&
+                        (dpcell(i,j)%ptot)%density
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%ovol=fmass/rho
                         ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%con=-0.50_dp
                         ! end if
                     end if

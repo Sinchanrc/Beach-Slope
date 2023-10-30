@@ -34,7 +34,7 @@ module particle
         
         real(dp),public  :: mass=0.0_dp,density=0.0_dp,pressure=0.0_dp, &
                             vx=0.0_dp,vy=0.0_dp,vxs=0.0_dp,vys=0.0_dp,x=0.0_dp, &
-                            y=0.0_dp,xs=0.0_dp,ys=0.0_dp,con=0.0_dp,ovol=0.0_dp,tden=0.0_dp
+                            y=0.0_dp,xs=0.0_dp,ys=0.0_dp,con=0.0_dp,ovol=0.0_dp,oden=0.0_dp
                             
         !Variables depending on dimension
         integer,public :: tid=0,pid=0,matid=0,bounlvl=0

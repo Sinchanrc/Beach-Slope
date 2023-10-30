@@ -31,6 +31,11 @@ module setup
         bcor2%x=real(L,dp)
         bcor2%y=0.0_dp
 
+        spy=floor(real(soilh,dp)/(2*real(prrealy,dp)))+4
+        spx=floor(real(soill,dp)/(2*real(prrealx,dp)))
+        solidx=((soill/(spx))/2.0)!*(spx-1)/spx
+        solidy=((real(soilh,dp)/(spy-1))/2.0_dp)
+
         L=L!+2*prrealx
         H=H+2*prrealy
 
@@ -40,7 +45,8 @@ module setup
         brrealy= ((real(H,dp)/(bny))/2.0_dp)!*(bny-1)/real(bny,dp)
         ! bny=bny-1
         ! bnx=bnx-1
-        h1=(max(prrealx,prrealy)*hfac)/(2.0_dp)   !4.8 *sqrt(por)
+        ! h1=(max(prrealx,prrealy)*hfac)/(2.0_dp)   !4.8 *sqrt(por)
+        h1=(max(prrealx,prrealy)*hfac)/(2.0_dp*sqrt(por)) 
         totc=max((floor(real(wc,dp)/(incr*h1)))*(floor(wl/(incr*h1))),1)
         fplist=ceiling(real((fpx*fpy),dp)/(totc)*1.0_dp) 
         fplistmax=ceiling(1.40_dp*real(fplist,dp))
@@ -52,28 +58,21 @@ module setup
         bny=bny+2*(bl)
 
         allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx))
-    
-        ! bcor1%x=((bl*2-1)*brrealx*distfac)+bcor1%x
-        ! bcor1%y=bcor1%y+(bl*2-1)*brrealy*distfac
-        ! bcor2%x=((bl*2-1)*brrealx*distfac)+bcor2%x !+2*prrealx
-        ! bcor2%y=bcor2%y+(bl*2-1)*brrealy*distfac
 
-        ! if (ghost==1) then
-        ! ref1%x=bcor1%x-brrealx*distfac
-        ! ref1%y=bcor1%y-brrealy*distfac
-        ! ref2%x=bcor2%x+brrealx*distfac
-        ! ref2%y=bcor2%y-brrealy*distfac
-        ! elseif (ghost==2) then
+        xl=(2*bl-1)*brrealx+brrealx 
+        yl=(2*bl-1)*brrealy+solidy+set_ht
+        xu=xu+(2*bl-1)*brrealx+brrealx
+        yu=yu+(2*bl-1)*brrealy+solidy+set_ht
+        ! line_grad=(yu-yl)/(xu-xl)
+        line_grad=(line_grad*22)/(180.0_dp*7)
 
-        ! ref1%x=bcor1%x-brrealx*distfac+ (brrealx*distfac+prrealx)/2.0
-        ! ref1%y=bcor1%y-brrealy*distfac+(brrealy*distfac+prrealy)/2.0
-        ! ref2%x=bcor2%x+brrealx*distfac-(brrealx*distfac+prrealx)/2.0
-        ! ref2%y=bcor2%y-brrealy*distfac+(brrealy*distfac+prrealy)/2.0
-        ! end if 
+        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
+        fpx=floor(real(wl,dp)/(2*real(prrealx,dp)/sqrt(por)))
+
 
         icount=0
         count=0
-        lam=0.00010_dp*(h1**2)
+        lam=0.010_dp*(h1**2)
         sx=2
         sy=2
         ex=cellx-1

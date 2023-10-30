@@ -475,120 +475,87 @@ module boundary
                 end do
             end do
         !$omp end do
-
-
-        ! !Setting top boundary positions
-        ! !$omp do schedule(runtime) private(i,j) collapse(2) 
-        !     do j =1,bnx-2*bl
-        !         do i=1,bl           
-    
-        !         blist(i,j)%y=(bl-i)*2*brrealy+H+2*brrealy+2*(bl-1)*brrealy
-        !         ! blist(i,j)%x=(2*bl-1)*brrealx+brrealx+(j-1)*brrealx*2
-        !         ! allocate(blist(i,j)%posshift(2))
-    
-        !         end do
-        !     end do
-        ! !$omp end do
-
-        ! !Allocating index number to top boundary particles
-        ! !$omp single 
-    
-        !     do j =1,bnx-2*bl
-        !         do i=1,bl
-        !             if (i==bl) then
-
-        !                 icount=icount+1
-        !                 blist(i,j)%tid=1
-        !                 blist(i,j)%pid=icount
-
-        !             end if
-        !             blist(i,j)%ynorm=.true.
-        !             ! blist(i,j)%xnorm=.false.
-        !             if((i/=bl))then
-
-        !                 icount=icount+1 !count=count+1
-        !                 blist(i,j)%tid=2
-        !                 blist(i,j)%pid=icount !count
-
-        !             end if
-        !         end do
-        !     end do
-        !     binmax=icount
-
-        !     do j =1,bnx-2*bl
-        !         do i=bl,1,-1
-
-        !             blist(i,j)%posshift(1)= 0.0_dp
-
-        !             blist(i,j)%posshift(2)= 2*(((2*bl-1)*brrealy)-blist(i,j)%y)
-
-        !             if (i==bl) then
-
-        !                 matidct=matidct+1
-        !                 blist(i,j)%matid=matidct
-
-        !             else
-
-        !                 if (.not.(allocated(blist(i,j)%wall))) then
-        !                 allocate(blist(i,j)%wall(1))
-        !                 end if
-        !                 blist(i,j)%wall(1)=blist(bl,j)%matid
-        !                 matidct=matidct+1
-        !                 blist(i,j)%matid=matidct
-                        
-        !             end if
-
-        !         end do 
-        !     end do
-    
-        ! !$omp end single
-
-        ! ! Moving boundary particles to cell boundary list
-        ! !$omp do schedule(runtime) private(i,m,k) collapse(2) 
-        !     do j=2,cellx-1
-        !         do i=2,celly-1
-        !         do m=1,bnx-2*bl
-        !             do k=1,bl
-
-        !             if ((blist(k,m)%x>=dpcell(i,j)%xleft) .and. &
-        !                 (blist(k,m)%x<dpcell(i,j)%xright).and. &
-        !                 (blist(k,m)%y>=dpcell(i,j)%ybot).and. &
-        !                 (blist(k,m)%y<dpcell(i,j)%ytop)) then
-
-        !                 if ((blist(k,m)%tid==2)) then
-        !                     dpcell(i,j)%btot=dpcell(i,j)%btot+1
-        !                     dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
-        !                     dpcell(i,j)%gcount=dpcell(i,j)%gcount+1
-        !                     dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
-        !                     if (.not.(blist(k,m)%ynorm)) then
-        !                     dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
-        !                     else
-        !                         dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
-        !                     end if
-        !                     dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
-
-        !                 end if
-
-        !                 if ((blist(k,m)%tid==1)) then
-        !                     dpcell(i,j)%btot=dpcell(i,j)%btot+1
-        !                     dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
-        !                     dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
-
-        !                     dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
-
-        !                     dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
-
-        !                 end if
-                        
-        !             end if
-
-        !             end do
-        !         end do
-        !         end do
-        !     end do
-        ! !$omp end do
         
         !$omp single
+            deallocate(blist)
+        !$omp end single
+
+                    !$omp single
+        
+            allocate(blist(spy,spx))
+        !$omp end single
+
+        !Setting up soil particle positions and pressure
+        !$omp do schedule(runtime) private(i,j) collapse(2) 
+            do j =1,spx
+            do i=spy,1,-1
+
+
+            blist(i,j)%y=(spy-i)*2*solidy+solidy+((brrealy)*((2*bl)-1))-6*solidy
+            blist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*solidx+brrealx-6*solidx
+
+            end do
+            end do
+        !$omp end do
+
+        !Setting particle id for fluid particles
+        !$omp single 
+            count=0
+
+            do j =1,spx
+                do i=spy,1,-1
+    
+                    count=count+1
+                    blist(i,j)%pid=count
+                    blist(i,j)%tid=4
+                    ! if(((xl-blist(i,j)%x)*(yu-blist(i,j)%y)-&
+                    ! (yl-blist(i,j)%y)*(xu-blist(i,j)%x))<0.0) then
+                    !     blist(i,j)%pid=0
+                    ! end if
+
+                    ! if(((blist(i,j)%y-yl)-line_grad*(blist(i,j)%x-xl))>0.0) then
+                    !     blist(i,j)%pid=0
+                    ! end if
+                
+                
+                end do
+            end do
+        
+        !$omp end single
+
+        !Distributing porous particles to cells
+        !$omp do schedule(runtime) private(i,j) collapse(2) 
+            do j=2,cellx-1
+                do i=2,celly-1
+                do l1=1,spx
+                    do k=1,spy
+
+                    if ((blist(k,l1)%x>=dpcell(i,j)%xleft) .and. &
+                        (blist(k,l1)%x<dpcell(i,j)%xright).and. &
+                        (blist(k,l1)%y>=dpcell(i,j)%ybot).and. &
+                        (blist(k,l1)%y<dpcell(i,j)%ytop).and.(blist(k,l1)%pid/=0))then
+                        
+                        
+
+                        if (.not.(allocated(dpcell(i,j)%porlist))) then
+                            allocate(dpcell(i,j)%porlist(fplistmax))
+                        end if
+
+                        dpcell(i,j)%porct=dpcell(i,j)%porct+1
+                        dpcell(i,j)%porlist(dpcell(i,j)%porct)=blist(k,l1)
+                        dpcell(i,j)%porlist(dpcell(i,j)%porct)%mass=soill*soilh*bulkden/(spx*spy)
+                        dpcell(i,j)%porlist(dpcell(i,j)%porct)%density=bulkden
+
+                    end if
+
+                    end do
+                end do
+                end do
+            end do
+        !$omp end do
+
+        !$omp single
+        
             deallocate(blist)
         !$omp end single
 

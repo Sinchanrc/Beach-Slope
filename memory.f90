@@ -82,17 +82,34 @@ module memory
 
         
         ! Matrix id setting
-        count=matidct
+        ! count=matidct
+
+        ! do j=sx,ex 
+        !     do i=sy,ey
+        !     if (dpcell(i,j)%ptot/=0) then
+        !         do cout=1,dpcell(i,j)%ptot
+
+        !             if ((dpcell(i,j)%plist(cout)%tid==3)) then
+        !             count=count+1
+        !             dpcell(i,j)%plist(cout)%matid=count
+        !             end if
+
+        !         end do
+        !     end if
+        !     end do
+        ! end do
+
+        count=0
 
         do j=sx,ex 
             do i=sy,ey
             if (dpcell(i,j)%ptot/=0) then
                 do cout=1,dpcell(i,j)%ptot
 
-                    if ((dpcell(i,j)%plist(cout)%tid==3)) then
+                    ! if ((dpcell(i,j)%plist(cout)%tid==3)) then
                     count=count+1
-                    dpcell(i,j)%plist(cout)%matid=count
-                    end if
+                    dpcell(i,j)%plist(cout)%pid=count
+                    dpcell(i,j)%plist(cout)%matid=dpcell(i,j)%plist(cout)%pid
 
                 end do
             end if

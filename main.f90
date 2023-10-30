@@ -14,8 +14,7 @@ program dam_break
     use part_shift
     use gradient
     use scalar
-    use mls
-    use pprobe
+    use porous
 
     implicit none
 
@@ -24,20 +23,14 @@ program dam_break
     call gen_fluid    
     call memalloc
 
-    ! ploc(1,1)=5.366*wc+(2*bl-1)*brrealx!+2*prrealx
-    ! ploc(2,1)=0.19*wc+(2*bl-1)*brrealy
-    ! call probesetup(ploc)
-    ! call print_probe
-
     call print_fluid
+    call print_porous
     call print_fixbd
     call print_ghostbd
     call matrixid
     iter=iter+1
-    ! write(*,*)brrealx
 
-    ! do while((t*sqrt(abs(g)/wc))<time)
-    do while(iter<411)
+    do while(iter<1001)
 
         told=t
         t=t+dt
@@ -61,7 +54,7 @@ program dam_break
         call projection 
         call cellshift
         call neighbour
-        ! call effpor
+        call effpor
         call freesurf
         ! call compcorr(3,1)
         call eddyvis
@@ -76,7 +69,7 @@ program dam_break
         call comp_pos
         call cellshift
         call neighbour
-        ! call effpor
+        call effpor
         call freesurf
         ! call compcorr(3,1)
         ! call comp_ghost
@@ -104,7 +97,7 @@ program dam_break
         ! end if
 
     end do
-    ! call print_free
+
     
 end program dam_break
 
