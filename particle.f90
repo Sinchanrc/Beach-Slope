@@ -40,7 +40,7 @@ module particle
         integer,public :: tid=0,pid=0,matid=0,bounlvl=0
         ! real(dp),allocatable,public :: meanstrn(:),tau(:),shift(:),bmls(:),coff(:),coffmg(:)
         logical,public :: mirror=.false.,xnorm=.false.,ynorm=.false.,vicinity=.false.,&
-                            free=.false.,buffer=.false.
+                            free=.false.,buffer=.false.,domain=.true.,range=.true.
         integer,allocatable :: wall(:)
         real(dp),allocatable,public :: posshift(:)
 

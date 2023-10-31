@@ -193,6 +193,8 @@ module functions
 
         implicit none
 
+        integer :: i
+
         type(cell),intent(in) :: dcell
 
         do i=1,dcell%elist
