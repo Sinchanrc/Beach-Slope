@@ -70,4 +70,7 @@ type(pprob),allocatable :: probe(:)
 integer :: ipar(128),rci_request,gmresct=0 
 real(dp),allocatable :: dpar(:),tmp(:)
 
+type(buffer),allocatable :: input(:)
+type(reservoir) :: reserve
+
 end module initialize

@@ -32,7 +32,7 @@ program dam_break
     call matrixid
     iter=iter+1
 
-        do while(iter<21)
+        do while(iter<51)
 
             told=t
             t=t+dt

@@ -164,5 +164,44 @@ module functions
 
 
     end subroutine
+
+    subroutine push_part(inputpt,dcell )
+        use initialize
+        implicit none
+
+        type(buffer),intent(in) :: inputpt
+        type(cell),intent(inout) :: dcell 
+
+        dcell%ptot=dcell%ptot+1
+        dcell%plist(dcell%ptot)%mass=fmass
+        dcell%plist(dcell%ptot)%density=rho
+        dcell%plist(dcell%ptot)%x=inputpt%x
+        dcell%plist(dcell%ptot)%y=inputpt%y
+        dcell%plist(dcell%ptot)%pressure=0.0_dp
+        dcell%plist(dcell%ptot)%vx=entry_vel
+        dcell%plist(dcell%ptot)%vy=0.0_dp
+        dcell%plist(dcell%ptot)%domain=.false.
+        dcell%plist(dcell%ptot)%range=.true.
+        dcell%plist(dcell%ptot)%tid=3
+        dcell%plist(dcell%ptot)%pid=reserve%tank(reserve%si)
+        reserve%si=reserve%si-1
+        
+    end subroutine push_part
+
+    subroutine pull_part(dcell)
+        use initialize
+
+        implicit none
+
+        type(cell),intent(in) :: dcell
+
+        do i=1,dcell%elist
+        reserve%si=reserve%si+1
+        reserve%tank(reserve%si)=dcell%exitlist(i)
+        end do
+        
+    
+        
+    end subroutine pull_part
     
 end module functions

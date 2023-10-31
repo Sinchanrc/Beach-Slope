@@ -39,7 +39,8 @@ module particle
         !Variables depending on dimension
         integer,public :: tid=0,pid=0,matid=0,bounlvl=0
         ! real(dp),allocatable,public :: meanstrn(:),tau(:),shift(:),bmls(:),coff(:),coffmg(:)
-        logical,public :: mirror=.false.,xnorm=.false.,ynorm=.false.,vicinity=.false.,free=.false.,near_boun=.false.
+        logical,public :: mirror=.false.,xnorm=.false.,ynorm=.false.,vicinity=.false.,&
+                            free=.false.,buffer=.false.
         integer,allocatable :: wall(:)
         real(dp),allocatable,public :: posshift(:)
 
@@ -66,7 +67,24 @@ module particle
 
         logical ::inpore=.false.
     end type properties
-    
+
+        type buffer
+
+        real(dp) :: x=0.0_dp,y=0.0_dp
+        integer :: id=0
+
+    end type
+
+    type reservoir
+
+
+        integer,allocatable ::tank(:)
+        integer:: si=0
+
+
+
+    end type
+        
     
     
 end module particle
