@@ -37,15 +37,15 @@ module kernel
 
         res2=0.0_dp
 
-        res2=(7.0_dp/(4*3.140_dp*(smln**2)))*(1+(2*radial/smln))* & !Wendland c2
-                (1.0_dp-(radial/(2*smln)))**4
+        ! res2=(7.0_dp/(4*3.140_dp*(smln**2)))*(1+(2*radial/smln))* & !Wendland c2
+        !         (1.0_dp-(radial/(2*smln)))**4
 
         ! res2=(9.0_dp/(4*3.140_dp*(smln**2)))*(1+(3*radial/smln)+ &
         ! (35.0_dp/12)*((radial/smln)**2))* & !Wendland c4
         ! (1.0_dp-(radial/(2*smln)))**6
 
-        ! res2=(2/(3.14*smln**2))*((3*(radial/(4*smln))**2)- &
-        ! (3*radial/(4*smln))+3/4.0d0)          !Quadratic
+        res2=(2/(3.14*smln**2))*((3*(radial/(4*smln))**2)- &
+        (3*radial/(4*smln))+3/4.0d0)          !Quadratic
 
     end function Wab
 
@@ -56,10 +56,10 @@ module kernel
 
         res2=0.0_dp
 
-        res2=(7.0_dp/(4.0_dp*3.140_dp*(smln**2))) !Wendland c2
+        ! res2=(7.0_dp/(4.0_dp*3.140_dp*(smln**2))) !Wendland c2
         ! res2=(9.0_dp/(4.0_dp*3.140_dp*(smln**2))) !Wendland c4
 
-        ! res2=3/(2*3.14*smln**2) !Quadratic
+        res2=3/(2*3.14*smln**2) !Quadratic
 
 
     end function Wo
@@ -72,15 +72,15 @@ module kernel
         real(dp) ,intent(in):: radial
 
         res=0.0_dp
-        res=(35.0_dp*(p1%x-p2%x)*((1.0_dp-radial/(2*smln)))**3)/ & !Wendland c2
-            (4.0_dp*3.140_dp*smln**4)
+        ! res=(35.0_dp*(p1%x-p2%x)*((1.0_dp-radial/(2*smln)))**3)/ & !Wendland c2
+        !     (4.0_dp*3.140_dp*smln**4)
 
         ! res=((p1%x-p2%x)*((1.0_dp-radial/(2*smln)))**5)* & !Wendland c4
         ! ((35.0_dp*radial/(3*(smln**3)))+(14.0_dp/(3*(smln**2))))* &
         ! (9.0_dp/(4.0_dp*3.140_dp*(smln**2)))
 
-        ! res=(2/(3.14*smln**2))*((3/(8*smln**2))-(3/(4*smln*radial))) &
-        !         *(p2%x-p1%x)                         !Quadratic
+        res=(2/(3.14*smln**2))*((3/(8*smln**2))-(3/(4*smln*radial))) &
+                *(p2%x-p1%x)                         !Quadratic
 
 
     end function Wabx
@@ -93,15 +93,15 @@ module kernel
         real(dp) ,intent(in):: radial
 
         res=0.0_dp
-        res=(35.0_dp*(p1%y-p2%y)*((1.0_dp-radial/(2*smln)))**3)/ & !Wendland
-            (4.0_dp*3.140_dp*smln**4)
+        ! res=(35.0_dp*(p1%y-p2%y)*((1.0_dp-radial/(2*smln)))**3)/ & !Wendland
+        !     (4.0_dp*3.140_dp*smln**4)
 
         ! res=((p1%y-p2%y)*((1.0_dp-radial/(2*smln)))**5)* & !Wendland c4
         ! ((35.0_dp*radial/(3*(smln**3)))+(14.0_dp/(3*(smln**2))))* &
         ! (9.0_dp/(4.0_dp*3.140_dp*(smln**2)))
 
-        ! res=(2/(3.14*smln**2))*((3/(8*smln**2))-(3/(4*smln*radial))) &
-        ! *(p2%y-p1%y)                         !Quadratic
+        res=(2/(3.14*smln**2))*((3/(8*smln**2))-(3/(4*smln*radial))) &
+        *(p2%y-p1%y)                         !Quadratic
 
 
     end function Waby
