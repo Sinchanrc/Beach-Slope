@@ -630,16 +630,16 @@ module integrator
         !$omp end do
 
         !$omp single
-        if (t<=0.50_dp) then
+        if (t<=1.0_dp) then
         dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0010_dp)
-        ! elseif ((t>1.0_dp).and.(t<=2.0_dp)) then
-        ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.001))
+        elseif ((t>1.0_dp).and.(t<=2.0_dp)) then
+        dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.0015))
         ! elseif ((t>2.0_dp).and.(t<=3.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.002))
         ! elseif ((t>3.0_dp).and.(t<=4.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.004))
         else
-        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0010_dp)
+        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.00150_dp)
         end if
         if((.not.(ieee_is_finite(numax))).or.(ieee_is_nan(numax))) then
         numax=0.0_dp

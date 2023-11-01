@@ -246,27 +246,31 @@ module isph
 
                                 t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_ij- &
                                 dpcell(i,j)%plist(k)%vxs*rho_ij)* &
-                                (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                                dpcell(i,j)%list(k)%dist(m),h1)))
+                                (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                    dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
 
                                 t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_ij- &
                                 dpcell(i,j)%plist(k)%vys*rho_ij)* &
-                                (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                                dpcell(i,j)%list(k)%dist(m),h1)))
+                                (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                    dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
                                 else 
 
                                 t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j- &
                                 dpcell(i,j)%plist(k)%vxs*rho_i)* &
-                                (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                                dpcell(i,j)%list(k)%dist(m),h1)))
+                                (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                    dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
 
                                 t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j- &
                                 dpcell(i,j)%plist(k)%vys*rho_i)* &
-                                (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                                dpcell(i,j)%list(k)%dist(m),h1)))
+                                (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                    dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
+                    Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
                                 end if
 
