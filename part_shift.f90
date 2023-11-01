@@ -521,7 +521,7 @@ module part_shift
 
         implicit none
 
-        integer :: pint=0
+        integer :: pint=1
         integer :: i,j,k,m
         real(dp) :: heff,frac=0.0010_dp,t1,t2!0.0420_dp
         

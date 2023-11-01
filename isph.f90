@@ -143,6 +143,29 @@ module isph
         
     end subroutine freesurf
 
+    subroutine resetid
+        implicit none 
+
+        integer :: mat_count,t1,i,j
+
+        mat_count=0
+
+        do j=1,cellx 
+            do i=1,celly
+            if (dpcell(i,j)%ptot/=0) then
+                do t1=1,dpcell(i,j)%ptot
+
+                    mat_count=mat_count+1
+                    dpcell(i,j)%plist(t1)%matid=mat_count
+
+                end do
+            end if
+            end do
+        end do
+    
+        
+    end subroutine resetid
+
     subroutine ppesolve
 
         implicit none
@@ -392,8 +415,8 @@ module isph
         !$omp end parallel do
 
         ! call format(fmatrix,fval,frow,fcol,finmax)
-        call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
-        ! call fgmres
+        ! call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
+        call fgmres
         
         ! Assigning pressures
         !$omp parallel do schedule(runtime) default(shared) private(i,k,j) collapse(2)       

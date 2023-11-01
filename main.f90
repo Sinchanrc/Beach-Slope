@@ -63,7 +63,7 @@ program dam_break
             ! call ghost_en
             call int_vel
             !$omp end parallel
-
+            call resetid
             call ppesolve
         
             !$omp parallel default(shared)
@@ -156,7 +156,7 @@ program dam_break
         ! call ghost_en
         call int_vel
         !$omp end parallel
-
+        call resetid
         call ppesolve
     
         !$omp parallel default(shared)
