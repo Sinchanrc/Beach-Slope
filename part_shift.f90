@@ -465,14 +465,16 @@ module part_shift
 
                         t1=t1+((dpcell(i,j)%pplist(k)%coff(1) &
                         *Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
-                        dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)*Waby(dpcell(y,x)%plist(pp),&
+                        dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2) &
+                        *Waby(dpcell(y,x)%plist(pp),&
                         dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))*&
                         (dpcell(y,x)%plist(pp)%vy-dpcell(i,j)%plist(k)%vy))&
                         *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
 
                         t2=t2+((dpcell(i,j)%pplist(k)%coff(3) &
                         *Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
-                        dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)*Waby(dpcell(y,x)%plist(pp),&
+                        dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4) &
+                        *Waby(dpcell(y,x)%plist(pp),&
                         dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))*&
                         (dpcell(y,x)%plist(pp)%vy-dpcell(i,j)%plist(k)%vy))&
                         *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
@@ -1680,7 +1682,8 @@ module part_shift
                         y=>dpcell(i,j)%list(k)%interlist(2,m), &
                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
-                        ! dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-csh*(heff)*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &                        
+                        ! dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-csh*(heff)* &
+                        ! sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &                        
                         ! ((1-normx**2)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
                         ! dpcell(i,j)%list(k)%dist(m),heff)-normx*normy* &
                         ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))&
@@ -1707,7 +1710,8 @@ module part_shift
                         y=>dpcell(i,j)%list(k)%interlist(2,m), &
                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
-                        ! dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-csh*(heff)*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &                    
+                        ! dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-csh*(heff)* &
+                        ! sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &                    
                         ! (-normx*normy*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
                         ! dpcell(i,j)%list(k)%dist(m),heff)+(1-normy**2)* &
                         ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))&
@@ -1793,7 +1797,8 @@ module part_shift
                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
 
-                        ! dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-csh*(heff)*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &
+                        ! dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-csh*(heff)* &
+                        ! sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &
                         ! (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
                         ! dpcell(i,j)%list(k)%dist(m),heff))&
                         ! *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)* &
@@ -1821,7 +1826,8 @@ module part_shift
                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
 
-                        ! dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-csh*(heff)*sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &
+                        ! dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-csh*(heff)* &
+                        ! sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)*dt* &
                         ! (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
                         ! dpcell(i,j)%list(k)%dist(m),heff))&
                         ! *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)* &

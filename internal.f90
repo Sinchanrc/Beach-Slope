@@ -131,7 +131,7 @@ module internal
                 else
                 flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx+prrealx
                 end if
-                flist(i,j)%vx=-2.5_dp/(3600*24*por)
+                flist(i,j)%vx=0.0_dp!-2.5_dp/(3600*24*por)
                 flist(i,j)%vy=0.0_dp
                 if (i==1) then
                     flist(i,j)%pressure=0.0_dp
