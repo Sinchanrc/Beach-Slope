@@ -121,6 +121,9 @@ module setup
         iparm(13)=1
         iparm(27)=1
 
+        allocate(reserve%tank(500))
+        reserve%si=reserve_par
+
         ! write(*,*)brrealx,brrealy,prrealx,prrealy
 
         return

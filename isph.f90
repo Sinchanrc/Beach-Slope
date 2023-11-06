@@ -173,6 +173,14 @@ module isph
         integer :: i,j,k,m
 
         real(dp) :: lamp,t1,t2,rho_i,rho_j,pvol,p_dist,rho_ij
+        !$omp parallel do schedule(runtime) default(shared)
+        do i=1,finmax 
+            fmatrix(i)%sz=0
+            fmatrix(i)%val(:)=0.0_dp
+            fmatrix(i)%col(:)=i
+            fvec(i)=0.0_dp
+        end do
+        !$omp end parallel do
         
         ! Preparing the coff matrix for fluid part in CSR
         !$omp parallel do schedule(runtime) default(shared) &

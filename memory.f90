@@ -116,7 +116,7 @@ module memory
             end do
         end do
 
-        finmax=count
+        finmax=count+reserve_par
 
         allocate(frow(finmax+1),fvec(finmax),fsol(finmax),fguess(finmax))
         allocate(fval(finmax*ceiling(fac2*fplistmax)),fcol(finmax*ceiling(fac2*fplistmax)))
