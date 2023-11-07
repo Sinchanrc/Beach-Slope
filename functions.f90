@@ -18,6 +18,7 @@
 module functions
 
     use particle
+    use domain
 
     implicit none
     
@@ -165,23 +166,25 @@ module functions
 
     end subroutine
 
-    subroutine push_part(inputpt,dcell )
+    subroutine push_part(inputpt,dcell,mass,den,vel )
         use initialize
         implicit none
 
         type(buffer),intent(in) :: inputpt
-        type(cell),intent(inout) :: dcell 
+        type(cell),intent(inout) :: dcell
+        real(dp),intent(in) :: mass,den,vel 
 
         dcell%ptot=dcell%ptot+1
-        dcell%plist(dcell%ptot)%mass=fmass
-        dcell%plist(dcell%ptot)%density=rho
+        dcell%plist(dcell%ptot)%mass=mass
+        dcell%plist(dcell%ptot)%density=den
         dcell%plist(dcell%ptot)%x=inputpt%x
         dcell%plist(dcell%ptot)%y=inputpt%y
         dcell%plist(dcell%ptot)%pressure=0.0_dp
-        dcell%plist(dcell%ptot)%vx=entry_vel
+        dcell%plist(dcell%ptot)%vx=vel
         dcell%plist(dcell%ptot)%vy=0.0_dp
         dcell%plist(dcell%ptot)%domain=.false.
         dcell%plist(dcell%ptot)%range=.true.
+        dcell%plist(dcell%ptot)%buffer=.true.
         dcell%plist(dcell%ptot)%tid=3
         dcell%plist(dcell%ptot)%pid=reserve%tank(reserve%si)
         reserve%si=reserve%si-1
