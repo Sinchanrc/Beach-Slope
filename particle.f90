@@ -77,11 +77,8 @@ module particle
 
     type reservoir
 
-
         integer,allocatable ::tank(:)
         integer:: si=0
-
-
 
     end type
         

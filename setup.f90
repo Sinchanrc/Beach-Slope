@@ -26,10 +26,7 @@ module setup
         prrealy= ((real(wc,dp)/(fpy-1))/2.0_dp)
         ! fpx=fpx-1
         fmass=((wc*wl*1.0_dp)*rho)/(fpx*fpy)
-        bcor1%x=0.0_dp
-        bcor1%y=0.0_dp
-        bcor2%x=real(L,dp)
-        bcor2%y=0.0_dp
+
 
         spy=floor(real(soilh,dp)/(2*real(prrealy,dp)))+4
         spx=floor(real(soill,dp)/(2*real(prrealx,dp)))

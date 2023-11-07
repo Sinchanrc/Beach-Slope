@@ -13,6 +13,15 @@ module internal
 
         implicit none
 
+        integer :: entrycounter=0,step=0
+
+        allocate(input(fpy))
+
+        do i=fpy,1,-1 
+            input(i)%y=((brrealy)*((2*bl)-1))+(fpy-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
+            input(i)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)
+        end do
+
         !$omp parallel default(shared)
         !Setting up fluid particle positions and pressure
         !$omp do schedule(runtime) private(i,j) collapse(2) 
@@ -69,9 +78,6 @@ module internal
                 
                 end do
             end do
-            ! finmax=count
-
-            ! fmass=fmass*fpx*fpy/finmax
         
         !$omp end single
 
@@ -87,21 +93,14 @@ module internal
                         (flist(k,l1)%y<dpcell(i,j)%ytop).and.(flist(k,l1)%tid/=0))then
                         dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)=flist(k,l1)
-                        ! if (dpcell(i,j)%plist(dpcell(i,j)%ptot)%x<=((wl/10.0_dp)+(2*bl)*brrealx)) then
-                        ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass*rhomax/rhomin
-                        ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rhomax
-                        ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%ovol=dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass/&
-                        !                                             dpcell(i,j)%plist(dpcell(i,j)%ptot)%density
-                        ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%con=0.50_dp
-                        ! else
+
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho
 
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%oden=dpcell(i,j)%plist&
                         (dpcell(i,j)%ptot)%density
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%ovol=fmass/rho
-                        ! dpcell(i,j)%plist(dpcell(i,j)%ptot)%con=-0.50_dp
-                        ! end if
+
                     end if
                     end do
                 end do
@@ -109,9 +108,69 @@ module internal
             end do
         !$omp end do
 
+        ! Assigning locations to entry buffers in RHS
+        !$omp do schedule(runtime) private(i,j) collapse(2)
+            do j=2,cellx-1
+                do i=2,celly-1
+
+                    do k=1,fpy
+                    if ((input(k)%x>=dpcell(i,j)%xleft) .and. &
+                        (input(k)%x<dpcell(i,j)%xright).and. &
+                        (input(k)%y>=dpcell(i,j)%ybot).and. &
+                        (input(k)%y<dpcell(i,j)%ytop))then
+
+                            if (.not.(allocated(dpcell(i,j)%ebuffpt))) then
+                                allocate(dpcell(i,j)%ebuffpt(7))
+                            end if
+                            dpcell(i,j)%entrybuff=.true.
+                            dpcell(i,j)%ebuff=dpcell(i,j)%ebuff+1
+                            dpcell(i,j)%ebuffpt(dpcell(i,j)%ebuff)=input(k)
+                            
+
+                    end if
+                    end do
+
+                end do
+            end do
+        !$omp end do
+
+        !Counting number of cells on RHS
         !$omp single
+
+            do j=2,cellx-1
+                do i=2,celly-1
+
+                    if (dpcell(i,j)%entrybuff) then
+
+                        entrycounter=entrycounter+1
+
+                    end if
+
+                end do
+            end do
+
+        !$omp end single 
+
+        !$omp single
+
+            allocate(entrycell1(entrycounter))
+            step=1
+
+            ! Pointing to cells containing entry points on RHS
+            do j=2,cellx-1
+                do i=2,celly-1
+
+                    if (dpcell(i,j)%entrybuff) then
+
+                        entrycell1(step)%cell=>dpcell(i,j)
+                        step=step+1
+
+                    end if
+
+                end do
+            end do
         
-            deallocate(flist)
+            deallocate(flist,input)
             fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))+1
             fpx=floor(real(2.0_dp,dp)/(2*real(prrealx,dp)))!+1
             allocate(flist(fpy,fpx))

@@ -38,11 +38,15 @@ module domain
         !xleft,xright,ytop,ybot=values defining the extent of the cell
         type(buffer),allocatable :: ebuffpt(:)
         real(dp)  :: xleft=0.0_dp,xright=0.0_dp,ytop=0.0_dp,ybot=0.0_dp,maxvel=0.0_dp,maxeddy=0.0_dp
-        integer,public :: ptot=0,btot=0,temfct=0,gcount=0,porct=0,elist=0
+        integer,public :: ptot=0,btot=0,temfct=0,gcount=0,porct=0,elist=0,ebuff=0
         logical :: entrybuff=.false.,exitbuff=.false.,cutoff=.false.
         
 
     end type cell
+
+    type domainptr
+        type(cell), pointer :: cell
+    end type domainptr
 
     
 end module domain

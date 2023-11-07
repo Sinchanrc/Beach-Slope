@@ -58,8 +58,6 @@ integer,public ::sx,ex,sy,ey,threads,modifier=1000,fac=1,iter=0,icount=0
 integer,parameter,public :: ghost=1 ! 0=> No ghost boundary,1=>ghost + fixed,2=> only ghost boundary
 character(len=70),public:: result
 type(cell),allocatable,dimension(:,:),public,target :: dpcell
-type(particles),save ,public:: bcor1,bcor2,ref1,ref2
-logical ::swcsph=.false.,lid=.true.
 
 integer :: pt(64),maxfct=1,mnum=1,mtype=11,phase=33, &
                 nrhs=1,iparm(64),msglvl=0,err1
@@ -72,5 +70,6 @@ real(dp),allocatable :: dpar(:),tmp(:)
 
 type(buffer),allocatable :: input(:)
 type(reservoir) :: reserve
+type(domainptr),dimension(:),allocatable :: entrycell1,exitcell
 
 end module initialize
