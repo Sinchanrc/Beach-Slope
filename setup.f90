@@ -66,6 +66,8 @@ module setup
         fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
         fpx=floor(real(wl,dp)/(2*real(prrealx,dp)/sqrt(por)))
 
+        xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
+        xlcutoff=((brrealx)*((2*bl)-1))+brrealx
 
         icount=0
         count=0
