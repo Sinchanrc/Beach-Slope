@@ -9,6 +9,225 @@ module integrator
 
     contains
 
+
+    subroutine cellshiftalt
+        implicit none  
+        
+        integer :: i,j,k,m
+
+        ! Preparing particle transfers to surrounding cells    
+        !$omp do private(i,j,k) schedule (runtime) collapse(2)
+            do j=sx,ex
+                do i=sy,ey
+                dpcell(i,j)%temfct=0
+                dpcell(i,j)%tn%count=0
+                dpcell(i,j)%ts%count=0
+                dpcell(i,j)%te%count=0
+                dpcell(i,j)%tw%count=0
+                dpcell(i,j)%tne%count=0
+                dpcell(i,j)%tnw%count=0
+                dpcell(i,j)%tse%count=0
+                dpcell(i,j)%tsw%count=0
+                dpcell(i,j)%elist=0
+
+
+                if (dpcell(i,j)%ptot/=0) then
+
+                    do k=1,dpcell(i,j)%ptot ! must be carried out serially
+                    if (dpcell(i,j)%plist(k)%tid==3) then
+                    associate(x1=>dpcell(i,j)%plist(k)%x,y1=>dpcell(i,j)%plist(k)%y)
+                        if((x1>=dpcell(i,j)%xleft).and.(x1<dpcell(i,j)%xright)) then
+                        if((y1>=dpcell(i,j)%ybot).and.(y1<dpcell(i,j)%ytop))then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%temfct=dpcell(i,j)%temfct+1
+                            dpcell(i,j)%ftemp(dpcell(i,j)%temfct)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                                
+                            end if
+                        elseif(y1<dpcell(i,j)%ybot) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%ts%count=dpcell(i,j)%ts%count+1
+                            dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        elseif(y1>=dpcell(i,j)%ytop) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%tn%count=dpcell(i,j)%tn%count+1
+                            dpcell(i,j)%tn%list(dpcell(i,j)%tn%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%tn%list(dpcell(i,j)%tn%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%tn%list(dpcell(i,j)%tn%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        end if
+                        elseif(x1>=dpcell(i,j)%xright) then
+                        if(y1>=dpcell(i,j)%ytop)then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%tne%count=dpcell(i,j)%tne%count+1
+                            dpcell(i,j)%tne%list(dpcell(i,j)%tne%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%tne%list(dpcell(i,j)%tne%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%tne%list(dpcell(i,j)%tne%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        elseif((y1>=dpcell(i,j)%ybot).and.(y1<dpcell(i,j)%ytop)) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%te%count=dpcell(i,j)%te%count+1
+                            dpcell(i,j)%te%list(dpcell(i,j)%te%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%te%list(dpcell(i,j)%te%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%te%list(dpcell(i,j)%te%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        elseif(y1<dpcell(i,j)%ybot) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%tse%count=dpcell(i,j)%tse%count+1
+                            dpcell(i,j)%tse%list(dpcell(i,j)%tse%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%tse%list(dpcell(i,j)%tse%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%tse%list(dpcell(i,j)%tse%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        end if
+                        elseif (x1<dpcell(i,j)%xleft) then
+                        if (y1>=dpcell(i,j)%ytop) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%tnw%count=dpcell(i,j)%tnw%count+1
+                            dpcell(i,j)%tnw%list(dpcell(i,j)%tnw%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%tnw%list(dpcell(i,j)%tnw%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%tnw%list(dpcell(i,j)%tnw%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        elseif((y1>=dpcell(i,j)%ybot).and.(y1<dpcell(i,j)%ytop)) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%tw%count=dpcell(i,j)%tw%count+1
+                            dpcell(i,j)%tw%list(dpcell(i,j)%tw%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%tw%list(dpcell(i,j)%tw%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%tw%list(dpcell(i,j)%tw%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        elseif (y1<dpcell(i,j)%ybot) then
+                            if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
+                            ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
+                            dpcell(i,j)%tsw%count=dpcell(i,j)%tsw%count+1
+                            dpcell(i,j)%tsw%list(dpcell(i,j)%tsw%count)=dpcell(i,j)%plist(k)
+                            ! dpcell(i,j)%tsw%list(dpcell(i,j)%tsw%count)%dead=merge(.false.,.true.,x1<=domain_ex)
+                            ! dpcell(i,j)%tsw%list(dpcell(i,j)%tsw%count)%buffer=merge(.false.,.true.,x1<=domain_en)
+                            else
+                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            end if
+                        end if
+                        end if
+                    end associate
+                    end if
+                    end do
+
+                end if
+                end do
+            end do
+        !$omp end do
+
+        ! Particle transfers    
+        !$omp do private(i,j,k) schedule (runtime) collapse(2)
+            do j=sx,ex
+                do i=sy,ey
+                ! From here everything must be done sequentially
+
+                dpcell(i,j)%ptot=dpcell(i,j)%btot+dpcell(i,j)%temfct
+
+                if (dpcell(i,j)%temfct/=0) then
+                    do k=1,dpcell(i,j)%temfct
+                    dpcell(i,j)%plist(k+dpcell(i,j)%btot)=dpcell(i,j)%ftemp(k)
+                    end do
+                end if
+
+                if ((dpcell(i+1,j)%tn%count/=0)) then
+                    do k=1,dpcell(i+1,j)%tn%count
+                    dpcell(i,j)%plist(k+dpcell(i,j)%ptot)=dpcell(i+1,j)%tn%list(k)
+                    end do
+                end if
+                dpcell(i,j)%ptot=dpcell(i,j)%ptot+(dpcell(i+1,j)%tn%count)
+
+                if (dpcell(i-1,j)%ts%count/=0) then
+                    do k=1,dpcell(i-1,j)%ts%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i-1,j)%ts%list(k)
+                    end do
+                end if
+
+                if (dpcell(i,j+1)%tw%count/=0) then
+                    do k=1,dpcell(i,j+1)%tw%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i,j+1)%tw%list(k)
+                    end do
+                end if
+
+                if (dpcell(i,j-1)%te%count/=0) then
+                    do k=1,dpcell(i,j-1)%te%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i,j-1)%te%list(k)
+                    end do
+                end if
+
+                if (dpcell(i-1,j-1)%tse%count/=0) then
+                    do k=1,dpcell(i-1,j-1)%tse%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i-1,j-1)%tse%list(k)
+                    end do
+                end if
+
+                if (dpcell(i+1,j-1)%tne%count/=0) then
+                    do k=1,dpcell(i+1,j-1)%tne%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i+1,j-1)%tne%list(k)
+                    end do
+                end if
+
+                if (dpcell(i-1,j+1)%tsw%count/=0) then
+                    do k=1,dpcell(i-1,j+1)%tsw%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i-1,j+1)%tsw%list(k)
+                    end do
+                end if
+
+                if (dpcell(i+1,j+1)%tnw%count/=0) then
+                    do k=1,dpcell(i+1,j+1)%tnw%count
+                    dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                    dpcell(i,j)%plist(dpcell(i,j)%ptot)=dpcell(i+1,j+1)%tnw%list(k)
+                    end do
+                end if
+
+                end do
+            end do
+        !$omp end do
+        
+    end subroutine cellshiftalt
+
     subroutine cellshift
         implicit none 
         
@@ -235,7 +454,8 @@ module integrator
 
             t1=0.0_dp
             t2=0.0_dp
-            if(dpcell(i,j)%plist(k)%tid==3) then
+            if((dpcell(i,j)%plist(k)%tid==3).and. &
+            (.not.(dpcell(i,j)%plist(k)%buffer))) then
             dpcell(i,j)%pplist(k)%varts=0.0_dp
             if (dpcell(i,j)%list(k)%count/=0) then
 
@@ -288,7 +508,8 @@ module integrator
 
             t1=0.0_dp
             t2=0.0_dp
-            if(dpcell(i,j)%plist(k)%tid==3) then
+            if((dpcell(i,j)%plist(k)%tid==3).and. &
+            (.not.(dpcell(i,j)%plist(k)%buffer))) then
             dpcell(i,j)%plist(k)%vxs=0.0_dp
             dpcell(i,j)%plist(k)%vys=0.0_dp
             if (dpcell(i,j)%list(k)%count/=0) then
@@ -448,6 +669,13 @@ module integrator
                 dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity          
             end if
 
+            ! if ((dpcell(i,j)%plist(k)%buffer)) then
+
+            !     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx
+            !     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy
+
+            ! end if
+
                 end do
             end do
         end do
@@ -469,7 +697,8 @@ module integrator
                 if(dpcell(i,j)%ptot/=0) then
                 
                 do k=1,dpcell(i,j)%ptot
-                    if (dpcell(i,j)%plist(k)%tid>2) then
+                    if ((dpcell(i,j)%plist(k)%tid==3).and. &
+                    (.not.(dpcell(i,j)%plist(k)%buffer))) then
                     !New fluid particle velocities
                     dpcell(i,j)%plist(k)%vx=0.0_dp
                     dpcell(i,j)%plist(k)%vy=0.0_dp
@@ -548,6 +777,11 @@ module integrator
                     dpcell(i,j)%pplist(k)%vel=sqrt(dpcell(i,j)%plist(k)%vx**2+ &
                     dpcell(i,j)%plist(k)%vy**2)/dpcell(i,j)%pplist(k)%porosity
 
+                    end if
+
+                    if ((dpcell(i,j)%plist(k)%buffer)) then
+                        dpcell(i,j)%plist(k)%vx=entry_vel
+                        dpcell(i,j)%plist(k)%vxs=entry_vel
                     end if
 
                 end do

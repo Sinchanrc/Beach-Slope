@@ -59,7 +59,8 @@ module isph
             if(dpcell(i,j)%ptot/=0) then
                 do k=1,dpcell(i,j)%ptot
                 ! Free Surface Identification
-                if (dpcell(i,j)%plist(k)%tid==3) then
+                if ((dpcell(i,j)%plist(k)%tid==3).and. &
+                (.not.(dpcell(i,j)%plist(k)%buffer))) then
                 ! dpcell(i,j)%plist(k)%free=.false.
                 ! dpcell(i,j)%pplist(k)%gradvx=0.0_dp
                 ! t1=0.0_dp

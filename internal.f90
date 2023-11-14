@@ -25,7 +25,7 @@ module internal
         !$omp parallel default(shared)
         !Setting up fluid particle positions and pressure
         !$omp do schedule(runtime) private(i,j) collapse(2) 
-            do j =1,fpx
+            do j =1,fpx+5
             do i=fpy,1,-1
                 flist(i,j)%y=((brrealy)*((2*bl)-1))+(fpy-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
                 ! if (mod(i,2)==0) then
@@ -33,8 +33,12 @@ module internal
                 ! else
                 flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)
                 ! end if
-            flist(i,j)%vx=0.0_dp
+            flist(i,j)%vx=entry_vel
             flist(i,j)%vy=0.0_dp
+
+            if (j>fpx) then
+                flist(i,j)%buffer=.true.
+            end if
 
             if (i==1) then
                 flist(i,j)%pressure=0.0_dp
@@ -52,7 +56,7 @@ module internal
         !$omp single 
             count=0
             finmin=count+1
-            do j =1,fpx
+            do j =1,fpx+5
                 do i=fpy,1,-1
     
                 ! if ((mod(i,2)/=0)) then
@@ -85,7 +89,7 @@ module internal
         !$omp do schedule(runtime) private(i,j) collapse(2) 
             do j=2,cellx-1
                 do i=2,celly-1
-                do l1=1,fpx
+                do l1=1,fpx+5
                     do k=1,fpy
                     if ((flist(k,l1)%x>=dpcell(i,j)%xleft) .and. &
                         (flist(k,l1)%x<dpcell(i,j)%xright).and. &

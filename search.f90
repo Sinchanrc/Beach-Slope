@@ -913,7 +913,7 @@ module search
             end if
         end do
 
-        if (celln%plist(n)%tid>2) then
+        if (celln%plist(n)%tid==3) then
         
         celln%plist(n)%free=.false.
         celln%pplist(n)%gradvx=(res(1)+res(4))!t1+t2
@@ -923,7 +923,8 @@ module search
         celln%pplist(n)%coff=res
 
         
-        if(celln%pplist(n)%gradvx<=(lamfs*maxdivr)) then
+        if((celln%pplist(n)%gradvx<=(lamfs*maxdivr)).and. &
+        (.not.(celln%plist(n)%buffer))) then
             celln%plist(n)%free=.true.
         end if
 

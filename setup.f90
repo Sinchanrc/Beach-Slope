@@ -19,7 +19,7 @@ module setup
         ! fpy=floor((wc/(2*pr))-1)+1
         ! fpx=floor((wl/(2*pr)))+1
         fpy=floor(real(wc,dp)/(2*real(pr,dp)))+1
-        fpx=floor(real(wl,dp)/(2*real(pr,dp)))!+1
+        fpx=floor(real((wl-0.15_dp),dp)/(2*real(pr,dp)))!+1
         prrealx= ((real(wl,dp)/(fpx))/2.0)!*(fpx-1)/fpx
         ! prrealy= ((wc/(fpy-1))/2.0)*(fpy-1)/fpy
         ! prrealx= ((real(wl,dp)/(fpx-1))/2.0_dp)
@@ -54,7 +54,7 @@ module setup
         bnx=bnx+2*(bl)
         bny=bny+2*(bl)
 
-        allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx))
+        allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))
 
         xl=(2*bl-1)*brrealx+brrealx 
         yl=(2*bl-1)*brrealy+solidy+set_ht
@@ -64,10 +64,11 @@ module setup
         line_grad=(line_grad*22)/(180.0_dp*7)
 
         fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
-        fpx=floor(real(wl,dp)/(2*real(prrealx,dp)/sqrt(por)))
+        fpx=floor(real((wl-0.15_dp),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
         xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
         xlcutoff=((brrealx)*((2*bl)-1))+brrealx
+        ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
 
         icount=0
         count=0
@@ -87,6 +88,10 @@ module setup
                 do i=1,celly
                 allocate(dpcell(i,j)%plist(fac*fplistmax),dpcell(i,j)%ftemp(fac*fplistmax), &
                 dpcell(i,j)%cellid(2),dpcell(i,j)%porlist(fplistmax))
+
+                if ((dpcell(i,j)%ytop>=ytcutoff).and.(dpcell(i,j)%xright<=xlcutoff)) then
+                    allocate(dpcell(i,j)%exitlist(ceiling(0.25*fplistmax)))
+                end if
                 end do
             end do
         !$omp end do

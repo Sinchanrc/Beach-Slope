@@ -14,12 +14,12 @@ public
 ! L=length of domain, H=height of domain,pr=half fluid particle spacing,br=half boundary particle spacing
 ! h1=half smoothing length,wc=water column height,wl=length of water column,rho=density
 ! ,tl=solver tolerance
-real(dp),public :: wc=0.650_dp,L=3.10_dp ,H=1.0_dp,&
+real(dp),public :: wc=0.650_dp,L=3.10_dp ,H=0.80_dp,&
                     h1,pr=0.0050_dp*0.90_dp,br=0.00490_dp*0.90_dp, & !5.366*0.3 1.2
-                    wl=3.10_dp,rho=1000.0_dp,g=-9.810_dp,tl=1e-3,Dm=1e-9,&
+                    wl=3.250_dp,rho=1000.0_dp,g=-9.810_dp,tl=1e-3,Dm=1e-9,&
                     csh=0.50_dp,rx,ry,lid_driven=0.0010_dp,rhomin=1000.0_dp, &
-                    rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.150_dp,soilh=0.750_dp,set_ht=0.20_dp,&
-                    outlet_ht=0.7_dp,coastal_ht=0.450_dp,por=0.380_dp,bulkden=1800_dp
+                    rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.230_dp,soilh=0.750_dp,set_ht=0.20_dp,&
+                    outlet_ht=0.7_dp,coastal_ht=0.450_dp,por=0.380_dp,bulkden=1800_dp,entry_vel=-2.5_dp/(3600*24)
 
 ! dt=time step,t=simulation time
 real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7.60_dp,displaytime=0.050_dp,dtsol=0.010_dp !0.00001
@@ -34,7 +34,7 @@ real(dp),public :: fmass=0.0_dp,bfdist=0.0_dp,prrealx=0.0_dp,prrealy=0.0_dp,brre
                         ytcutoff
 
 ! r=particle shifting value,lamfs=surface tracking coeffincient,umax=max velocity
-real(dp),public :: r=0.0_dp,cs=0.150_dp,cv=0.080_dp,maxdivr=2.0_dp,entry_vel=0.0_dp, &
+real(dp),public :: r=0.0_dp,cs=0.150_dp,cv=0.080_dp,maxdivr=2.0_dp, &
                         ce=1.0_dp,dl,lamfs=0.80_dp,umax=0.0_dp,ker=0.0_dp,normx,normy,co,t_gam=7, &
                         pll=1.60_dp,pul=1.80_dp,hfac=4.80_dp,fac2=0.80_dp,numax=0.0_dp !term1=0.0_dp,term2=0.0_dp,
 

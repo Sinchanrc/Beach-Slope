@@ -98,7 +98,7 @@ module output
             do i=(sy),(ey)
                 if (dpcell(i,j)%ptot/=0) then
                 do cout=1,dpcell(i,j)%ptot
-                if (dpcell(i,j)%plist(cout)%tid==3) then
+                if ((dpcell(i,j)%plist(cout)%tid==3)) then
                 write(13,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x,&
                 dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
                 ,dpcell(i,j)%plist(cout)%vy,dpcell(i,j)%pplist(cout)%porosity
@@ -107,7 +107,7 @@ module output
                 end if
             end do
             end do
-        ! close(13)
+        close(13)
         
     end subroutine print_fluid
 

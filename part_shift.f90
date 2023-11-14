@@ -535,7 +535,8 @@ module part_shift
 
             do k=1,dpcell(i,j)%ptot
 
-                if (dpcell(i,j)%plist(k)%tid==3) then
+                if ((dpcell(i,j)%plist(k)%tid==3).and. &
+                (.not.(dpcell(i,j)%plist(k)%buffer))) then
 
                 dpcell(i,j)%plist(k)%xs=0.0_dp
                 dpcell(i,j)%plist(k)%ys=0.0_dp
@@ -905,7 +906,8 @@ module part_shift
             do i=sy,ey
                 if (dpcell(i,j)%ptot/=0) then
                 do k=1,dpcell(i,j)%ptot
-                    if (dpcell(i,j)%plist(k)%tid==3) then
+                    if ((dpcell(i,j)%plist(k)%tid==3).and. &
+                    (.not.(dpcell(i,j)%plist(k)%buffer))) then
                     dpcell(i,j)%plist(k)%x=dpcell(i,j)%plist(k)%x+dpcell(i,j)%plist(k)%xs
                     dpcell(i,j)%plist(k)%y=dpcell(i,j)%plist(k)%y+dpcell(i,j)%plist(k)%ys
                     dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx+dpcell(i,j)%plist(k)%vxs
