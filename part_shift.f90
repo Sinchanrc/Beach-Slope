@@ -523,7 +523,7 @@ module part_shift
 
         implicit none
 
-        integer :: pint=0
+        integer :: pint=1
         integer :: i,j,k,m
         real(dp) :: heff,frac=0.0020_dp,t1,t2!0.0420_dp
         
@@ -610,9 +610,9 @@ module part_shift
                         dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-frac*csh*(heff**2)*&
                         (Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
                         dpcell(i,j)%list(k)%dist(m),heff))&
-                        *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)!* &
-                        ! (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
-                        ! Wab(dl1,heff))**4)
+                        *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)* &
+                        (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
+                        Wab(dl1,heff))**4)
 
                         end if
 
@@ -645,9 +645,9 @@ module part_shift
                         dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-frac*csh*(heff**2)*&
                         (Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),&
                         dpcell(i,j)%list(k)%dist(m),heff))&
-                        *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)!* &
-                        ! (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
-                        ! Wab(dl1,heff))**4)
+                        *(dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)* &
+                        (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
+                        Wab(dl1,heff))**4)
 
 
                         end if

@@ -212,7 +212,7 @@ module isph
 
                             if (dpcell(i,j)%plist(k)%free) then
 
-                                lamp=0.50_dp!(1.0_dp+dpcell(y,x)%plist(pp)%density/(dpcell(y,x)%pplist(k)%porosity*rhomax))
+                                lamp=(1.0_dp+dpcell(y,x)%plist(pp)%density/(dpcell(y,x)%pplist(pp)%porosity*rho*1.05))**(-1)
 
                             elseif((pll<dpcell(i,j)%pplist(k)%gradvx).and.(dpcell(i,j)%pplist(k)%gradvx<pul)) then
 
