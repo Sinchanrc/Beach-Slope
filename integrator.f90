@@ -669,12 +669,12 @@ module integrator
                 dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity          
             end if
 
-            ! if ((dpcell(i,j)%plist(k)%buffer)) then
+            if ((dpcell(i,j)%plist(k)%buffer)) then
 
-            !     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx
-            !     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy
+                dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx
+                dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy
 
-            ! end if
+            end if
 
                 end do
             end do
@@ -870,7 +870,7 @@ module integrator
         !$omp single
         if (t<=1.0_dp) then
         dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0010_dp)
-        elseif ((t>1.0_dp).and.(t<=2.0_dp)) then
+        elseif ((t>1.0_dp).and.(t<=2.50_dp)) then
         dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.0015))
         ! elseif ((t>2.0_dp).and.(t<=3.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.002))
