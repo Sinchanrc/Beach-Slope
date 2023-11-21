@@ -29,7 +29,7 @@ module output
             end if
         end do
         end do
-        close(12)
+        close(11)
 
         return
     end subroutine print_fixbd

@@ -19,7 +19,7 @@ module setup
         ! fpy=floor((wc/(2*pr))-1)+1
         ! fpx=floor((wl/(2*pr)))+1
         fpy=floor(real(wc,dp)/(2*real(pr,dp)))+1
-        fpx=floor(real((wl-0.15_dp),dp)/(2*real(pr,dp)))!+1
+        fpx=floor(real((wl),dp)/(2*real(pr,dp)))!+1
         prrealx= ((real(wl,dp)/(fpx))/2.0)!*(fpx-1)/fpx
         ! prrealy= ((wc/(fpy-1))/2.0)*(fpy-1)/fpy
         ! prrealx= ((real(wl,dp)/(fpx-1))/2.0_dp)
@@ -64,7 +64,7 @@ module setup
         line_grad=(line_grad*22)/(180.0_dp*7)
 
         fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
-        fpx=floor(real((wl-0.15_dp),dp)/(2*real(prrealx,dp)/sqrt(por)))
+        fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
         xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
         xlcutoff=((brrealx)*((2*bl)-1))+brrealx

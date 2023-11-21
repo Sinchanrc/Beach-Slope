@@ -250,8 +250,14 @@ module isph
                                 Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
                                 *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)                              
 
+                                if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
                                 fmatrix(pos)%val(m)=(-(t1+t2))*lamp
                                 fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+
+                                else 
+                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp*dpcell(y,x)%plist(pp)%pressure
+
+                                end if
 
                                 fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)
 
@@ -360,8 +366,13 @@ module isph
                                 ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)) &
                                 ! *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)
 
+                                if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
                                 fmatrix(pos)%val(m)=-(t1+t2)*lamp2!*dpcell(y,x)%pplist(pp)%lamp
                                 fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+                                else 
+                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp2*dpcell(y,x)%plist(pp)%pressure
+                                end if
+
                                 fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
 
 
@@ -465,6 +476,8 @@ module isph
                     if (dpcell(i,j)%ptot/=0) then
 
                         do k=1,dpcell(i,j)%ptot
+
+                        if (.not.(dpcell(i,j)%plist(k)%buffer)) then
                         
                         dpcell(i,j)%plist(k)%pressure=fsol(dpcell(i,j)%plist(k)%matid)
 
@@ -474,6 +487,8 @@ module isph
                         !     +2*rho*abs(g)*min(prrealx,prrealy) 
 
                         ! end if
+
+                        end if
 
                         end do
 
