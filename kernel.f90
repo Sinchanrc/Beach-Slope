@@ -23,7 +23,7 @@ module kernel
 
     use particle
     use domain
-    ! use functions
+    use initialize
 
     implicit none
     
@@ -105,5 +105,34 @@ module kernel
 
 
     end function Waby
+
+    function sWabx(p1,p2,radial,smln,rw,col,pos) result(res)
+        implicit none
+        type(particles),intent(in) :: p1,p2
+        real(dp) :: res
+        real(dp),intent(in) :: smln
+        real(dp) ,intent(in):: radial
+        integer,intent(in) :: rw,col,pos
+
+        res= (Wabx(p1,p2,radial,smln)/dpcell(rw,col)%pplist(pos)%shep)- &
+        (Wab(radial,smln)*dpcell(rw,col)%pplist(pos)%shep_gradx/ &
+        (dpcell(rw,col)%pplist(pos)%shep**2))
+        
+    end function sWabx
+
+    function sWaby(p1,p2,radial,smln,rw,col,pos) result(res)
+        implicit none
+        type(particles),intent(in) :: p1,p2
+        real(dp) :: res
+        real(dp),intent(in) :: smln
+        real(dp) ,intent(in):: radial
+        integer,intent(in) :: rw,col,pos
+
+        res= (Waby(p1,p2,radial,smln)/dpcell(rw,col)%pplist(pos)%shep)- &
+        (Wab(radial,smln)*dpcell(rw,col)%pplist(pos)%shep_grady/ &
+        (dpcell(rw,col)%pplist(pos)%shep**2))
+
+    end function sWaby
+
 
 end module kernel

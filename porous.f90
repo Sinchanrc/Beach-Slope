@@ -104,8 +104,6 @@ module porous
                 cell1=>dpcell(i,j)
                 dpcell(i,j)%pplist(k)%resistx=0.0_dp
                 dpcell(i,j)%pplist(k)%resisty=0.0_dp
-                dpcell(i,j)%pplist(k)%transporx=0.0_dp
-                dpcell(i,j)%pplist(k)%transpory=0.0_dp
 
                 if (dpcell(i,j)%plist(k)%tid==3) then
 

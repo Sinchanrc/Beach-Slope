@@ -113,7 +113,7 @@ program dam_break
 
                     if ((dpcell(i1,j1)%plist(cout)%tid==3)) then
 
-                        dpcell(i1,j1)%plist(cout)%vx=0.0_dp
+                        dpcell(i1,j1)%plist(cout)%vx=entry_vel
                         dpcell(i1,j1)%plist(cout)%vy=0.0_dp
 
                         if(((dpcell(i1,j1)%plist(cout)%y-yl-prrealy)-line_grad* &
