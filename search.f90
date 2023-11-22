@@ -281,7 +281,7 @@ module search
         ! celln%pplist(n)%gradcoff=res_s
 
         
-        if((celln%pplist(n)%gradvx<=(lamfs*maxdivr))) then
+        if((celln%pplist(n)%gradvx<=(lamfs*maxdivr)).and.(.not.(celln%plist(n)%buffer))) then
             celln%plist(n)%free=.true.
         end if
 

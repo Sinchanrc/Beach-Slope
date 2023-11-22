@@ -250,14 +250,14 @@ module isph
                                 Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
                                 *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)                              
 
-                                if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
+                                ! if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
                                 fmatrix(pos)%val(m)=(-(t1+t2))*lamp
                                 fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
 
-                                else 
-                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp*dpcell(y,x)%plist(pp)%pressure
+                                ! else 
+                                !     fvec(pos)=fvec(pos)+(t1+t2)*lamp*dpcell(y,x)%plist(pp)%pressure
 
-                                end if
+                                ! end if
 
                                 fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)
 
@@ -344,6 +344,12 @@ module isph
         
                                     end if
 
+                                    if (dpcell(y,x)%plist(pp)%buffer) then
+
+                                        lamp2=1.0_dp
+
+                                    end if
+
                                 t1=2*dpcell(i,j)%plist(k)%mass*(&
                                 (dpcell(y,x)%pplist(pp)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                 dpcell(i,j)%list(k)%dist(m),h1)+dpcell(y,x)%pplist(pp)%coff(2)* &
@@ -366,12 +372,12 @@ module isph
                                 ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)) &
                                 ! *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)
 
-                                if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
+                                ! if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
                                 fmatrix(pos)%val(m)=-(t1+t2)*lamp2!*dpcell(y,x)%pplist(pp)%lamp
                                 fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
-                                else 
-                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp2*dpcell(y,x)%plist(pp)%pressure
-                                end if
+                                ! else 
+                                !     fvec(pos)=fvec(pos)+(t1+t2)*lamp2*dpcell(y,x)%plist(pp)%pressure
+                                ! end if
 
                                 fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
 
@@ -466,8 +472,8 @@ module isph
         !$omp end parallel do
 
         ! call format(fmatrix,fval,frow,fcol,finmax)
-        call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
-        ! call fgmres
+        ! call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
+        call fgmres
         
         ! Assigning pressures
         !$omp parallel do schedule(runtime) default(shared) private(i,k,j) collapse(2)       
@@ -477,7 +483,7 @@ module isph
 
                         do k=1,dpcell(i,j)%ptot
 
-                        if (.not.(dpcell(i,j)%plist(k)%buffer)) then
+                        ! if (.not.(dpcell(i,j)%plist(k)%buffer)) then
                         
                         dpcell(i,j)%plist(k)%pressure=fsol(dpcell(i,j)%plist(k)%matid)
 
@@ -488,7 +494,7 @@ module isph
 
                         ! end if
 
-                        end if
+                        ! end if
 
                         end do
 
