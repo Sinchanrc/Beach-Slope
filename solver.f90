@@ -88,11 +88,12 @@ module solver
         integer:: is,js
         real(dp),intent(in) :: b(ls)
         real(dp),intent(out) :: res(ls)
-        real(dp) :: comp
+        real(dp) :: comp,sol(ls)
 
         is=0
         js=0
-        res(1:ls)=0.0_dp
+        sol(1:ls)=0.0_dp
+        
 
         !$omp parallel do private(js,is) default(shared) schedule(static)
             do is=1,ls
@@ -101,13 +102,24 @@ module solver
            ! !$omp simd reduction(+:comp)
             do js=1,fmatrix(is)%sz               
 
-                res(is)=res(is)+real(fmatrix(is)%val(js),dp)*real(b(fmatrix(is)%col(js)),dp)
+                sol(is)=sol(is)+real(fmatrix(is)%val(js),dp)*real(b(fmatrix(is)%col(js)),dp)
 
             end do
            ! !$omp end simd
             ! res(is)=comp
             end do
         !$omp end parallel do
+
+            !$omp parallel do private(js,is) default(shared) schedule(static)
+            do is=1,ls
+
+                res(is)=sol(is)
+
+            end do
+
+
+            !$omp end parallel do
+
 
 
     end subroutine

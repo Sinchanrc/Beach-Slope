@@ -212,14 +212,14 @@ module isph
 
                             if (dpcell(i,j)%plist(k)%free) then
 
-                                lamp=(1.0_dp+dpcell(y,x)%plist(pp)%density/(dpcell(y,x)%pplist(pp)%porosity*rho*1.05))**(-1)
+                                lamp=(1.0_dp+dpcell(y,x)%plist(pp)%density/(dpcell(y,x)%pplist(pp)%porosity*rho*1.0))**(-1)
 
-                            elseif((pll<dpcell(i,j)%pplist(k)%gradvx).and.(dpcell(i,j)%pplist(k)%gradvx<pul)) then
+                            ! elseif((pll<dpcell(i,j)%pplist(k)%gradvx).and.(dpcell(i,j)%pplist(k)%gradvx<pul)) then
 
-                            lamp=((1.0_dp+dpcell(y,x)%plist(pp)%density/ &
-                            (dpcell(y,x)%pplist(pp)%porosity*rho*1.05))**(-1)) &
-                            *(1.0_dp-cos(22.0_dp*(dpcell(i,j)%pplist(k)%gradvx-pll)/ &
-                                            ((pul-pll)*7.0_dp)))
+                            ! lamp=((1.0_dp+dpcell(y,x)%plist(pp)%density/ &
+                            ! (dpcell(y,x)%pplist(pp)%porosity*rho*1.0))**(-1)) &
+                            ! *(1.0_dp-cos(22.0_dp*(dpcell(i,j)%pplist(k)%gradvx-pll)/ &
+                            !                 ((pul-pll)*7.0_dp)))
                             else 
 
                                 lamp =1.0_dp
@@ -250,14 +250,14 @@ module isph
                                 Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
                                 *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)                              
 
-                                ! if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
+                                if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
                                 fmatrix(pos)%val(m)=(-(t1+t2))*lamp
                                 fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
 
-                                ! else 
-                                !     fvec(pos)=fvec(pos)+(t1+t2)*lamp*dpcell(y,x)%plist(pp)%pressure
+                                else 
+                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp*dpcell(y,x)%plist(pp)%pressure
 
-                                ! end if
+                                end if
 
                                 fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)
 
@@ -265,14 +265,14 @@ module isph
                                 if (dpcell(y,x)%plist(pp)%tid==3) then
 
 
-                                t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(y,x)%pplist(pp)%porosity- &
+                                t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                 dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
                                 (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                 dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
                                 Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
 
-                                t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j/dpcell(y,x)%pplist(pp)%porosity- &
+                                t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                 dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
                                 (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                 dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
@@ -280,14 +280,14 @@ module isph
 
                                 else 
 
-                                    t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(y,x)%pplist(pp)%porosity- &
+                                    t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                     dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
                                     (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
                                     Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
 
-                                    t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j/dpcell(y,x)%pplist(pp)%porosity- &
+                                    t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                     dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
                                     (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
@@ -331,13 +331,13 @@ module isph
 
                                     if (dpcell(y,x)%plist(pp)%free) then
 
-                                        lamp2=(1.0_dp+dpcell(i,j)%plist(k)%density/(rho*1.05))**(-1)
+                                        lamp2=(1.0_dp+dpcell(i,j)%plist(k)%density/(rho*1.0))**(-1)
         
-                                    elseif((pll<dpcell(y,x)%pplist(pp)%gradvx).and.(dpcell(y,x)%pplist(pp)%gradvx<pul)) then
+                                    ! elseif((pll<dpcell(y,x)%pplist(pp)%gradvx).and.(dpcell(y,x)%pplist(pp)%gradvx<pul)) then
         
-                                    lamp2=((1.0_dp+dpcell(i,j)%plist(k)%density/(rho*1.05))**(-1)) &
-                                    *(1.0_dp-cos(22.0_dp*(dpcell(y,x)%pplist(pp)%gradvx-pll)/ &
-                                                    ((pul-pll)*7.0_dp)))
+                                    ! lamp2=((1.0_dp+dpcell(i,j)%plist(k)%density/(rho*1.0))**(-1)) &
+                                    ! *(1.0_dp-cos(22.0_dp*(dpcell(y,x)%pplist(pp)%gradvx-pll)/ &
+                                    !                 ((pul-pll)*7.0_dp)))
                                     else 
         
                                         lamp2 =1.0_dp
@@ -372,24 +372,24 @@ module isph
                                 ! Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)) &
                                 ! *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)
 
-                                ! if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
+                                if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
                                 fmatrix(pos)%val(m)=-(t1+t2)*lamp2!*dpcell(y,x)%pplist(pp)%lamp
                                 fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
-                                ! else 
-                                !     fvec(pos)=fvec(pos)+(t1+t2)*lamp2*dpcell(y,x)%plist(pp)%pressure
-                                ! end if
+                                else 
+                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp2*dpcell(y,x)%plist(pp)%pressure
+                                end if
 
                                 fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
 
 
-                                    t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(y,x)%pplist(pp)%porosity- &
+                                    t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                     dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
                                     (dpcell(y,x)%pplist(pp)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(y,x)%pplist(pp)%coff(2)* &
                                     Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))
 
 
-                                    t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j/dpcell(y,x)%pplist(pp)%porosity- &
+                                    t2=(pvol*(dpcell(y,x)%plist(pp)%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                     dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
                                     (dpcell(y,x)%pplist(pp)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(y,x)%pplist(pp)%coff(4)* &
@@ -483,7 +483,7 @@ module isph
 
                         do k=1,dpcell(i,j)%ptot
 
-                        ! if (.not.(dpcell(i,j)%plist(k)%buffer)) then
+                        if (.not.(dpcell(i,j)%plist(k)%buffer)) then
                         
                         dpcell(i,j)%plist(k)%pressure=fsol(dpcell(i,j)%plist(k)%matid)
 
@@ -492,7 +492,7 @@ module isph
                         !     dpcell(i,j)%plist(k)%pressure=dpcell(i,j)%plist(k)%pressure &
                         !     +2*rho*abs(g)*min(prrealx,prrealy) 
 
-                        ! end if
+                        end if
 
                         ! end if
 

@@ -440,7 +440,7 @@ module integrator
     subroutine int_vel
         implicit none
 
-        real(dp) :: vart,ps=1.0_dp,t1,t2,pvol,p_dist
+        real(dp) :: vart,ps=0.0_dp,t1,t2,pvol,p_dist
 
         integer :: i,j,k,m
 

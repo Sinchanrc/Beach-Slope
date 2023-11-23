@@ -175,7 +175,7 @@ module internal
             end do
         
             deallocate(flist,input)
-            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))+1
+            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))
             fpx=floor(real(2.0_dp,dp)/(2*real(prrealx,dp)))!+1
             allocate(flist(fpy,fpx))
         !$omp end single
@@ -266,8 +266,8 @@ module internal
                         (flist(k,l1)%y<dpcell(i,j)%ytop).and.(flist(k,l1)%tid/=0))then
                         dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)=flist(k,l1)
-                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass*1.05
-                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho*1.05
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass*1.0
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho*1.0
                         dpcell(i,j)%plist(dpcell(i,j)%ptot)%oden=dpcell(i,j)%plist&
                         (dpcell(i,j)%ptot)%density
 
