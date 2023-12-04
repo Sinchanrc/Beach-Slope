@@ -111,15 +111,16 @@ program dam_break
             if (dpcell(i1,j1)%ptot/=0) then
                 do cout=1,dpcell(i1,j1)%ptot
 
-                    if ((dpcell(i1,j1)%plist(cout)%tid==3)) then
+                    if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
+                    (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
 
-                        dpcell(i1,j1)%plist(cout)%vx=entry_vel
+                        dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
                         dpcell(i1,j1)%plist(cout)%vy=0.0_dp
 
-                        if(((dpcell(i1,j1)%plist(cout)%y-yl-prrealy)-line_grad* &
-                        (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
-                            dpcell(i1,j1)%plist(cout)%vx=entry_vel
-                        end if
+                        ! if(((dpcell(i1,j1)%plist(cout)%y-yl-prrealy)-line_grad* &
+                        ! (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
+                        !     dpcell(i1,j1)%plist(cout)%vx=entry_vel
+                        ! end if
 
                     end if
 

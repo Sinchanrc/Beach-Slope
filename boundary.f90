@@ -475,6 +475,131 @@ module boundary
                 end do
             end do
         !$omp end do
+
+        !$omp single
+        
+            deallocate(blist)
+            allocate(blist(20,bl))
+
+        !$omp end single
+
+        !Setting upper right boundary positions
+        !$omp do schedule(runtime) private(i,j) collapse(2) 
+            do j =1,bl
+                do i=20,1,-1           
+    
+                blist(i,j)%y=(((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)+prrealy/sqrt(por)) &
+                +prrealy+brrealy+(20-i)*2*brrealy
+                blist(i,j)%x=(((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)) &
+                +prrealx+brrealx+(j-1)*2*brrealx
+    
+                end do
+            end do
+        !$omp end do
+
+                !Allocating index number to bottom boundary particles
+        !$omp single 
+    
+            do j =1,bl
+                do i=1,20
+                    if (j==1) then
+
+                        icount=icount+1
+                        blist(i,j)%tid=1
+                        blist(i,j)%pid=icount
+
+                    end if
+                    ! blist(i,j)%ynorm=.true.
+                    ! blist(i,j)%xnorm=.false.
+                    if((j/=1))then
+
+                        icount=icount+1 !count=count+1
+                        blist(i,j)%tid=2
+                        blist(i,j)%pid=icount !count
+
+                    end if
+                end do
+            end do
+            binmax=icount
+
+            ! do j =1,bnx-2*bl+10
+            !     do i=1,bl
+
+            !         blist(i,j)%posshift(1)= 0.0_dp
+
+            !         blist(i,j)%posshift(2)= 2*(((2*bl-1)*brrealy)-blist(i,j)%y)
+
+            !         if (i==1) then
+
+            !             matidct=matidct+1
+            !             blist(i,j)%matid=matidct
+
+            !         else
+
+            !             allocate(blist(i,j)%wall(1))
+            !             blist(i,j)%wall(1)=blist(1,j)%matid
+            !             matidct=matidct+1
+            !             blist(i,j)%matid=matidct
+                        
+            !         end if
+
+            !     end do 
+            ! end do
+    
+        !$omp end single
+    
+        ! Moving boundary particles to cell boundary list
+        !$omp do schedule(runtime) private(i,m,k) collapse(2) 
+            do j=2,cellx-1
+                do i=2,celly-1
+                do m=1,bl
+                    do k=1,20
+
+                    if ((blist(k,m)%x>=dpcell(i,j)%xleft) .and. &
+                        (blist(k,m)%x<dpcell(i,j)%xright).and. &
+                        (blist(k,m)%y>=dpcell(i,j)%ybot).and. &
+                        (blist(k,m)%y<dpcell(i,j)%ytop)) then
+
+                        if ((blist(k,m)%tid==2)) then
+                            dpcell(i,j)%btot=dpcell(i,j)%btot+1
+                            dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                            dpcell(i,j)%gcount=dpcell(i,j)%gcount+1
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
+                            if (.not.(blist(k,m)%ynorm)) then
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                            else
+                                dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                                ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+                            end if
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
+
+                        end if
+
+                        if ((blist(k,m)%tid==1)) then
+                            dpcell(i,j)%btot=dpcell(i,j)%btot+1
+                            dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)=blist(k,m)
+
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=fmass
+                            ! dpcell(i,j)%plist(dpcell(i,j)%btot)%mass=4*brrealx*brrealy*rho!fmass
+
+                            dpcell(i,j)%plist(dpcell(i,j)%btot)%density=rho
+
+                        end if
+                        
+                    end if
+
+                    end do
+                end do
+                end do
+            end do
+        !$omp end do
+
+
+
+
+
         
         !$omp single
             deallocate(blist)
@@ -554,12 +679,12 @@ module boundary
             end do
         !$omp end do
 
+
         !$omp single
-        
+
             deallocate(blist)
+
         !$omp end single
-
-
 
         !$omp end parallel
 
