@@ -94,31 +94,33 @@ module solver
         js=0
         sol(1:ls)=0.0_dp
         
+        !$omp parallel default(shared)
 
-        !$omp parallel do private(js,is) default(shared) schedule(static)
+        !$omp do private(js,is) schedule(static)
             do is=1,ls
                 ! comp=0.0_dp
                 ! res(is)=0.0_dp
-           ! !$omp simd reduction(+:comp)
+            ! !$omp simd reduction(+:comp)
             do js=1,fmatrix(is)%sz               
 
                 sol(is)=sol(is)+real(fmatrix(is)%val(js),dp)*real(b(fmatrix(is)%col(js)),dp)
 
             end do
-           ! !$omp end simd
+            ! !$omp end simd
             ! res(is)=comp
             end do
-        !$omp end parallel do
+        !$omp end do
 
-            !$omp parallel do private(js,is) default(shared) schedule(static)
-            do is=1,ls
+        !$omp do private(js,is) schedule(static)
+        do is=1,ls
 
-                res(is)=sol(is)
+            res(is)=sol(is)
 
-            end do
+        end do
 
+        !$omp end do
 
-            !$omp end parallel do
+        !$omp end parallel
 
 
 

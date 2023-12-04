@@ -1968,10 +1968,9 @@ module part_shift
                             ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
                             (sqrt(dpcell(y,x)%pplist(pp)%porosity)**(-1)))
 
-                            t1=t1+merge(dpcell(y,x)%plist(pp)%mass,0.0_dp, &
-                            (dpcell(i,j)%list(k)%dist(m)<dcol))
+                            t1=t1+(dpcell(y,x)%plist(pp)%mass)
                         
-                            t2=t2+merge(-(dpcell(y,x)%plist(pp)%mass*(1.0_dp+cr)* &
+                            t2=t2+merge(-1.0_dp*(dpcell(y,x)%plist(pp)%mass*(1.0_dp+cr)* &
                             dpcell(i,j)%list(k)%dist(m)-dcol)*((dpcell(i,j)%plist(k)%x- &
                             dpcell(y,x)%plist(pp)%x)/dpcell(i,j)%list(k)%dist(m)),0.0_dp, &
                             (dpcell(i,j)%list(k)%dist(m)<dcol))
@@ -1993,10 +1992,9 @@ module part_shift
                             ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
                             (sqrt(dpcell(y,x)%pplist(pp)%porosity)**(-1)))
 
-                            t1=t1+merge(dpcell(y,x)%plist(pp)%mass,0.0_dp, &
-                            (dpcell(i,j)%list(k)%dist(m)<dcol))
+                            t1=t1+(dpcell(y,x)%plist(pp)%mass)
                         
-                            t2=t2+merge(-(dpcell(y,x)%plist(pp)%mass*(1.0_dp+cr)* &
+                            t2=t2+merge(-1.0_dp*(dpcell(y,x)%plist(pp)%mass*(1.0_dp+cr)* &
                             dpcell(i,j)%list(k)%dist(m)-dcol)*((dpcell(i,j)%plist(k)%y- &
                             dpcell(y,x)%plist(pp)%y)/dpcell(i,j)%list(k)%dist(m)),0.0_dp, &
                             (dpcell(i,j)%list(k)%dist(m)<dcol))

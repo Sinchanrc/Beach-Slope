@@ -61,7 +61,7 @@ program dam_break
             call cellshift
             call neighbour
             call effpor
-            call freesurf
+            ! call freesurf
             ! call compcorr(3,1)
             call eddyvis
             ! call ghost_en
@@ -76,7 +76,7 @@ program dam_break
             call cellshift
             call neighbour
             call effpor
-            call freesurf
+            ! call freesurf
             ! call compcorr(3,1)
             ! call comp_ghost
             ! call boun_vel 
@@ -155,7 +155,7 @@ program dam_break
         call cellshift
         call neighbour
         call effpor
-        call freesurf
+        ! call freesurf
         ! call compcorr(3,1)
         call eddyvis
         ! call ghost_en
@@ -170,7 +170,7 @@ program dam_break
         call cellshift
         call neighbour
         call effpor
-        call freesurf
+        ! call freesurf
         ! call compcorr(3,1)
         ! call comp_ghost
         ! call boun_vel 
