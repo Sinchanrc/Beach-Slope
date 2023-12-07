@@ -71,6 +71,7 @@ real(dp),allocatable :: dpar(:),tmp(:)
 
 type(buffer),allocatable :: input(:)
 type(reservoir) :: reserve
-type(domainptr),dimension(:),allocatable :: entrycell1,exitcell
+type(domainptr),dimension(:),allocatable :: entrycell1,exitcell,entrycell2
+integer :: entrycounter1=0,exitcounter=0,entrycounter2=0
 
 end module initialize

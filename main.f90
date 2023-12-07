@@ -73,7 +73,7 @@ program dam_break
             !$omp parallel default(shared)
             call comp_vel        
             call comp_pos
-            call cellshift
+            call cellshiftalt
             call neighbour
             call effpor
             ! call freesurf

@@ -45,7 +45,7 @@ module domain
     end type cell
 
     type domainptr
-        type(cell), pointer :: cell
+        type(cell), pointer :: bcell
     end type domainptr
 
     

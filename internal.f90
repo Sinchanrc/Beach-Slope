@@ -13,7 +13,7 @@ module internal
 
         implicit none
 
-        integer :: entrycounter=0,step=0
+        integer :: step=0
 
         allocate(input(fpy))
 
@@ -146,7 +146,13 @@ module internal
 
                     if (dpcell(i,j)%entrybuff) then
 
-                        entrycounter=entrycounter+1
+                        entrycounter1=entrycounter1+1
+
+                    end if
+
+                    if (dpcell(i,j)%exitbuff) then
+
+                        exitcounter=exitcounter+1
 
                     end if
 
@@ -157,7 +163,7 @@ module internal
 
         !$omp single
 
-            allocate(entrycell1(entrycounter))
+            allocate(entrycell1(entrycounter1),exitcell(exitcounter))
             step=1
 
             ! Pointing to cells containing entry points on RHS
@@ -166,7 +172,23 @@ module internal
 
                     if (dpcell(i,j)%entrybuff) then
 
-                        entrycell1(step)%cell=>dpcell(i,j)
+                        entrycell1(step)%bcell=>dpcell(i,j)
+                        step=step+1
+
+                    end if
+
+                end do
+            end do
+
+            step=1
+
+            ! Pointing to cells containing exitcells on LHS
+            do j=2,cellx-1
+                do i=2,celly-1
+
+                    if (dpcell(i,j)%exitbuff) then
+
+                        exitcell(step)%bcell=>dpcell(i,j)
                         step=step+1
 
                     end if

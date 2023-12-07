@@ -67,8 +67,8 @@ module setup
         fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
         xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
-        xlcutoff=((brrealx)*((2*bl)-1))+brrealx
-        ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
+        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+2*h1
+        ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)-2*prrealy/sqrt(por)
 
         icount=0
         count=0
@@ -89,8 +89,9 @@ module setup
                 allocate(dpcell(i,j)%plist(fac*fplistmax),dpcell(i,j)%ftemp(fac*fplistmax), &
                 dpcell(i,j)%cellid(2),dpcell(i,j)%porlist(fplistmax))
 
-                if ((dpcell(i,j)%ytop>=ytcutoff).and.(dpcell(i,j)%xright<=xlcutoff)) then
+                if ((dpcell(i,j)%ybot<=ytcutoff).and.(dpcell(i,j)%xleft<=xlcutoff)) then
                     allocate(dpcell(i,j)%exitlist(ceiling(0.25*fplistmax)))
+                    dpcell(i,j)%exitbuff=.true.
                 end if
                 end do
             end do
@@ -114,16 +115,19 @@ module setup
         
         !$omp end parallel
 
-        co=10*sqrt(2*abs(g)*wc)
+        xlcutoff=((brrealx)*((2*bl)-1))+brrealx
+        ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
 
-        iparm=0
-        iparm(1)=0
-        iparm(2)=3
-        iparm(4)=61
-        iparm(10)=13
-        iparm(11)=1
-        iparm(13)=1
-        iparm(27)=1
+        ! co=10*sqrt(2*abs(g)*wc)
+
+        ! iparm=0
+        ! iparm(1)=0
+        ! iparm(2)=3
+        ! iparm(4)=61
+        ! iparm(10)=13
+        ! iparm(11)=1
+        ! iparm(13)=1
+        ! iparm(27)=1
 
         allocate(reserve%tank(500))
         reserve%si=reserve_par

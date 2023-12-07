@@ -114,9 +114,14 @@ module memory
                 end do
             end if
             end do
-        end do
+        end do        
 
         finmax=count+reserve_par
+
+        do i=1,reserve_par
+            count=count+1
+            reserve%tank(i)=count
+        end do
 
         allocate(frow(finmax+1),fvec(finmax),fsol(finmax),fguess(finmax))
         allocate(fval(finmax*ceiling(fac2*fplistmax)),fcol(finmax*ceiling(fac2*fplistmax)))
