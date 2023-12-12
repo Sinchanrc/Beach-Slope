@@ -1,11 +1,13 @@
 include 'mkl_rci.f90'
 include 'mkl_blas.f90'
+include "mkl_pardiso.f90"
 
 module initialize
 
 use particle
 use interactions
 use domain
+use mkl_pardiso
 
 implicit none
 
@@ -60,9 +62,10 @@ integer,parameter,public :: ghost=1 ! 0=> No ghost boundary,1=>ghost + fixed,2=>
 character(len=70),public:: result
 type(cell),allocatable,dimension(:,:),public,target :: dpcell
 
-integer :: pt(64),maxfct=1,mnum=1,mtype=11,phase=33, &
-                nrhs=1,iparm(64),msglvl=0,err1
+integer :: maxfct=1,mnum=1,mtype=11,phase=33, &
+                nrhs=1,iparm(64),msglvl=0,err1,nnz
 integer,allocatable :: perm(:)
+type(MKL_PARDISO_HANDLE) :: pt(64)
 
 type(pprob),allocatable :: probe(:)
 

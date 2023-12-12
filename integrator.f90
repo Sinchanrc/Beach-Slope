@@ -446,58 +446,58 @@ module integrator
 
         vart=0.0_dp
 
-        !$omp do schedule (runtime) private(m,t1,t2,k,i,j) collapse(2)
-        do j=sx,ex
-            do i=sy,ey 
+        ! !$omp do schedule (runtime) private(m,t1,t2,k,i,j) collapse(2)
+        ! do j=sx,ex
+        !     do i=sy,ey 
 
-            do k=1,dpcell(i,j)%ptot
+        !     do k=1,dpcell(i,j)%ptot
 
-            t1=0.0_dp
-            t2=0.0_dp
-            if((dpcell(i,j)%plist(k)%tid==3).and. &
-            (.not.(dpcell(i,j)%plist(k)%buffer))) then
-            dpcell(i,j)%pplist(k)%varts=0.0_dp
-            if (dpcell(i,j)%list(k)%count/=0) then
+        !     t1=0.0_dp
+        !     t2=0.0_dp
+        !     if((dpcell(i,j)%plist(k)%tid==3).and. &
+        !     (.not.(dpcell(i,j)%plist(k)%buffer))) then
+        !     dpcell(i,j)%pplist(k)%varts=0.0_dp
+        !     if (dpcell(i,j)%list(k)%count/=0) then
 
-            if (dpcell(i,j)%plist(k)%free) then
+        !     if (dpcell(i,j)%plist(k)%free) then
 
-            do m=1,dpcell(i,j)%list(k)%count
-                associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-                y=>dpcell(i,j)%list(k)%interlist(2,m), &
-                pp=>dpcell(i,j)%list(k)%interlist(3,m))
+        !     do m=1,dpcell(i,j)%list(k)%count
+        !         associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
+        !         y=>dpcell(i,j)%list(k)%interlist(2,m), &
+        !         pp=>dpcell(i,j)%list(k)%interlist(3,m))
 
-                t1=t1+(dpcell(y,x)%plist(pp)%vx-dpcell(i,j)%plist(k)%vx)* &
-                (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))* &
-                (dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
+        !         t1=t1+(dpcell(y,x)%plist(pp)%vx-dpcell(i,j)%plist(k)%vx)* &
+        !         (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+        !         dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
+        !         Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))* &
+        !         (dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
 
-                t2=t2+(dpcell(y,x)%plist(pp)%vy-dpcell(i,j)%plist(k)%vy)* &
-                (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
-                dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))* &
-                (dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
+        !         t2=t2+(dpcell(y,x)%plist(pp)%vy-dpcell(i,j)%plist(k)%vy)* &
+        !         (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+        !         dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
+        !         Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))* &
+        !         (dpcell(y,x)%plist(pp)%mass/dpcell(y,x)%plist(pp)%density)
 
-                end associate
-            end do
+        !         end associate
+        !     end do
 
-            dpcell(i,j)%pplist(k)%varts=ps*(dl**2)*sqrt(t1**2+t2**2)*&
-            sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)/ &
-                (umax+1e-6)
+        !     dpcell(i,j)%pplist(k)%varts=ps*(dl**2)*sqrt(t1**2+t2**2)*&
+        !     sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)/ &
+        !         (umax+1e-6)
 
-            end if
-
-
-            end if
+        !     end if
 
 
-            end if
+        !     end if
 
-            end do
 
-            end do
-        end do
-        !$omp end do
+        !     end if
+
+        !     end do
+
+        !     end do
+        ! end do
+        ! !$omp end do
 
         ! Non-pressure velocity calculation for fluid particles
         !$omp do schedule (runtime) private(m,t1,t2,k,i,j,vart,pvol,p_dist) collapse(2)
@@ -524,16 +524,16 @@ module integrator
 
                 ! if (dpcell(y,x)%plist(pp)%tid/=4) then
 
-                if (dpcell(i,j)%plist(k)%free) then
-                vart=dpcell(i,j)%pplist(k)%varts
-                elseif ((.not.(dpcell(i,j)%plist(k)%free)).and. &
-                (dpcell(y,x)%plist(pp)%free)) then
-                vart=Wab(dpcell(i,j)%list(k)%dist(m),h1)*dpcell(y,x)%pplist(pp)%varts &
-                        /Wo(h1)
+                ! if (dpcell(i,j)%plist(k)%free) then
+                ! vart=dpcell(i,j)%pplist(k)%varts
+                ! elseif ((.not.(dpcell(i,j)%plist(k)%free)).and. &
+                ! (dpcell(y,x)%plist(pp)%free)) then
+                ! vart=Wab(dpcell(i,j)%list(k)%dist(m),h1)*dpcell(y,x)%pplist(pp)%varts &
+                !         /Wo(h1)
 
-                else
-                vart=0.0_dp
-                end if
+                ! else
+                ! vart=0.0_dp
+                ! end if
 
                     t1=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
                     dpcell(y,x)%plist(pp)%vx)*(dpcell(i,j)%plist(k)%x- &
@@ -553,7 +553,7 @@ module integrator
                     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
                     (t1+t2)*((2*(mu/dpcell(i,j)%plist(k)%density)* &
                     (mu/dpcell(y,x)%plist(pp)%density)/ &
-                    ((mu/dpcell(i,j)%plist(k)%density)+(mu/dpcell(y,x)%plist(pp)%density)))+vart)
+                    ((mu/dpcell(i,j)%plist(k)%density)+(mu/dpcell(y,x)%plist(pp)%density)))) !+vart
 
                     if (dpcell(y,x)%plist(pp)%tid>2) then
 
@@ -594,7 +594,7 @@ module integrator
                     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
                     (t1+t2)*((2*(mu/dpcell(i,j)%plist(k)%density)* &
                     (mu/dpcell(y,x)%plist(pp)%density)/ &
-                    ((mu/dpcell(i,j)%plist(k)%density)+(mu/dpcell(y,x)%plist(pp)%density)))+vart)
+                    ((mu/dpcell(i,j)%plist(k)%density)+(mu/dpcell(y,x)%plist(pp)%density)))) !+vart
 
                     if (dpcell(y,x)%plist(pp)%tid>2) then
 
@@ -879,13 +879,13 @@ module integrator
         if (t<=1.0_dp) then
         dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0010_dp)
         elseif ((t>1.0_dp).and.(t<=2.50_dp)) then
-        dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.0015))
+        dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.002))
         ! elseif ((t>2.0_dp).and.(t<=3.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.002))
         ! elseif ((t>3.0_dp).and.(t<=4.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.004))
         else
-        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0020_dp)
+        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0040_dp)
         end if
         if((.not.(ieee_is_finite(numax))).or.(ieee_is_nan(numax))) then
         numax=0.0_dp

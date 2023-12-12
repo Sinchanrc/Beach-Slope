@@ -171,34 +171,45 @@ module isph
 
         implicit none
 
-        integer :: i,j,k,m
+        integer :: i,j,k,m,dia_pt,ins_pt
 
-        real(dp) :: lamp,lamp2,t1,t2,rho_i,rho_j,pvol,p_dist,rho_ij
+        real(dp) :: lamp,lamp2,t1,t2,rho_i,rho_j,pvol,p_dist,rho_ij,dia_term
+
         !$omp parallel do schedule(runtime) default(shared)
         do i=1,finmax 
-            fmatrix(i)%sz=0
+            fmatrix(i)%sz=1
             fmatrix(i)%val(:)=0.0_dp
+            fmatrix(i)%val(1)=1.0_dp
             fmatrix(i)%col(:)=i
             fvec(i)=0.0_dp
         end do
         !$omp end parallel do
+
+        
         
         ! Preparing the coff matrix for fluid part in CSR
         !$omp parallel do schedule(runtime) default(shared) &
-        !$omp private(m,t1,t2,k,i,j,lamp,lamp2,rho_i,rho_j,pvol,p_dist,rho_ij) collapse(2)
+        !$omp private(m,t1,t2,k,i,j,lamp,lamp2,rho_i,rho_j,pvol,p_dist,rho_ij,dia_pt,ins_pt,dia_term) &
+        !$omp collapse(2)
         do j=sx,ex
             do i=sy,ey
             ! if (dpcell(i,j)%ptot/=0) then
 
+                
+
                 do k=1,dpcell(i,j)%ptot
+
+                dia_pt=1
+                ins_pt=0
+                dia_term=0.0_dp
                         
                 ! if (dpcell(i,j)%plist(k)%tid/=4) then
                 associate(pos=>dpcell(i,j)%plist(k)%matid,num=>dpcell(i,j)%list(k)%count)
                     t1=0.0_dp
                     t2=0.0_dp
                     fmatrix(pos)%sz=num+1
-                    fmatrix(pos)%val(:)=0.0_dp
-                    fmatrix(pos)%col(:)=pos
+                    ! fmatrix(pos)%val(:)=0.0_dp
+                    ! fmatrix(pos)%col(:)=pos
                     fvec(pos)=0.0_dp
                     num2=dpcell(i,j)%list(k)%count
                     rho_i=dpcell(i,j)%plist(k)%density*dpcell(i,j)%pplist(k)%porosity**(-1)
@@ -207,6 +218,17 @@ module isph
                         associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
                         y=>dpcell(i,j)%list(k)%interlist(2,m), &
                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
+
+                        if (pos>dpcell(y,x)%plist(pp)%matid) then
+
+                            dia_pt=m+1
+                            ins_pt=m
+
+                        else
+
+                            ins_pt=m+1
+
+                        end if
 
                             ! if (dpcell(y,x)%plist(pp)%tid/=4) then
 
@@ -248,18 +270,24 @@ module isph
                                 (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
                                 dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
                                 Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
-                                *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)                              
+                                *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)
+                                
+
 
                                 if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
-                                fmatrix(pos)%val(m)=(-(t1+t2))*lamp
-                                fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+                                ! fmatrix(pos)%val(m)=(-(t1+t2))*lamp
+                                ! fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+
+                                fmatrix(pos)%val(ins_pt)=(-(t1+t2))*lamp
+                                fmatrix(pos)%col(ins_pt)=dpcell(y,x)%plist(pp)%matid
 
                                 else 
                                     fvec(pos)=fvec(pos)+(t1+t2)*lamp*dpcell(y,x)%plist(pp)%pressure
 
                                 end if
 
-                                fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)
+                                ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)
+                                dia_term=dia_term+(t1+t2)
 
 
                                 if (dpcell(y,x)%plist(pp)%tid==3) then
@@ -312,10 +340,14 @@ module isph
                                 
                                 if (dpcell(y,x)%plist(pp)%tid<=2) then
 
-                                    fmatrix(pos)%val(m)=-(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
-                                        fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
-                                        fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                    ! fmatrix(pos)%val(m)=-(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                    ! fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+                                    ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
     
+                                    fmatrix(pos)%val(ins_pt)=-(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                    fmatrix(pos)%col(ins_pt)=dpcell(y,x)%plist(pp)%matid
+                                    dia_term=dia_term+(t1+t2)
+
                                 end if
 
 
@@ -373,14 +405,17 @@ module isph
                                 ! *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)
 
                                 if (.not.(dpcell(y,x)%plist(pp)%buffer)) then
-                                fmatrix(pos)%val(m)=-(t1+t2)*lamp2!*dpcell(y,x)%pplist(pp)%lamp
-                                fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+                                ! fmatrix(pos)%val(m)=-(t1+t2)*lamp2!*dpcell(y,x)%pplist(pp)%lamp
+                                ! fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+
+                                fmatrix(pos)%val(ins_pt)=-(t1+t2)*lamp2!*dpcell(y,x)%pplist(pp)%lamp
+                                fmatrix(pos)%col(ins_pt)=dpcell(y,x)%plist(pp)%matid
                                 else 
                                     fvec(pos)=fvec(pos)+(t1+t2)*lamp2*dpcell(y,x)%plist(pp)%pressure
                                 end if
 
-                                fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
-
+                                ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                dia_term=dia_term+(t1+t2)
 
                                     t1=(pvol*(dpcell(y,x)%plist(pp)%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
                                     dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
@@ -421,10 +456,13 @@ module isph
                                     Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)) &
                                     *(dpcell(i,j)%plist(k)%y-dpcell(y,x)%plist(pp)%y)*(p_dist)
 
-                                    fmatrix(pos)%val(m)=-(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
-                                    fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
-                                    fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                    ! fmatrix(pos)%val(m)=-(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                    ! fmatrix(pos)%col(m)=dpcell(y,x)%plist(pp)%matid
+                                    ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
                                     
+                                    fmatrix(pos)%val(ins_pt)=-(t1+t2)!*dpcell(y,x)%pplist(pp)%lamp
+                                    fmatrix(pos)%col(ins_pt)=dpcell(y,x)%plist(pp)%matid
+                                    dia_term=dia_term+(t1+t2)
 
                                 end if
                             
@@ -437,17 +475,18 @@ module isph
                     end do
                     end if
 
-                    ! if (.not.(dpcell(i,j)%plist(k)%free)) then
+                    ! fmatrix(pos)%col(num+1)=pos
 
-                    ! fvec(pos)=fvec(pos)+alpha*(1.0_dp-dpcell(i,j)%plist(k)%tden/dpcell(i,j)%plist(k)%density)/(dt**2)
+                    fmatrix(pos)%val(dia_pt)=dia_term
+                    fmatrix(pos)%col(dia_pt)=pos
+
+
+
+                    ! if ((num==0)) then  !.or.( dpcell(i,j)%plist(k)%free==1)
+                    ! fmatrix(pos)%val(dia_pt)=1.0_dp
                     ! end if
 
-                    fmatrix(pos)%col(num+1)=pos
-                    if ((num==0)) then  !.or.( dpcell(i,j)%plist(k)%free==1)
-                    fmatrix(pos)%val(num+1)=1.0_dp
-                    end if
-
-                    t1=fmatrix(pos)%val(num+1)
+                    t1=fmatrix(pos)%val(dia_pt)
 
                     ! if (dpcell(i,j)%plist(k)%tid/=2) then
 
@@ -474,6 +513,8 @@ module isph
         ! call format(fmatrix,fval,frow,fcol,finmax)
         ! call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
         call fgmres
+
+        ! call pardisosolver(fval,frow,fcol,fvec,fsol)
         
         ! Assigning pressures
         !$omp parallel do schedule(runtime) default(shared) private(i,k,j) collapse(2)       
@@ -487,14 +528,7 @@ module isph
                         
                         dpcell(i,j)%plist(k)%pressure=fsol(dpcell(i,j)%plist(k)%matid)
 
-                        ! if (dpcell(i,j)%plist(k)%tid<=2) then
-
-                        !     dpcell(i,j)%plist(k)%pressure=dpcell(i,j)%plist(k)%pressure &
-                        !     +2*rho*abs(g)*min(prrealx,prrealy) 
-
                         end if
-
-                        ! end if
 
                         end do
 

@@ -159,7 +159,6 @@ module memory
 
             allocate(dpar(128),tmp(finmax*(2*finmax+1)+(finmax*(finmax+9))/2+1))
             fsol=fguess
-
             
         
     end subroutine matrixid

@@ -249,6 +249,7 @@ module solver
     end subroutine bicgstab
 
     subroutine format(array,val,row,col,len) ! Creating standard CSR format for solver
+        use initialize
         implicit none
         type(matrixsetup),intent(in) :: array(:)
         real(dp),intent(out) :: val(:)
@@ -257,10 +258,13 @@ module solver
         integer,intent(in) :: len
         integer :: is,js
 
+        nnz=0
+
         row(1)=1
         val(:)=0.0_dp
         do is=1,len
             row(is+1)=array(is)%sz+row(is)
+            nnz=nnz+array(is)%sz
             do js=1,array(is)%sz
             val(row(is)-1+js)=array(is)%val(js)
             col(row(is)-1+js)=array(is)%col(js)
@@ -328,6 +332,71 @@ module solver
 
             end if
         
+    end subroutine
+
+    subroutine pardisosolver(fval1,frow1,fcol1,fvec1,fsol1)
+
+        use omp_lib
+        use mkl_pardiso
+        use initialize
+
+        implicit none
+
+
+        real(dp),intent(inout) :: fval1(finmax*ceiling(fac2*fplistmax)),fvec1(finmax)
+        real(dp),intent(inout) :: fsol1(finmax)
+        integer,intent(in) :: frow1(finmax+1),fcol1(finmax*ceiling(fac2*fplistmax))
+
+        real(dp),allocatable ::ar(:)
+        integer :: i,perm1(finmax)
+        integer,allocatable ::ja(:),ia(:)
+
+        
+
+
+
+        call pardisoinit (pt, mtype, iparm)
+
+        pt(:)%DUMMY=0
+
+
+        iparm(1)=1
+        iparm(2)=3
+        iparm(3)=OMP_GET_MAX_THREADS()
+        ! iparm(8)=4
+        iparm(11)=1
+        iparm(13)=1
+        iparm(15)=45000
+        iparm(16)=45000
+        iparm(17)=90000
+        iparm(27)=1
+        iparm(25)=1
+
+        allocate(ar(nnz),ja(nnz),ia(finmax+1))
+
+        perm1=0
+
+        do i=1,nnz 
+
+            ar(i)=fval1(i)
+            ja(i)=fcol1(i)
+
+        end do
+
+        do i=1,(finmax+1)
+
+            ia(i)=frow1(i)
+
+        end do
+
+        fsol1=0.0_dp
+
+        call pardiso(pt,maxfct,mnum,mtype,phase,finmax,ar,ia,ja,perm1,1,iparm,msglvl,fvec1,fsol1,err1)
+
+        ! deallocate(ar,ja,ia)
+
+        
+
     end subroutine
 
     
