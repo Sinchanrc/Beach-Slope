@@ -78,26 +78,7 @@ module memory
     subroutine matrixid()
         implicit none
 
-        integer :: i,j,k,m
-
-        
-        ! Matrix id setting
-        ! count=matidct
-
-        ! do j=sx,ex 
-        !     do i=sy,ey
-        !     if (dpcell(i,j)%ptot/=0) then
-        !         do cout=1,dpcell(i,j)%ptot
-
-        !             if ((dpcell(i,j)%plist(cout)%tid==3)) then
-        !             count=count+1
-        !             dpcell(i,j)%plist(cout)%matid=count
-        !             end if
-
-        !         end do
-        !     end if
-        !     end do
-        ! end do
+        integer :: i,j,k,mo
 
         count=0
 

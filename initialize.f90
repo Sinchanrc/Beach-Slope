@@ -62,8 +62,8 @@ integer,parameter,public :: ghost=1 ! 0=> No ghost boundary,1=>ghost + fixed,2=>
 character(len=70),public:: result
 type(cell),allocatable,dimension(:,:),public,target :: dpcell
 
-integer :: maxfct=1,mnum=1,mtype=11,phase=33, &
-                nrhs=1,iparm(64),msglvl=0,err1,nnz
+integer :: maxfct=1,mnum=1,mtype=11,phase=13, &
+                nrhs=1,iparm(64),msglvl=0,err1=0,nnz
 integer,allocatable :: perm(:)
 type(MKL_PARDISO_HANDLE) :: pt(64)
 

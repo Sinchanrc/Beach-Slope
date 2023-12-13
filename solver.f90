@@ -348,33 +348,50 @@ module solver
         integer,intent(in) :: frow1(finmax+1),fcol1(finmax*ceiling(fac2*fplistmax))
 
         real(dp),allocatable ::ar(:)
-        integer :: i,perm1(finmax)
+        integer :: i,perm1(finmax),idum(1)
         integer,allocatable ::ja(:),ia(:)
-
-        
-
-
+        real(dp) :: ddum(1)
 
         call pardisoinit (pt, mtype, iparm)
 
-        pt(:)%DUMMY=0
+        ! pt(:)%DUMMY=0
+        ! iparm=0
 
-
-        iparm(1)=1
-        iparm(2)=3
-        iparm(3)=OMP_GET_MAX_THREADS()
-        ! iparm(8)=4
-        iparm(11)=1
-        iparm(13)=1
-        iparm(15)=45000
-        iparm(16)=45000
-        iparm(17)=90000
+        iparm(1) = 1 ! no solver default
+        iparm(2) = 0 ! fill-in reordering from METIS
+        iparm(3) = OMP_GET_NUM_THREADS() ! numbers of processors
+        ! iparm(4) = 31 ! no iterative-direct algorithm
+        iparm(5) = 0 ! no user fill-in reducing permutation
+        iparm(6) = 0 ! =0 solution on the first n components of x
+        iparm(7) = 0 ! not in use
+        iparm(8) = 2 ! numbers of iterative refinement steps
+        iparm(9) = 0 ! not in use
+        iparm(10) = 13 ! perturb the pivot elements with 1E-13
+        iparm(11) = 1 ! use nonsymmetric permutation and scaling MPS
+        iparm(12) = 0 ! not in use
+        iparm(13) = 1 ! maximum weighted matching algorithm is switched-on (default for non-symmetric)
+        iparm(25)=0
         iparm(27)=1
-        iparm(25)=1
+
+        ! iparm(:)=0
+
+
+        ! iparm(1)=1
+        ! iparm(2)=2
+        ! iparm(3)=OMP_GET_MAX_THREADS()
+        ! iparm(8)=4
+        ! iparm(10)=13
+        ! iparm(11)=1
+        ! iparm(13)=1
+        ! ! iparm(15)=45000
+        ! ! iparm(16)=45000
+        ! ! iparm(17)=90000
+        ! iparm(25)=1
+        ! iparm(27)=1
 
         allocate(ar(nnz),ja(nnz),ia(finmax+1))
 
-        perm1=0
+        perm1(:)=0
 
         do i=1,nnz 
 
@@ -391,7 +408,21 @@ module solver
 
         fsol1=0.0_dp
 
+        ! phase = 11
+
+        ! call pardiso(pt,maxfct,mnum,mtype,phase,finmax,ar,ia,ja,idum,1,iparm,msglvl,ddum,ddum,err1)
+
+        ! phase = 22
+
+        ! call pardiso(pt,maxfct,mnum,mtype,phase,finmax,ar,ia,ja,idum,1,iparm,msglvl,ddum,ddum,err1)
+
+        phase = 13
+
         call pardiso(pt,maxfct,mnum,mtype,phase,finmax,ar,ia,ja,perm1,1,iparm,msglvl,fvec1,fsol1,err1)
+
+        phase=-1
+
+        call pardiso (pt, maxfct, mnum, mtype, phase, finmax, ddum, idum,idum, idum, nrhs, iparm, msglvl, ddum, ddum, err1)
 
         ! deallocate(ar,ja,ia)
 

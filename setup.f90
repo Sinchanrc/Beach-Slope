@@ -131,8 +131,7 @@ module setup
 
         allocate(reserve%tank(500))
         reserve%si=reserve_par
-
-        ! write(*,*)brrealx,brrealy,prrealx,prrealy
+        
 
         return
     end subroutine init
