@@ -41,7 +41,7 @@ module integrator
                             if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
                             ((x1<=xlcutoff).and.(y1<=ytcutoff))) then
                             dpcell(i,j)%temfct=dpcell(i,j)%temfct+1
-                            dpcell(i,j)%ftemp(dpcell(i,j)%temfct)=dpcell(i,j)%plist(k)
+                            dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%part=>dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%buffer=merge(.false.,.true.,x1<=domain_en)
                             else
@@ -162,7 +162,7 @@ module integrator
 
                 if (dpcell(i,j)%temfct/=0) then
                     do k=1,dpcell(i,j)%temfct
-                    dpcell(i,j)%plist(k+dpcell(i,j)%btot)=dpcell(i,j)%ftemp(k)
+                    dpcell(i,j)%plist(k+dpcell(i,j)%btot)=dpcell(i,j)%ftemp(k)%part
                     end do
                 end if
 
@@ -255,7 +255,7 @@ module integrator
                         if((x1>=dpcell(i,j)%xleft).and.(x1<dpcell(i,j)%xright)) then
                         if((y1>=dpcell(i,j)%ybot).and.(y1<dpcell(i,j)%ytop))then
                             dpcell(i,j)%temfct=dpcell(i,j)%temfct+1
-                            dpcell(i,j)%ftemp(dpcell(i,j)%temfct)=dpcell(i,j)%plist(k)
+                            dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%part=>dpcell(i,j)%plist(k)
                         elseif(y1<dpcell(i,j)%ybot) then
                             dpcell(i,j)%ts%count=dpcell(i,j)%ts%count+1
                             dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)=dpcell(i,j)%plist(k)
@@ -305,7 +305,7 @@ module integrator
 
                 if (dpcell(i,j)%temfct/=0) then
                     do k=1,dpcell(i,j)%temfct
-                    dpcell(i,j)%plist(k+dpcell(i,j)%btot)=dpcell(i,j)%ftemp(k)
+                    dpcell(i,j)%plist(k+dpcell(i,j)%btot)=dpcell(i,j)%ftemp(k)%part
                     end do
                 end if
 

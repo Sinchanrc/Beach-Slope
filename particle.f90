@@ -81,6 +81,12 @@ module particle
         integer:: si=0
 
     end type
+
+    type exchange
+
+        type(particles),pointer :: part
+
+    end type
         
     
     
