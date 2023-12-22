@@ -14,7 +14,7 @@ module search
         implicit none
 
         type(verlet),intent(inout) :: list
-        type(cell),intent(inout) :: celln,cell1,cell2,cell3,cell4
+        type(cell),intent(inout),target :: celln,cell1,cell2,cell3,cell4
         real(dp),intent(in) :: smln
         integer,intent(in) :: n
         integer ::counter2
@@ -62,9 +62,11 @@ module search
                     if((radial<(2*smln)))then
 
                     list%count=list%count+1
-                    list%interlist(1,list%count)=cell1%cellid(1)
-                    list%interlist(2,list%count)=cell1%cellid(2)
-                    list%interlist(3,list%count)=counter2
+                    ! list%interlist(1,list%count)=cell1%cellid(1)
+                    ! list%interlist(2,list%count)=cell1%cellid(2)
+                    ! list%interlist(3,list%count)=counter2
+                    list%nh(list%count)%part=>cell1%plist(counter2)
+                    list%pnh(list%count)%ppart=>cell1%pplist(counter2)
                     list%dist(list%count)=radial
 
                     !Gradient Correction
@@ -111,9 +113,11 @@ module search
                     if((radial<(2*smln)))then
 
                     list%count=list%count+1
-                    list%interlist(1,list%count)=cell2%cellid(1)
-                    list%interlist(2,list%count)=cell2%cellid(2)
-                    list%interlist(3,list%count)=counter2
+                    ! list%interlist(1,list%count)=cell2%cellid(1)
+                    ! list%interlist(2,list%count)=cell2%cellid(2)
+                    ! list%interlist(3,list%count)=counter2
+                    list%nh(list%count)%part=>cell2%plist(counter2)
+                    list%pnh(list%count)%ppart=>cell2%pplist(counter2)
                     list%dist(list%count)=radial
 
                     !Gradient Correction
@@ -160,9 +164,11 @@ module search
                     if((radial<(2*smln)))then
 
                     list%count=list%count+1
-                    list%interlist(1,list%count)=cell3%cellid(1)
-                    list%interlist(2,list%count)=cell3%cellid(2)
-                    list%interlist(3,list%count)=counter2
+                    ! list%interlist(1,list%count)=cell3%cellid(1)
+                    ! list%interlist(2,list%count)=cell3%cellid(2)
+                    ! list%interlist(3,list%count)=counter2
+                    list%nh(list%count)%part=>cell3%plist(counter2)
+                    list%pnh(list%count)%ppart=>cell3%pplist(counter2)
                     list%dist(list%count)=radial
 
                     !Gradient Correction
@@ -209,9 +215,11 @@ module search
                     if((radial<(2*smln)))then
 
                     list%count=list%count+1
-                    list%interlist(1,list%count)=cell4%cellid(1)
-                    list%interlist(2,list%count)=cell4%cellid(2)
-                    list%interlist(3,list%count)=counter2
+                    ! list%interlist(1,list%count)=cell4%cellid(1)
+                    ! list%interlist(2,list%count)=cell4%cellid(2)
+                    ! list%interlist(3,list%count)=counter2
+                    list%nh(list%count)%part=>cell4%plist(counter2)
+                    list%pnh(list%count)%ppart=>cell4%pplist(counter2)
                     list%dist(list%count)=radial
 
                     !Gradient Correction

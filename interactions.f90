@@ -25,6 +25,8 @@ module interactions
 
     type verlet
 
+        type(exchange),allocatable :: nh(:)
+        type(exchageprop),allocatable :: pnh(:)
         real(dp),allocatable :: dist(:) ! Radial distance of interaction particle
         integer,allocatable :: interlist(:,:) ! index of cell and location number in list of particle
         integer :: count=0 ! Total 

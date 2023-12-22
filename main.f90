@@ -36,7 +36,7 @@ program dam_break
     call effpor
     !$omp end parallel
 
-        do while(iter<51)
+        ! do while(iter<51)
 
             told=t
             t=t+dt
@@ -61,10 +61,7 @@ program dam_break
             call cellshift
             call neighbour
             call effpor
-            ! call freesurf
-            ! call compcorr(3,1)
             call eddyvis
-            ! call ghost_en
             call int_vel
             !$omp end parallel
             call resetid
@@ -76,10 +73,6 @@ program dam_break
             call cellshiftalt
             call neighbour
             call effpor
-            ! call freesurf
-            ! call compcorr(3,1)
-            ! call comp_ghost
-            ! call boun_vel 
             call opt2_shift
             ! call massupdate
             call timestep
@@ -102,7 +95,7 @@ program dam_break
             iter=iter+1
             ! end if
 
-        end do
+        ! end do
 
         iter=1
 

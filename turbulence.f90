@@ -26,42 +26,37 @@ module turbulence
                     dpcell(i,j)%pplist(k)%meanstrn=0.0_dp
 
                     do m=1,dpcell(i,j)%list(k)%count ! Calculating mean strain tensor
-                        associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-                        y=>dpcell(i,j)%list(k)%interlist(2,m), &
-                        pp=>dpcell(i,j)%list(k)%interlist(3,m))
-
-                        if (dpcell(y,x)%plist(pp)%tid/=4) then
+                        associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
+                        y=>dpcell(i,j)%list(k)%pnh(m)%ppart)
 
                         dpcell(i,j)%pplist(k)%meanstrn(1)=dpcell(i,j)%pplist(k)%meanstrn(1)+ &
-                            (dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%plist(pp)%vx/dpcell(y,x)%pplist(pp)%porosity- &
+                            (x%mass*(x%vx/y%porosity- &
                             dpcell(i,j)%plist(k)%vx/dpcell(i,j)%pplist(k)%porosity)* &
-                            (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                            (dpcell(i,j)%pplist(k)%coff(1)*Wabx(x,dpcell(i,j)%plist(k), &
                             dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                            Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
-                            /dpcell(y,x)%plist(pp)%density
+                            Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
+                            /x%density
 
                         dpcell(i,j)%pplist(k)%meanstrn(4)=dpcell(i,j)%pplist(k)%meanstrn(4)+ &
-                            (dpcell(y,x)%plist(pp)%mass*(dpcell(y,x)%plist(pp)%vy/dpcell(y,x)%pplist(pp)%porosity- &
+                            (x%mass*(x%vy/y%porosity- &
                             dpcell(i,j)%plist(k)%vy/dpcell(i,j)%pplist(k)%porosity)* &
-                            (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                            (dpcell(i,j)%pplist(k)%coff(3)*Wabx(x,dpcell(i,j)%plist(k), &
                             dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                            Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
-                            /dpcell(y,x)%plist(pp)%density
+                            Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
+                            /x%density
 
                         dpcell(i,j)%pplist(k)%meanstrn(2)=dpcell(i,j)%pplist(k)%meanstrn(2)+ &
-                        (0.50_dp*dpcell(y,x)%plist(pp)%mass*((dpcell(y,x)%plist(pp)%vx/dpcell(y,x)%pplist(pp)%porosity- &
+                        (0.50_dp*x%mass*((x%vx/y%porosity- &
                         dpcell(i,j)%plist(k)%vx/dpcell(i,j)%pplist(k)%porosity)* &
-                        (dpcell(i,j)%pplist(k)%coff(3)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                        (dpcell(i,j)%pplist(k)%coff(3)*Wabx(x,dpcell(i,j)%plist(k), &
                         dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                        Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))+ &
-                        (dpcell(y,x)%plist(pp)%vy/dpcell(y,x)%pplist(pp)%porosity- &
+                        Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))+ &
+                        (x%vy/y%porosity- &
                         dpcell(i,j)%plist(k)%vy/dpcell(i,j)%pplist(k)%porosity)* &
-                        (dpcell(i,j)%pplist(k)%coff(1)*Wabx(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k), &
+                        (dpcell(i,j)%pplist(k)%coff(1)*Wabx(x,dpcell(i,j)%plist(k), &
                         dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                        Waby(dpcell(y,x)%plist(pp),dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))) &
-                        /dpcell(y,x)%plist(pp)%density
-
-                        end if
+                        Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))) &
+                        /x%density
 
                         end associate
                     end do

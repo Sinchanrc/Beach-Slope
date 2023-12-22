@@ -87,6 +87,12 @@ module particle
         type(particles),pointer :: part
 
     end type
+
+    type exchageprop
+
+        type(properties),pointer :: ppart
+
+    end type
         
     
     

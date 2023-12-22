@@ -22,9 +22,9 @@ module memory
                 allocate(dpcell(i,j)%list(fac*fplistmax),dpcell(i,j)%pplist(fac*fplistmax)) 
                 ! allocate(dpcell(i,j)%list2(dpcell(i,j)%btot))
                 do k=1,fac*fplistmax
-                    allocate(dpcell(i,j)%list(k)%interlist(3,fac*fplistmax), &
+                    allocate(dpcell(i,j)%list(k)%nh(fplistmax),dpcell(i,j)%list(k)%pnh(fplistmax),&!dpcell(i,j)%list(k)%interlist(3,fac*fplistmax), &
                     dpcell(i,j)%list(k)%dist(fac*fplistmax))
-                    dpcell(i,j)%list(k)%interlist=0
+                    ! dpcell(i,j)%list(k)%interlist=0
                     dpcell(i,j)%list(k)%dist=0.0_dp
 
                     allocate(dpcell(i,j)%pplist(k)%meanstrn(4),dpcell(i,j)%pplist(k)%tau(4),&
@@ -45,9 +45,9 @@ module memory
             else
                 allocate(dpcell(i,j)%list(fac*fplistmax),dpcell(i,j)%pplist(fac*fplistmax))  
                 do k=1,fplistmax
-                    allocate(dpcell(i,j)%list(k)%interlist(3,fplistmax), &
+                    allocate(dpcell(i,j)%list(k)%nh(fplistmax),dpcell(i,j)%list(k)%pnh(fplistmax),&
                     dpcell(i,j)%list(k)%dist(fplistmax))
-                    dpcell(i,j)%list(k)%interlist=0
+                    ! dpcell(i,j)%list(k)%interlist=0
                     dpcell(i,j)%list(k)%dist=0.0_dp
                     allocate(dpcell(i,j)%pplist(k)%meanstrn(4),dpcell(i,j)%pplist(k)%tau(4),&
                     dpcell(i,j)%pplist(k)%coff(4))

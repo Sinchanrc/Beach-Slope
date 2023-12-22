@@ -28,7 +28,7 @@ module domain
     type cell
 
         !plist=> list of all particles in cell
-        type(particles),allocatable,dimension(:),public :: plist,porlist !,ftemp
+        type(particles),allocatable,dimension(:),public:: plist,porlist !,ftemp
         type(exchange),allocatable,dimension(:),public ::ftemp
         !Vectors used for particles transfer from 1 cell to the other
         type(trfvec),public ::  tw,te,tn,ts,tne,tse,tnw,tsw
