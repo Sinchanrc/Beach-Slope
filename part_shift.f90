@@ -525,10 +525,11 @@ module part_shift
 
         integer :: pint=1
         integer :: i,j,k,m
-        real(dp) :: heff,frac=0.0010_dp,t1,t2!0.0420_dp
+        real(dp) :: heff,frac=0.0010_dp,t1,t2,xs,ys,vxs,vys!0.0420_dp
         
         ! Optimized Particle Shifting
-        !$omp do private(i,k,m,t1,t2,normx,normy,heff,pint) schedule (runtime) collapse(2)
+        !$omp do private(i,k,m,t1,t2,normx,normy,heff,pint,xs,ys,vxs,vys) &
+        !$omp schedule (runtime) collapse(2)
             do j=sx,ex
             do i=sy,ey
             if(dpcell(i,j)%ptot/=0) then
@@ -538,28 +539,23 @@ module part_shift
                 if ((dpcell(i,j)%plist(k)%tid==3).and. &
                 (.not.(dpcell(i,j)%plist(k)%buffer))) then
 
-                dpcell(i,j)%plist(k)%xs=0.0_dp
-                dpcell(i,j)%plist(k)%ys=0.0_dp
-                dpcell(i,j)%plist(k)%vxs=0.0_dp
-                dpcell(i,j)%plist(k)%vys=0.0_dp
+                xs=0.0_dp
+                ys=0.0_dp
+                vxs=0.0_dp
+                vys=0.0_dp
 
                 heff=h1
 
-                if ((dpcell(i,j)%list(k)%count/=0)) then ! &.and.(dpcell(i,j)%pplist(k)%gradvx>=0.80_dp)
-                    ! if ((dpcell(i,j)%plist(k)%free)) then !.or.(dpcell(i,j)%plist(k)%vicinity)
+                if ((dpcell(i,j)%list(k)%count/=0)) then
                     t1=0.0_dp
                     t2=0.0_dp
                     normx=0.0_dp
                     normy=0.0_dp
-                    dpcell(i,j)%plist(k)%xs=0.0_dp
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
-
-                        if ((x%tid/=4).and. &
-                        (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
 
                         normx=normx-(dpcell(i,j)%pplist(k)%coff(1)*&
                         z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
@@ -571,8 +567,6 @@ module part_shift
                         z(2,m))&
                         *(x%mass/x%density)
 
-                        end if
-            
                         end associate
                     end do
 
@@ -589,65 +583,37 @@ module part_shift
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
 
-                        if ((x%tid/=4).and. &
-                        (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-                        dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-csh*(heff**2)* &
+                        xs=xs-csh*(heff**2)* &
                         ((1-normx**2)*z(1,m)-normx*normy* &
                         z(2,m))&
                         *(x%mass/x%density)* &
                         (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
                         Wab(dl,heff))**4)
 
-                        ! dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-frac*csh*(heff**2)*&
-                        ! (Wabx(x,dpcell(i,j)%plist(k),&
-                        ! dpcell(i,j)%list(k)%dist(m),heff))&
-                        ! *(x%mass/x%density)!* &
-                        ! ! (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
-                        ! ! Wab(dl1,heff))**4)
-
-                        end if
-
                         end associate
                     end do
 
-                    dpcell(i,j)%plist(k)%xs=min(abs(dpcell(i,j)%plist(k)%xs),maxshift*dl)* &
-                    dpcell(i,j)%plist(k)%xs/abs(dpcell(i,j)%plist(k)%xs)
+                    dpcell(i,j)%plist(k)%xs=xs
 
                     t1=0.0_dp
                     t2=0.0_dp
-                    dpcell(i,j)%plist(k)%ys=0.0_dp
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
 
-                        if ((x%tid/=4).and. &
-                        (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-                        dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-csh*(heff**2)*&
+                        ys=ys-csh*(heff**2)*&
                         (-normx*normy*z(1,m)+(1-normy**2)* &
                         z(2,m))&
                         *(x%mass/x%density)* &
                         (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
                         Wab(dl,heff))**4)
 
-                        ! dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-frac*csh*(heff**2)*&
-                        ! (Waby(x,dpcell(i,j)%plist(k),&
-                        ! dpcell(i,j)%list(k)%dist(m),heff))&
-                        ! *(x%mass/x%density)!* &
-                        ! ! (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
-                        ! ! Wab(dl1,heff))**4)
-
-
-                        end if
-
                         end associate
                     end do
 
-                    dpcell(i,j)%plist(k)%ys=min(abs(dpcell(i,j)%plist(k)%ys),maxshift*dl)* &
-                    dpcell(i,j)%plist(k)%ys/abs(dpcell(i,j)%plist(k)%ys)
+                    dpcell(i,j)%plist(k)%ys=ys
 
                     t1=0.0_dp
                     t2=0.0_dp
@@ -656,9 +622,6 @@ module part_shift
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
-
-                        ! if ((x%tid/=4).and. &
-                        ! (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
 
                         t1=t1+((dpcell(i,j)%pplist(k)%coff(1) &
                         *z(1,m)+dpcell(i,j)%pplist(k)%coff(2)*z(2,m))*&
@@ -670,25 +633,10 @@ module part_shift
                         (x%vx-dpcell(i,j)%plist(k)%vx))&
                         *(x%mass/x%density)
 
-                        ! t1=t1+((Wabx(x,dpcell(i,j)%plist(k),&
-                        ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                        ! (x%vx-dpcell(i,j)%plist(k)%vx))&
-                        ! *(x%mass/x%density)
-
-                        ! t2=t2+((Waby(x,dpcell(i,j)%plist(k),&
-                        ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                        ! (x%vx-dpcell(i,j)%plist(k)%vx))&
-                        ! *(x%mass/x%density)
-
-                        ! end if
-
                         end associate
                     end do
 
-                    dpcell(i,j)%plist(k)%vxs=t1*dpcell(i,j)%plist(k)%xs &
-                                                    +t2*dpcell(i,j)%plist(k)%ys
-
-
+                    dpcell(i,j)%plist(k)%vxs=t1*xs+t2*ys
 
                     t1=0.0_dp
                     t2=0.0_dp
@@ -697,9 +645,6 @@ module part_shift
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
-
-                        ! if ((x%tid/=4).and. &
-                        ! (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
 
                         t1=t1+((dpcell(i,j)%pplist(k)%coff(1)&
                         *z(1,m)+dpcell(i,j)%pplist(k)%coff(2)*z(2,m))*&
@@ -711,164 +656,11 @@ module part_shift
                         (x%vy-dpcell(i,j)%plist(k)%vy))&
                         *(x%mass/x%density)
 
-                        ! t1=t1+((Wabx(x,dpcell(i,j)%plist(k),&
-                        ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                        ! (x%vy-dpcell(i,j)%plist(k)%vy))&
-                        ! *(x%mass/x%density)
-
-                        ! t2=t2+((Waby(x,dpcell(i,j)%plist(k),&
-                        ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                        ! (x%vy-dpcell(i,j)%plist(k)%vy))&
-                        ! *(x%mass/x%density)
-
-                        ! end if
-
                         end associate
                     end do
 
-                    dpcell(i,j)%plist(k)%vys=t1*dpcell(i,j)%plist(k)%xs &
-                                                    +t2*dpcell(i,j)%plist(k)%ys
+                    dpcell(i,j)%plist(k)%vys=t1*xs+t2*ys
 
-                    dpcell(i,j)%plist(k)%vicinity=.false.
-
-                    ! else
-
-
-                    ! dpcell(i,j)%plist(k)%xs=0.0_dp
-
-                    ! do m=1,dpcell(i,j)%list(k)%count
-                    !     associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
-                    !         y=>dpcell(i,j)%list(k)%pnh(m)%ppart)
-
-                    !     if ((x%tid/=4).and. &
-                    !     (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-                    !     dpcell(i,j)%plist(k)%xs=dpcell(i,j)%plist(k)%xs-csh*(heff**2)*&
-                    !     (Wabx(x,dpcell(i,j)%plist(k),&
-                    !     dpcell(i,j)%list(k)%dist(m),heff))&
-                    !     *(x%mass/x%density)* &
-                    !     (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
-                    !     Wab(dl1,heff))**4)
-
-                    !     end if
-
-                    !     end associate
-                    ! end do
-
-                    ! dpcell(i,j)%plist(k)%xs=min(abs(dpcell(i,j)%plist(k)%xs),maxshift*dl)*&
-                    ! dpcell(i,j)%plist(k)%xs/abs(dpcell(i,j)%plist(k)%xs)
-
-                    ! dpcell(i,j)%plist(k)%ys=0.0_dp
-
-                    ! do m=1,dpcell(i,j)%list(k)%count
-                    !     associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
-                    !         y=>dpcell(i,j)%list(k)%pnh(m)%ppart)
-
-                    !     if ((x%tid/=4).and. &
-                    !     (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-                    !     dpcell(i,j)%plist(k)%ys=dpcell(i,j)%plist(k)%ys-csh*(heff**2)*&
-                    !     (Waby(x,dpcell(i,j)%plist(k),&
-                    !     dpcell(i,j)%list(k)%dist(m),heff))&
-                    !     *(x%mass/x%density)* &
-                    !     (1.0_dp+0.20_dp*pint*(Wab(dpcell(i,j)%list(k)%dist(m),heff)/ &
-                    !     Wab(dl1,heff))**4)
-
-                    !     end if
-
-                    !     end associate
-                    ! end do
-
-                    ! dpcell(i,j)%plist(k)%ys=min(abs(dpcell(i,j)%plist(k)%ys),maxshift*dl)*&
-                    ! dpcell(i,j)%plist(k)%ys/abs(dpcell(i,j)%plist(k)%ys)
-
-
-                    ! t1=0.0_dp
-                    ! t2=0.0_dp
-
-                    ! do m=1,dpcell(i,j)%list(k)%count
-                    !     associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
-                    !         y=>dpcell(i,j)%list(k)%pnh(m)%ppart)
-
-                    !     ! if ((x%tid/=4).and. &
-                    !     ! (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-                    !     t1=t1+((dpcell(i,j)%pplist(k)%coff(1) &
-                    !     *Wabx(x,dpcell(i,j)%plist(k),&
-                    !     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)*Waby(x,&
-                    !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     (x%vx-dpcell(i,j)%plist(k)%vx))&
-                    !     *(x%mass/x%density)
-
-                    !     t2=t2+((dpcell(i,j)%pplist(k)%coff(3) &
-                    !     *Wabx(x,dpcell(i,j)%plist(k),&
-                    !     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)*Waby(x,&
-                    !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     (x%vx-dpcell(i,j)%plist(k)%vx))&
-                    !     *(x%mass/x%density)
-
-                    !     ! t1=t1+((Wabx(x,dpcell(i,j)%plist(k),&
-                    !     ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     ! (x%vx-dpcell(i,j)%plist(k)%vx))&
-                    !     ! *(x%mass/x%density)
-
-                    !     ! t2=t2+((Waby(x,dpcell(i,j)%plist(k),&
-                    !     ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     ! (x%vx-dpcell(i,j)%plist(k)%vx))&
-                    !     ! *(x%mass/x%density)
-
-                    !     ! end if
-
-                    !     end associate
-                    ! end do
-
-                    ! dpcell(i,j)%plist(k)%vxs=t1*dpcell(i,j)%plist(k)%xs &
-                    !                                 +t2*dpcell(i,j)%plist(k)%ys
-
-
-                    ! t1=0.0_dp
-                    ! t2=0.0_dp
-
-                    ! do m=1,dpcell(i,j)%list(k)%count
-                    !     associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
-                    !         y=>dpcell(i,j)%list(k)%pnh(m)%ppart)
-
-                    !     ! if ((x%tid/=4).and. &
-                    !     ! (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-                    !     t1=t1+((dpcell(i,j)%pplist(k)%coff(1) &
-                    !     *Wabx(x,dpcell(i,j)%plist(k),&
-                    !     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)*Waby(x,&
-                    !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     (x%vy-dpcell(i,j)%plist(k)%vy))&
-                    !     *(x%mass/x%density)
-
-                    !     t2=t2+((dpcell(i,j)%pplist(k)%coff(3) &
-                    !     *Wabx(x,dpcell(i,j)%plist(k),&
-                    !     dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)*Waby(x,&
-                    !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     (x%vy-dpcell(i,j)%plist(k)%vy))&
-                    !     *(x%mass/x%density)
-
-                    !     ! t1=t1+((Wabx(x,dpcell(i,j)%plist(k),&
-                    !     ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     ! (x%vy-dpcell(i,j)%plist(k)%vy))&
-                    !     ! *(x%mass/x%density)
-
-                    !     ! t2=t2+((Waby(x,dpcell(i,j)%plist(k),&
-                    !     ! dpcell(i,j)%list(k)%dist(m),h1))*&
-                    !     ! (x%vy-dpcell(i,j)%plist(k)%vy))&
-                    !     ! *(x%mass/x%density)
-
-                    !     ! end if
-
-                    !     end associate
-                    ! end do
-
-                    ! dpcell(i,j)%plist(k)%vys=t1*dpcell(i,j)%plist(k)%xs &
-                    !                                 +t2*dpcell(i,j)%plist(k)%ys
-
-                    ! end if
                 end if
 
                 end if
