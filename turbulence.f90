@@ -27,35 +27,34 @@ module turbulence
 
                     do m=1,dpcell(i,j)%list(k)%count ! Calculating mean strain tensor
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
-                        y=>dpcell(i,j)%list(k)%pnh(m)%ppart)
+                        y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
+                        z=>dpcell(i,j)%list(k)%klt)
 
                         dpcell(i,j)%pplist(k)%meanstrn(1)=dpcell(i,j)%pplist(k)%meanstrn(1)+ &
                             (x%mass*(x%vx/y%porosity- &
                             dpcell(i,j)%plist(k)%vx/dpcell(i,j)%pplist(k)%porosity)* &
-                            (dpcell(i,j)%pplist(k)%coff(1)*Wabx(x,dpcell(i,j)%plist(k), &
-                            dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                            Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
+                            (dpcell(i,j)%pplist(k)%coff(1)*z(1,m) &
+                            +dpcell(i,j)%pplist(k)%coff(2)* &
+                            z(2,m))) &
                             /x%density
 
                         dpcell(i,j)%pplist(k)%meanstrn(4)=dpcell(i,j)%pplist(k)%meanstrn(4)+ &
                             (x%mass*(x%vy/y%porosity- &
                             dpcell(i,j)%plist(k)%vy/dpcell(i,j)%pplist(k)%porosity)* &
-                            (dpcell(i,j)%pplist(k)%coff(3)*Wabx(x,dpcell(i,j)%plist(k), &
-                            dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                            Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))) &
+                            (dpcell(i,j)%pplist(k)%coff(3)*z(1,m) &
+                            +dpcell(i,j)%pplist(k)%coff(4)* &
+                            z(2,m))) &
                             /x%density
 
                         dpcell(i,j)%pplist(k)%meanstrn(2)=dpcell(i,j)%pplist(k)%meanstrn(2)+ &
                         (0.50_dp*x%mass*((x%vx/y%porosity- &
                         dpcell(i,j)%plist(k)%vx/dpcell(i,j)%pplist(k)%porosity)* &
-                        (dpcell(i,j)%pplist(k)%coff(3)*Wabx(x,dpcell(i,j)%plist(k), &
-                        dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                        Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))+ &
+                        (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                        z(2,m))+ &
                         (x%vy/y%porosity- &
                         dpcell(i,j)%plist(k)%vy/dpcell(i,j)%pplist(k)%porosity)* &
-                        (dpcell(i,j)%pplist(k)%coff(1)*Wabx(x,dpcell(i,j)%plist(k), &
-                        dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                        Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)))) &
+                        (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                        z(2,m)))) &
                         /x%density
 
                         end associate

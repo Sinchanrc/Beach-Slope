@@ -72,7 +72,10 @@ module search
                     !Gradient Correction
 
                     res2=Wabx(cell1%plist(counter2),celln%plist(n),radial,smln)  
-                    res4=Waby(cell1%plist(counter2),celln%plist(n),radial,smln)    
+                    res4=Waby(cell1%plist(counter2),celln%plist(n),radial,smln)
+                    list%klt(1,list%count)=res2
+                    list%klt(2,list%count)=res4 
+                    ! list%klt(3,list%count)=Wo(smln)    
 
                     res1=(cell1%plist(counter2)%mass)*(cell1%plist(counter2)%x-celln%plist(n)%x) &
                     /(cell1%plist(counter2)%density)
@@ -123,7 +126,10 @@ module search
                     !Gradient Correction
 
                     res2=Wabx(cell2%plist(counter2),celln%plist(n),radial,smln)  
-                    res4=Waby(cell2%plist(counter2),celln%plist(n),radial,smln)    
+                    res4=Waby(cell2%plist(counter2),celln%plist(n),radial,smln)
+                    list%klt(1,list%count)=res2
+                    list%klt(2,list%count)=res4 
+                    ! list%klt(3,list%count)=Wo(smln)    
 
                     res1=(cell2%plist(counter2)%mass)*(cell2%plist(counter2)%x-celln%plist(n)%x) &
                     /(cell2%plist(counter2)%density)
@@ -174,7 +180,10 @@ module search
                     !Gradient Correction
 
                     res2=Wabx(cell3%plist(counter2),celln%plist(n),radial,smln)  
-                    res4=Waby(cell3%plist(counter2),celln%plist(n),radial,smln)    
+                    res4=Waby(cell3%plist(counter2),celln%plist(n),radial,smln)
+                    list%klt(1,list%count)=res2
+                    list%klt(2,list%count)=res4 
+                    ! list%klt(3,list%count)=Wo(smln)    
 
                     res1=(cell3%plist(counter2)%mass)*(cell3%plist(counter2)%x-celln%plist(n)%x) &
                     /(cell3%plist(counter2)%density)
@@ -225,7 +234,10 @@ module search
                     !Gradient Correction
 
                     res2=Wabx(cell4%plist(counter2),celln%plist(n),radial,smln)  
-                    res4=Waby(cell4%plist(counter2),celln%plist(n),radial,smln)    
+                    res4=Waby(cell4%plist(counter2),celln%plist(n),radial,smln)
+                    list%klt(1,list%count)=res2
+                    list%klt(2,list%count)=res4 
+                    ! list%klt(3,list%count)=Wo(smln)   
 
                     res1=(cell4%plist(counter2)%mass)*(cell4%plist(counter2)%x-celln%plist(n)%x) &
                     /(cell4%plist(counter2)%density)
