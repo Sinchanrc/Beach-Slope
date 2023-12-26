@@ -36,7 +36,7 @@ program dam_break
     call effpor
     !$omp end parallel
 
-        ! do while(iter<51)
+        do while(iter<51)
 
             told=t
             t=t+dt
@@ -95,7 +95,7 @@ program dam_break
             iter=iter+1
             ! end if
 
-        ! end do
+        end do
 
         iter=1
 
@@ -185,7 +185,7 @@ program dam_break
         ! ((t*sqrt(abs(g)/wc))>=iter*displaytime)) then
         
         ! call probevalue
-        call print_fluid
+        ! call print_fluid
         iter=iter+1
         ! end if
 
