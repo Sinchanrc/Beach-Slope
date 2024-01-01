@@ -86,13 +86,19 @@ module setup
         !$omp do private(i,j) schedule(runtime) collapse(2) 
             do j=1,cellx
                 do i=1,celly
-                allocate(dpcell(i,j)%plist(fac*fplistmax),dpcell(i,j)%ftemp(fac*fplistmax), &
+                allocate(dpcell(i,j)%plist(fplistmax),dpcell(i,j)%ftemp(fplistmax), &
                 dpcell(i,j)%cellid(2),dpcell(i,j)%porlist(fplistmax))
 
                 if ((dpcell(i,j)%ybot<=ytcutoff).and.(dpcell(i,j)%xleft<=xlcutoff)) then
                     allocate(dpcell(i,j)%exitlist(ceiling(0.25*fplistmax)))
                     dpcell(i,j)%exitbuff=.true.
                 end if
+
+                do k=1,fplistmax 
+                    dpcell(i,j)%ftemp(k)%part=>dpcell(i,j)%plist(k)
+                end do
+
+
                 end do
             end do
         !$omp end do

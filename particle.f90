@@ -28,7 +28,7 @@ module particle
     ! integer, parameter,public :: dp = selected_real_kind(15) 
 
 
-    type particles
+    type,public :: particles
 
         
         
@@ -46,7 +46,7 @@ module particle
 
     end type particles
 
-    type matrixsetup
+    type,public:: matrixsetup
         integer,public :: sz ! Number of elements
         real(dp),allocatable,dimension(:),public :: val !Storing the A matrix vales for a particle
         integer,allocatable,dimension(:),public :: col ! Corresponding column numbers
@@ -57,7 +57,7 @@ module particle
         integer :: value       ! values to be sorted by
     end type group
 
-    type properties 
+    type,public :: properties 
         real(dp),allocatable,public :: meanstrn(:),tau(:),coff(:),bmls(:)
         real(dp),public :: gradcoff(4),cdiff=0.0_dp,shep=0.0_dp,gradvx=0.0_dp,tden=0.0_dp,vel=0.0_dp,&
                             S=0.0_dp,nut=0.0_dp,tke=0.0_dp,porosity=1.0_dp,resistx=0.0_dp,varts=0.0_dp, &

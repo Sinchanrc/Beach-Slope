@@ -443,61 +443,6 @@ module integrator
 
         integer :: i,j,k,m
 
-        vart=0.0_dp
-
-        ! !$omp do schedule (runtime) private(m,t1,t2,k,i,j) collapse(2)
-        ! do j=sx,ex
-        !     do i=sy,ey 
-
-        !     do k=1,dpcell(i,j)%ptot
-
-        !     t1=0.0_dp
-        !     t2=0.0_dp
-        !     if((dpcell(i,j)%plist(k)%tid==3).and. &
-        !     (.not.(dpcell(i,j)%plist(k)%buffer))) then
-        !     dpcell(i,j)%pplist(k)%varts=0.0_dp
-        !     if (dpcell(i,j)%list(k)%count/=0) then
-
-        !     if (dpcell(i,j)%plist(k)%free) then
-
-        !     do m=1,dpcell(i,j)%list(k)%count
-        !         associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-        !         y=>dpcell(i,j)%list(k)%interlist(2,m), &
-        !         pp=>dpcell(i,j)%list(k)%interlist(3,m))
-
-        !         t1=t1+(x%vx-dpcell(i,j)%plist(k)%vx)* &
-        !         (dpcell(i,j)%pplist(k)%coff(1)*Wabx(x,dpcell(i,j)%plist(k), &
-        !         dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-        !         Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))* &
-        !         (x%mass/x%density)
-
-        !         t2=t2+(x%vy-dpcell(i,j)%plist(k)%vy)* &
-        !         (dpcell(i,j)%pplist(k)%coff(3)*Wabx(x,dpcell(i,j)%plist(k), &
-        !         dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-        !         Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))* &
-        !         (x%mass/x%density)
-
-        !         end associate
-        !     end do
-
-        !     dpcell(i,j)%pplist(k)%varts=ps*(dl**2)*sqrt(t1**2+t2**2)*&
-        !     sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)/ &
-        !         (umax+1e-6)
-
-        !     end if
-
-
-        !     end if
-
-
-        !     end if
-
-        !     end do
-
-        !     end do
-        ! end do
-        ! !$omp end do
-
         ! Non-pressure velocity calculation for fluid particles
         !$omp do schedule (runtime) private(m,t1,t2,k,i,j,vart,pvol,p_dist) collapse(2)
         do j=sx,ex
@@ -520,19 +465,6 @@ module integrator
 
                 pvol=x%mass/x%density
                 p_dist=(dpcell(i,j)%list(k)%dist(m)**2+lam)**(-1)
-
-                ! if (x%tid/=4) then
-
-                ! if (dpcell(i,j)%plist(k)%free) then
-                ! vart=dpcell(i,j)%pplist(k)%varts
-                ! elseif ((.not.(dpcell(i,j)%plist(k)%free)).and. &
-                ! (x%free)) then
-                ! vart=Wab(dpcell(i,j)%list(k)%dist(m),h1)*y%varts &
-                !         /Wo(h1)
-
-                ! else
-                ! vart=0.0_dp
-                ! end if
 
                     t1=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
                     x%vx)*(dpcell(i,j)%plist(k)%x- &
