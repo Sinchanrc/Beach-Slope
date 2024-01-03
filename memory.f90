@@ -28,8 +28,7 @@ module memory
                     ! dpcell(i,j)%list(k)%interlist=0
                     dpcell(i,j)%list(k)%dist=0.0_dp
 
-                    allocate(dpcell(i,j)%pplist(k)%meanstrn(4),dpcell(i,j)%pplist(k)%tau(4),&
-                    dpcell(i,j)%pplist(k)%coff(4))
+                    allocate(dpcell(i,j)%pplist(k)%coff(4))
 
                     do m=1,fplist 
                         dpcell(i,j)%list(k)%nh(m)%part=>dpcell(i,j)%plist(m)
@@ -55,8 +54,7 @@ module memory
                     dpcell(i,j)%list(k)%dist(fplist),dpcell(i,j)%list(k)%klt(2,fplist))
                     ! dpcell(i,j)%list(k)%interlist=0
                     dpcell(i,j)%list(k)%dist=0.0_dp
-                    allocate(dpcell(i,j)%pplist(k)%meanstrn(4),dpcell(i,j)%pplist(k)%tau(4),&
-                    dpcell(i,j)%pplist(k)%coff(4))
+                    allocate(dpcell(i,j)%pplist(k)%coff(4))
 
                     do m=1,fplist 
                         dpcell(i,j)%list(k)%nh(m)%part=>dpcell(i,j)%plist(m)

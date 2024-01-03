@@ -36,8 +36,8 @@ real(dp),public :: fmass=0.0_dp,bfdist=0.0_dp,prrealx=0.0_dp,prrealy=0.0_dp,brre
                         ytcutoff
 
 ! r=particle shifting value,lamfs=surface tracking coeffincient,umax=max velocity
-real(dp),public :: r=0.0_dp,cs=0.150_dp,cv=0.080_dp,maxdivr=2.0_dp, &
-                        ce=1.0_dp,dl,lamfs=0.80_dp,umax=0.0_dp,ker=0.0_dp,normx,normy,co,t_gam=7, &
+real(dp),public :: r=0.0_dp,maxdivr=2.0_dp, &
+                        dl,lamfs=0.80_dp,umax=0.0_dp,ker=0.0_dp,normx,normy,co,t_gam=7, &
                         pll=1.60_dp,pul=1.80_dp,hfac=4.80_dp,fac2=0.80_dp,numax=0.0_dp !term1=0.0_dp,term2=0.0_dp,
 
 ! bcor1,bcor2=domain corner points,ref1,ref2=reference points for mirroring interpolation nodes

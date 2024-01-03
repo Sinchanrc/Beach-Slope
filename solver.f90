@@ -103,7 +103,7 @@ module solver
             ! !$omp simd reduction(+:comp)
             do js=1,fmatrix(is)%sz               
 
-                sol(is)=sol(is)+real(fmatrix(is)%val(js),dp)*real(b(fmatrix(is)%col(js)),dp)
+                sol(is)=sol(is)+fmatrix(is)%val(js)*b(fmatrix(is)%col(js))
 
             end do
             ! !$omp end simd
@@ -111,7 +111,7 @@ module solver
             end do
         !$omp end do
 
-        !$omp do private(js,is) schedule(static)
+        !$omp do private(is) schedule(static)
         do is=1,ls
 
             res(is)=sol(is)
