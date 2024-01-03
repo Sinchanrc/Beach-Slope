@@ -15,6 +15,10 @@ module internal
 
         integer :: step=0
 
+        real(dp) :: bounlen
+
+        bounlen=fpy*2*prrealy/sqrt(por)
+
         allocate(input(fpy))
 
         do i=fpy,1,-1 
@@ -33,7 +37,7 @@ module internal
                 ! else
                 flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)
                 ! end if
-            flist(i,j)%vx=entry_vel
+            flist(i,j)%vx=entry_vel*3.0_dp*((flist(i,j)%y/bounlen)-0.5_dp*(flist(i,j)%y/bounlen)**2)
             flist(i,j)%vy=0.0_dp
 
             if (j>fpx) then
