@@ -165,6 +165,8 @@ program dam_break
 
     end do
 
+    write(*,*)t
+
     
 end program dam_break
 

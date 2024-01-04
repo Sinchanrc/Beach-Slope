@@ -480,9 +480,10 @@ module integrator
                     z(2,m)))*p_dist
 
                     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
-                    (t1+t2)*((2*(mu/dpcell(i,j)%plist(k)%density)* &
-                    (mu/x%density)/ &
-                    ((mu/dpcell(i,j)%plist(k)%density)+(mu/x%density)))) !+vart
+                    (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
+                    (mu*y%porosity/x%density)/ &
+                    ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
+                    +(mu*y%porosity/x%density)))) !+vart
 
                     if (x%tid>2) then
 
@@ -519,9 +520,10 @@ module integrator
                     z(2,m)))*p_dist
 
                     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
-                    (t1+t2)*((2*(mu/dpcell(i,j)%plist(k)%density)* &
-                    (mu/x%density)/ &
-                    ((mu/dpcell(i,j)%plist(k)%density)+(mu/x%density)))) !+vart
+                    (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
+                    (mu*y%porosity/x%density)/ &
+                    ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
+                    +(mu*y%porosity/x%density)))) !+vart
 
                     if (x%tid>2) then
 
