@@ -523,7 +523,7 @@ module part_shift
 
         implicit none
 
-        integer :: pint=1
+        integer :: pint
         integer :: i,j,k,m
         real(dp) :: heff,frac=0.0010_dp,t1,t2,xs,ys,vxs,vys!0.0420_dp
         
@@ -576,7 +576,7 @@ module part_shift
 
                     normx=merge(normx,0.0_dp,dpcell(i,j)%plist(k)%free)
                     normy=merge(normy,0.0_dp,dpcell(i,j)%plist(k)%free)
-                    pint=merge(0,1,dpcell(i,j)%plist(k)%free)
+                    pint=merge(1,0,(.not.(dpcell(i,j)%plist(k)%free)).and.(dpcell(i,j)%pplist(k)%porosity<0.6_dp))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &

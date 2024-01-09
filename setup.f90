@@ -26,6 +26,7 @@ module setup
         prrealy= ((real(wc,dp)/(fpy-1))/2.0_dp)
         ! fpx=fpx-1
         fmass=((wc*wl*1.0_dp)*rho)/(fpx*fpy)
+        domain_shift=4*prrealx
 
 
         spy=floor(real(soilh,dp)/(2*real(prrealy,dp)))+4
@@ -47,10 +48,14 @@ module setup
         totc=max((floor(real(wc,dp)/(incr*h1)))*(floor(wl/(incr*h1))),1)
         fplist=ceiling(real((fpx*fpy),dp)/(totc)*1.0_dp) 
         fplistmax=ceiling(1.20_dp*real(fplist,dp))
-        cellx= ceiling(real(L,dp)/(incr*h1))+3
+        cellx= ceiling(real(L,dp)/(incr*h1))+4
         celly= ceiling(real(H,dp)/(incr*h1))+3     
         dl=(min(2*prrealx,2*prrealy))
         dl1=(min(prrealx,prrealy)+min(brrealx,brrealy))
+        bny=floor((real(lhs_btm,dp)/(2*real(brrealy,dp))))
+        domain_shift=5*prrealx
+
+
         bnx=bnx+2*(bl)
         bny=bny+2*(bl)
 
@@ -67,7 +72,7 @@ module setup
         fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
         xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
-        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+2*h1
+        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+2*h1+domain_shift
         ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)-2*prrealy/sqrt(por)
 
         icount=0

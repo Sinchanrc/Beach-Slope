@@ -15,15 +15,16 @@ module internal
 
         integer :: step=0
 
-        real(dp) :: bounlen
+        real(dp) :: bounlen,bounlen2
 
         bounlen=fpy*2*prrealy/sqrt(por)
+        bounlen2=open_lhs*2*prrealy
 
         allocate(input(fpy))
 
         do i=fpy,1,-1 
             input(i)%y=((brrealy)*((2*bl)-1))+(fpy-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
-            input(i)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)
+            input(i)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift
         end do
 
         !$omp parallel default(shared)
@@ -35,22 +36,23 @@ module internal
                 ! if (mod(i,2)==0) then
                 ! flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
                 ! else
-                flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)
+                flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift
                 ! end if
-            flist(i,j)%vx=entry_vel*3.0_dp*((flist(i,j)%y/bounlen)-0.5_dp*(flist(i,j)%y/bounlen)**2)
+            flist(i,j)%vx=entry_vel*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen) &
+                            -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen)**2)
             flist(i,j)%vy=0.0_dp
 
             if (j>fpx) then
                 flist(i,j)%buffer=.true.
             end if
 
-            if (i==1) then
-                flist(i,j)%pressure=0.0_dp
+            ! if (i==1) then
+            !     flist(i,j)%pressure=0.0_dp
 
-            else
+            ! else
                 flist(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy/sqrt(por))*rho*abs(g)
             
-            end if
+            ! end if
 
             end do
             end do
@@ -201,7 +203,7 @@ module internal
             end do
         
             deallocate(flist,input)
-            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))+1
+            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))-1!+1
             fpx=floor(real(2.0_dp,dp)/(2*real(prrealx,dp)))!+1
             allocate(flist(fpy,fpx))
         !$omp end single
@@ -218,7 +220,7 @@ module internal
                 ! if (mod(i,2)==0) then
                 ! flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx+2*prrealx
                 ! else
-                flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx+prrealx
+                flist(i,j)%x=((brrealx)*((2*bl)-1))+(j-1)*2*prrealx+prrealx+domain_shift
                 ! end if
                 flist(i,j)%vx=0.0_dp!-2.5_dp/(3600*24*por)
                 flist(i,j)%vy=0.0_dp
@@ -309,10 +311,85 @@ module internal
         !$omp end do
 
         !$omp single
+
+            deallocate(flist)
+            allocate(flist(open_lhs,5))
+
+        !$omp end single
+
+        !$omp do schedule(runtime) private(i,j) collapse(2) 
+            do j =1,5
+                do i=open_lhs,1,-1
+                    flist(i,j)%y=2*bny*brrealy-brrealy+prrealy+(open_lhs-i)*2*prrealy
+
+                    flist(i,j)%x=(j-1)*2*prrealx+brrealx
+
+                flist(i,j)%vx=(-bounlen/bounlen2)*entry_vel*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bny-1))/bounlen2) &
+                                -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bny-1))/bounlen2)**2)
+                flist(i,j)%vy=0.0_dp
+
+                    flist(i,j)%buffer=.true.
+
+                    flist(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy)*rho*abs(g)
+
+                end do
+                end do
+            !$omp end do
+
+        !$omp single 
+            do j =1,5
+                do i=1,open_lhs
+
+                        count=count+1
+                        flist(i,j)%pid=count
+                        flist(i,j)%tid=3
+
+                
+                end do
+            end do
+        
+        !$omp end single
+
+
+        !$omp do schedule(runtime) private(i,j) collapse(2) 
+            do j=2,cellx-1
+                do i=2,celly-1
+                do l1=1,5
+                    do k=1,open_lhs
+
+                    if ((flist(k,l1)%x>=dpcell(i,j)%xleft) .and. &
+                        (flist(k,l1)%x<dpcell(i,j)%xright).and. &
+                        (flist(k,l1)%y>=dpcell(i,j)%ybot).and. &
+                        (flist(k,l1)%y<dpcell(i,j)%ytop).and.(flist(k,l1)%tid/=0))then
+                        dpcell(i,j)%ptot=dpcell(i,j)%ptot+1
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)=flist(k,l1)
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%mass=fmass*1.0
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%density=rho*1.0
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%oden=dpcell(i,j)%plist&
+                        (dpcell(i,j)%ptot)%density
+
+                        dpcell(i,j)%plist(dpcell(i,j)%ptot)%ovol=fmass/rho
+
+                    end if
+
+
+                    end do
+                end do
+                end do
+            end do
+        !$omp end do
+
+        !$omp single
         
             deallocate(flist)
 
         !$omp end single
+
+
+
+
+
+            
 
 
 
