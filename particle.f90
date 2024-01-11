@@ -59,9 +59,9 @@ module particle
 
     type,public :: properties 
         real(dp),allocatable,public :: meanstrn(:),tau(:),coff(:),bmls(:)
-        real(dp),public :: gradcoff(4),cdiff=0.0_dp,shep=0.0_dp,gradvx=0.0_dp,tden=0.0_dp,vel=0.0_dp,&
+        real(dp),public :: cdiff=0.0_dp,gradvx=0.0_dp,tden=0.0_dp,vel=0.0_dp,&
                             S=0.0_dp,nut=0.0_dp,tke=0.0_dp,porosity=1.0_dp,resistx=0.0_dp,varts=0.0_dp, &
-                            resisty=0.0_dp,pshift=0.0_dp,Kstar=0.0_dp,shep_gradx=0.0_dp,shep_grady=0.0_dp
+                            resisty=0.0_dp,phi_gradx=0.0_dp,phi_grady=0.0_dp
                 
         
 

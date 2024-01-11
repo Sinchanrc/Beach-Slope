@@ -588,19 +588,19 @@ module integrator
                 end associate
             end do
             end if
-                dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx+dt* &
-                dpcell(i,j)%plist(k)%vxs+dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity
+                ! dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx+dt* &
+                ! dpcell(i,j)%plist(k)%vxs+dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity
 
-                dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy+dt* &
-                (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity)+ &
-                dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity  
+                ! dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy+dt* &
+                ! (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity)+ &
+                ! dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity  
                 
-                ! dpcell(i,j)%plist(k)%vxs=(dpcell(i,j)%plist(k)%vx+(dt* &
-                ! dpcell(i,j)%plist(k)%vxs))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity)
+                dpcell(i,j)%plist(k)%vxs=(dpcell(i,j)%plist(k)%vx+(dt* &
+                dpcell(i,j)%plist(k)%vxs))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity)
 
-                ! dpcell(i,j)%plist(k)%vys=(dpcell(i,j)%plist(k)%vy+dt* &
-                ! (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity))/ &
-                ! (1.0_dp-dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity)
+                dpcell(i,j)%plist(k)%vys=(dpcell(i,j)%plist(k)%vy+dt* &
+                (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity))/ &
+                (1.0_dp-dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity)
 
             end if
 

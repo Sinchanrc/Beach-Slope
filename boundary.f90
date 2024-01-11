@@ -197,10 +197,11 @@ module boundary
 
                 remain_len=wc-lhs_btm-open_lhs*2*prrealy
 
-                bn1=floor((real(remain_len,dp)/(2*real(brrealy,dp))))-1
+                bn1=floor((real(remain_len,dp)/(2*real(brrealy,dp))))-2
 
                 deallocate(blist)
                 allocate(blist(bn1,bl))
+                ytcutoff=(bny*2*brrealy)+(open_lhs*2*prrealy)+(bn1-1)*brrealy*2
 
 
         !$omp end single

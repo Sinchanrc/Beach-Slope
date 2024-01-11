@@ -81,7 +81,8 @@ program dam_break
                 if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
                 (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
 
-                    dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
+                    dpcell(i1,j1)%plist(cout)%vx=entry_vel*3.0_dp*(((dpcell(i1,j1)%plist(cout)%y-(brrealy)*(2*bl-1))/wc) &
+                    -0.5_dp*((dpcell(i1,j1)%plist(cout)%y-(brrealy)*(2*bl-1))/wc)**2)
                     dpcell(i1,j1)%plist(cout)%vy=0.0_dp
 
                     ! if(((dpcell(i1,j1)%plist(cout)%y-yl-prrealy)-line_grad* &
@@ -134,7 +135,7 @@ program dam_break
         !$omp parallel default(shared)
         call comp_vel        
         call comp_pos
-        call cellshift
+        call cellshiftalt
         call neighbour
         call effpor
         ! call freesurf

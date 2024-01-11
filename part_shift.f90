@@ -576,7 +576,7 @@ module part_shift
 
                     normx=merge(normx,0.0_dp,dpcell(i,j)%plist(k)%free)
                     normy=merge(normy,0.0_dp,dpcell(i,j)%plist(k)%free)
-                    pint=merge(1,0,(.not.(dpcell(i,j)%plist(k)%free)).and.(dpcell(i,j)%pplist(k)%porosity<0.6_dp))
+                    pint=merge(1,1,(.not.(dpcell(i,j)%plist(k)%free)))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &

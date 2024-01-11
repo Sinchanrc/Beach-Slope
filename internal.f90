@@ -203,7 +203,7 @@ module internal
             end do
         
             deallocate(flist,input)
-            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))-1!+1
+            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))!+1
             fpx=floor(real(2.0_dp,dp)/(2*real(prrealx,dp)))!+1
             allocate(flist(fpy,fpx))
         !$omp end single

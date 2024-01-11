@@ -40,9 +40,6 @@ module search
 
         celln%plist(n)%free=.false.
         celln%pplist(n)%gradvx=0.0_dp
-        celln%pplist(n)%shep=0.0_dp
-        celln%pplist(n)%shep_gradx=0.0_dp
-        celln%pplist(n)%shep_grady=0.0_dp
         t1=0.0_dp
         t2=0.0_dp
 
