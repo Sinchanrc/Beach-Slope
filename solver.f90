@@ -324,8 +324,8 @@ module solver
             elseif (rci_request==1) then
 
                 ! call mkl_dcsrgemv('N',finmax, fval,frow, fcol, tmp(ipar(22)), tmp(ipar(23)))
-                call spmv (finmax,fval,frow,fcol,tmp(ipar(22)),tmp(ipar(23)))
-                ! call spmv2(finmax,tmp(ipar(22)),tmp(ipar(23)))
+                ! call spmv (finmax,fval,frow,fcol,tmp(ipar(22)),tmp(ipar(23)))
+                call spmv2(finmax,tmp(ipar(22)),tmp(ipar(23)))
 
                 goto 11
 

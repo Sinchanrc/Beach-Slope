@@ -42,21 +42,21 @@ module functions
     end function dist
 
     !Calculating the distance between a interpolation particle and internal particle
-    function bpdist(p1,p2) result(res2) 
-        implicit none
-        real(dp) :: res2
-        type(particles),intent(in) :: p1,p2
+    ! function bpdist(p1,p2) result(res2) 
+    !     implicit none
+    !     real(dp) :: res2
+    !     type(particles),intent(in) :: p1,p2
 
-        res2=0.0_dp
+    !     res2=0.0_dp
 
-        associate(x1=>p1%x,x2=>p2%x,y1=>p1%y, &
-                    y2=>p2%y)
+    !     associate(x1=>p1%x,x2=>p2%x,y1=>p1%y, &
+    !                 y2=>p2%y)
 
-            res2=sqrt(((x1+p1%posshift(1)-x2)**2)+((y1+p1%posshift(2)-y2)**2))
+    !         res2=sqrt(((x1+p1%posshift(1)-x2)**2)+((y1+p1%posshift(2)-y2)**2))
             
-        end associate
+    !     end associate
 
-    end function
+    ! end function
 
     ! Invert 2D matrix
     pure subroutine invertmat2D(array) 

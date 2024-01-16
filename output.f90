@@ -60,31 +60,31 @@ module output
         return
     end subroutine print_ghostbd
 
-    subroutine print_interpolation()
+    ! subroutine print_interpolation()
 
-        implicit none
+    !     implicit none
 
-        integer :: i,j,k,m
+    !     integer :: i,j,k,m
 
-        !Ghost Boundary particle postion
-        ! write(result,'("ghost_",i0,".txt")')(modifier+iter)
-        open(12,file='interpolation.txt',status='replace')
-        do j=(sx),(ex)
-        do i=(sy),(ey)
-            if (dpcell(i,j)%btot/=0) then
-            do cout=1,dpcell(i,j)%btot
-            if (dpcell(i,j)%plist(cout)%tid<=2) then
-            write(12,'(F10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x+dpcell(i,j)%plist(cout)%posshift(1),&
-            dpcell(i,j)%plist(cout)%y+dpcell(i,j)%plist(cout)%posshift(2)
-            end if
-            end do
-            end if
-        end do
-        end do
-        close(12)
+    !     !Ghost Boundary particle postion
+    !     ! write(result,'("ghost_",i0,".txt")')(modifier+iter)
+    !     open(12,file='interpolation.txt',status='replace')
+    !     do j=(sx),(ex)
+    !     do i=(sy),(ey)
+    !         if (dpcell(i,j)%btot/=0) then
+    !         do cout=1,dpcell(i,j)%btot
+    !         if (dpcell(i,j)%plist(cout)%tid<=2) then
+    !         write(12,'(F10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x+dpcell(i,j)%plist(cout)%posshift(1),&
+    !         dpcell(i,j)%plist(cout)%y+dpcell(i,j)%plist(cout)%posshift(2)
+    !         end if
+    !         end do
+    !         end if
+    !     end do
+    !     end do
+    !     close(12)
 
-        return
-    end subroutine print_interpolation
+    !     return
+    ! end subroutine print_interpolation
 
     subroutine print_fluid()
 

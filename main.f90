@@ -99,7 +99,7 @@ program dam_break
         end do
     end do
 
-    do while(iter<4001)
+    do while(iter<5001)
 
         told=t
         t=t+dt

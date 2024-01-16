@@ -12,12 +12,12 @@ module turbulence
     subroutine eddyvis
 
         implicit none
-        real(dp) :: t1,t2,t3
+        real(dp) :: t1,t2,t3,t4
         real(dp),parameter ::cv=0.080_dp,ce=1.0_dp,cs=0.150_dp
         integer :: i,j,k,m
         
         !Mean strain and SGS tensor calculation for fluid particles
-        !$omp do schedule (runtime) private(m,i,k,j,t1,t2,t3) collapse(2)
+        !$omp do schedule (runtime) private(m,i,k,j,t1,t2,t3,t4) collapse(2)
         do j=sx,ex
             do i=sy,ey
                 
@@ -77,14 +77,14 @@ module turbulence
                     ! dpcell(i,j)%pplist(k)%S=sqrt(2*(dpcell(i,j)%pplist(k)%meanstrn(1)**2+ &
                     ! dpcell(i,j)%pplist(k)%meanstrn(4)**2))
 
-                    dpcell(i,j)%pplist(k)%S=sqrt(2*(t1**2+ &
+                    t4=sqrt(2*(t1**2+ &
                     t2**2)+(2*t3)**2)
 
                     ! Calculating Eddy viscosity
-                    dpcell(i,j)%pplist(k)%nut=((cs*dl)**2)*dpcell(i,j)%pplist(k)%S
+                    dpcell(i,j)%pplist(k)%nut=((cs*dl)**2)*t4
 
                     ! Calculating tke
-                    dpcell(i,j)%pplist(k)%tke=(cv/ce)*(dl*dpcell(i,j)%pplist(k)%S)**2
+                    dpcell(i,j)%pplist(k)%tke=(cv/ce)*(dl*t4)**2
 
                     ! Calculating SGS stress tensor
                     ! dpcell(i,j)%pplist(k)%tau(1)=2*dpcell(i,j)%pplist(k)%meanstrn(1)*dpcell(i,j)%pplist(k)%nut &

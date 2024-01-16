@@ -574,8 +574,8 @@ module part_shift
                     normx=normx/t1
                     normy=normy/t1
 
-                    normx=merge(normx,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
-                    normy=merge(normy,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
+                    normx=merge(normx,0.0_dp,dpcell(i,j)%plist(k)%free)
+                    normy=merge(normy,0.0_dp,dpcell(i,j)%plist(k)%free)
                     pint=merge(1,1,(.not.(dpcell(i,j)%plist(k)%free)))
 
                     do m=1,dpcell(i,j)%list(k)%count

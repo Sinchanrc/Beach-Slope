@@ -107,7 +107,7 @@ module memory
         end do
 
         allocate(frow(finmax+1),fvec(finmax),fsol(finmax),fguess(finmax))
-        allocate(fval(finmax*ceiling(fac2*fplistmax)),fcol(finmax*ceiling(fac2*fplistmax)))
+        ! allocate(fval(finmax*ceiling(fac2*fplistmax)),fcol(finmax*ceiling(fac2*fplistmax)))
         allocate(fmatrix(finmax),perm(finmax),pguess(finmax))
 
         fguess=1000.0_dp
@@ -119,11 +119,11 @@ module memory
             if (dpcell(i,j)%ptot/=0) then
                 do cout=1,dpcell(i,j)%ptot
 
-                    if ((dpcell(i,j)%plist(cout)%tid/=4)) then
+                    ! if ((dpcell(i,j)%plist(cout)%tid/=4)) then
 
                     fguess(dpcell(i,j)%plist(cout)%matid)=dpcell(i,j)%plist(cout)%pressure
 
-                    end if
+                    ! end if
 
 
                 end do

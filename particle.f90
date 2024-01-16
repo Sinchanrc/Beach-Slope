@@ -41,8 +41,8 @@ module particle
         ! real(dp),allocatable,public :: meanstrn(:),tau(:),shift(:),bmls(:),coff(:),coffmg(:)
         logical,public :: mirror=.false.,xnorm=.false.,ynorm=.false.,vicinity=.false.,&
                             free=.false.,buffer=.false.,domain=.true.,range=.true.
-        integer,allocatable :: wall(:)
-        real(dp),allocatable,public :: posshift(:)
+        ! integer,allocatable :: wall(:)
+        ! real(dp),allocatable,public :: posshift(:)
 
     end type particles
 
@@ -60,8 +60,8 @@ module particle
     type,public :: properties 
         real(dp),allocatable,public :: meanstrn(:),tau(:),coff(:),bmls(:)
         real(dp),public :: cdiff=0.0_dp,gradvx=0.0_dp,tden=0.0_dp,vel=0.0_dp,&
-                            S=0.0_dp,nut=0.0_dp,tke=0.0_dp,porosity=1.0_dp,resistx=0.0_dp,varts=0.0_dp, &
-                            resisty=0.0_dp,phi_gradx=0.0_dp,phi_grady=0.0_dp
+                            nut=0.0_dp,tke=0.0_dp,porosity=1.0_dp,resistx=0.0_dp, &
+                            resisty=0.0_dp
                 
         
 
