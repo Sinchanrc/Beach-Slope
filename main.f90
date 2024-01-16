@@ -58,6 +58,7 @@ program dam_break
         call comp_pos
         call cellshiftalt
         call neighbour
+        call freesurf
         call effpor
         call opt2_shift
         ! call massupdate
@@ -137,6 +138,7 @@ program dam_break
         call comp_pos
         call cellshiftalt
         call neighbour
+        call freesurf
         call effpor
         ! call freesurf
         ! call compcorr(3,1)
@@ -160,7 +162,7 @@ program dam_break
         ! ((t*sqrt(abs(g)/wc))>=iter*displaytime)) then
         
         ! call probevalue
-        call print_fluid
+        call combined
         iter=iter+1
         ! end if
 

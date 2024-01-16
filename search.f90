@@ -52,7 +52,7 @@ module search
             
                     if ((celln%plist(n)%tid/=cell1%plist(counter2)%tid) &
                     .or.((celln%plist(n)%tid==cell1%plist(counter2)%tid) &
-                    .and.(celln%plist(n)%pid/=cell1%plist(counter2)%pid))) then
+                    .and.(celln%plist(n)%matid/=cell1%plist(counter2)%matid))) then
 
                     radial=dist(celln%plist(n),cell1%plist(counter2))
 
@@ -107,7 +107,7 @@ module search
             
                     if ((celln%plist(n)%tid/=cell2%plist(counter2)%tid) &
                     .or.((celln%plist(n)%tid==cell2%plist(counter2)%tid) &
-                    .and.(celln%plist(n)%pid/=cell2%plist(counter2)%pid))) then
+                    .and.(celln%plist(n)%matid/=cell2%plist(counter2)%matid))) then
 
                     radial=dist(celln%plist(n),cell2%plist(counter2))
                     if((radial<(2*smln)))then
@@ -161,7 +161,7 @@ module search
             
                     if ((celln%plist(n)%tid/=cell3%plist(counter2)%tid) &
                     .or.((celln%plist(n)%tid==cell3%plist(counter2)%tid) &
-                    .and.(celln%plist(n)%pid/=cell3%plist(counter2)%pid))) then
+                    .and.(celln%plist(n)%matid/=cell3%plist(counter2)%matid))) then
 
                     radial=dist(celln%plist(n),cell3%plist(counter2))
                     if((radial<(2*smln)))then
@@ -215,7 +215,7 @@ module search
             
                     if ((celln%plist(n)%tid/=cell4%plist(counter2)%tid) &
                     .or.((celln%plist(n)%tid==cell4%plist(counter2)%tid) &
-                    .and.(celln%plist(n)%pid/=cell4%plist(counter2)%pid))) then
+                    .and.(celln%plist(n)%matid/=cell4%plist(counter2)%matid))) then
 
                     radial=dist(celln%plist(n),cell4%plist(counter2))
                     if((radial<(2*smln)))then
@@ -268,6 +268,7 @@ module search
         if (celln%plist(n)%tid==3) then
         
         celln%plist(n)%free=.false.
+        celln%plist(n)%vicinity=.false.
         celln%pplist(n)%gradvx=(res(1)+res(4))!t1+t2
 
         res_s=res

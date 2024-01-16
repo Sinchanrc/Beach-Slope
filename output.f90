@@ -184,5 +184,41 @@ module output
         close(11)
         
     end subroutine print_probe
+
+    subroutine combined()
+        implicit none
+
+        integer :: i,j,k,m
+        character(len=70):: fluid,buffer1
+
+        write(fluid,'("fluid_",i0,".txt")')(modifier+iter)
+        write(buffer1,'("buffer_",i0,".txt")')(modifier+iter)
+        open(11,file='fluid/'//fluid,status='replace',action='write')
+        open(14,file='buffer/'//buffer1,status='replace',action='write')
+
+        do j=sx,ex
+            do i=sy,ey
+                do cout=1,dpcell(i,j)%ptot
+                if ((dpcell(i,j)%plist(cout)%tid==3).and.(.not.(dpcell(i,j)%plist(cout)%buffer))) then
+                write(11,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x,&
+                dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
+                ,dpcell(i,j)%plist(cout)%vy,dpcell(i,j)%pplist(cout)%porosity
+
+                elseif ((dpcell(i,j)%plist(cout)%tid==3).and.(dpcell(i,j)%plist(cout)%buffer)) then
+                write(14,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x,&
+                dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
+                ,dpcell(i,j)%plist(cout)%vy,dpcell(i,j)%pplist(cout)%porosity
+
+                end if
+                end do
+
+            end do
+        end do
+
+        close(11)
+        close(14)
+    
+        
+    end subroutine combined
     
 end module output

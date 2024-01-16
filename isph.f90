@@ -45,104 +45,44 @@ module isph
         
     end subroutine projection
     
-    ! subroutine freesurf
-    !     implicit none 
+    subroutine freesurf
+        implicit none 
 
-    !     real(dp) :: heff,t1,t2
-    !     integer :: i,j,k,m
+        real(dp) :: heff,t1,t2
+        integer :: i,j,k,m
 
 
-    !     ! Free surface(x%tid==3) then
-    !     !$omp do private(m,t1,t2,i,k,j,heff) schedule (runtime) collapse(2)    
-    !     do j=sx,ex
-    !         do i=sy,ey
-    !         if(dpcell(i,j)%ptot/=0) then
-    !             do k=1,dpcell(i,j)%ptot
-    !             ! Free Surface Identification
-    !             if ((dpcell(i,j)%plist(k)%tid==3).and. &
-    !             (.not.(dpcell(i,j)%plist(k)%buffer))) then
-    !             ! dpcell(i,j)%plist(k)%free=.false.
-    !             ! dpcell(i,j)%pplist(k)%gradvx=0.0_dp
-    !             ! t1=0.0_dp
-    !             ! t2=0.0_dp
+        ! Free surface(x%tid==3) then
+        !$omp do private(m,i,k,j,heff) schedule (runtime) collapse(2)    
+        do j=sx,ex
+            do i=sy,ey
+                do k=1,dpcell(i,j)%ptot
+                ! Free Surface Identification
+                if ((dpcell(i,j)%plist(k)%tid==3).and. &
+                (.not.(dpcell(i,j)%plist(k)%buffer))) then
 
-    !             ! if (dpcell(i,j)%pplist(k)%inpore) then
-
-    !             heff=h1!(max(prrealx,prrealy)*hfac)/(2.0_dp*sqrt(dpcell(i,j)%pplist(k)%porosity))  !*sqrt(por)
-
-    !             ! else 
-
-    !             ! heff=(max(prrealx,prrealy)*hfac)/(2.0_dp)
-
-    !             ! end if
-
-    !             ! do m=1,dpcell(i,j)%list(k)%count
-    !             !     associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-    !             !     y=>dpcell(i,j)%list(k)%interlist(2,m), &
-    !             !     pp=>dpcell(i,j)%list(k)%interlist(3,m))
-
-    !             !     if ((x%tid/=4).and. &
-    !             !     (dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
-
-    !             !     t1=t1+((x%mass*(x%x- &
-    !             !     dpcell(i,j)%plist(k)%x)*Wabx(x,&
-    !             !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))/&
-    !             !     x%density)
-
-    !             !     t2=t2+((x%mass*(x%y- &
-    !             !     dpcell(i,j)%plist(k)%y)*Waby(x,&
-    !             !     dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),heff))/&
-    !             !     x%density)
-
-    !             !     end if
-
-    !             !     end associate
-    !             ! end do
-
-    !             ! dpcell(i,j)%pplist(k)%gradvx=t1+t2
-    !             if(dpcell(i,j)%pplist(k)%gradvx<=(lamfs*maxdivr)) then
-    !                 ! dpcell(i,j)%plist(k)%free=.true.
+                heff=h1
+                if(dpcell(i,j)%pplist(k)%gradvx<=(lamfs*maxdivr)) then
                 
-    !                 do m=1,dpcell(i,j)%list(k)%count
-    !                     associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-    !                     y=>dpcell(i,j)%list(k)%interlist(2,m), &
-    !                     pp=>dpcell(i,j)%list(k)%interlist(3,m))
-
-    !                     if ((dpcell(i,j)%list(k)%dist(m)<=(2*heff))) then
+                    do m=1,dpcell(i,j)%list(k)%count
+                        associate(x=>dpcell(i,j)%list(k)%nh(m)%part)
     
-    !                     x%vicinity=.true.
+                        x%vicinity=.true.
 
-    !                     end if
     
-    !                     end associate
-    !                 end do
+                        end associate
+                    end do
 
-    !             end if
+                end if
 
-    !             ! if (dpcell(i,j)%pplist(k)%gradvx<=pll) then
+                end if
 
-    !             !     dpcell(i,j)%pplist(k)%lamp=0.50_dp
-
-    !             ! elseif((pll<dpcell(i,j)%pplist(k)%gradvx).and.(dpcell(i,j)%pplist(k)%gradvx<pul)) then
-
-    !             ! dpcell(i,j)%pplist(k)%lamp=0.50_dp*(1.0_dp-cos(22.0_dp*(dpcell(i,j)%pplist(k)%gradvx-pll)/ &
-    !             !                 ((pul-pll)*7.0_dp)))
-    !             ! else 
-
-    !             !     dpcell(i,j)%pplist(k)%lamp =1.0_dp
-
-    !             ! end if
-
-
-    !             end if
-
-    !             end do
-    !         end if
-    !         end do
-    !     end do
-    !     !$omp end do
+                end do
+            end do
+        end do
+        !$omp end do
         
-    ! end subroutine freesurf
+    end subroutine freesurf
 
     subroutine resetid
         implicit none 
