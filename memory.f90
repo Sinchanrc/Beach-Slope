@@ -107,7 +107,7 @@ module memory
         end do
 
         allocate(frow(finmax+1),fvec(finmax),fsol(finmax),fguess(finmax))
-        ! allocate(fval(finmax*ceiling(fac2*fplistmax)),fcol(finmax*ceiling(fac2*fplistmax)))
+        allocate(fval(finmax*ceiling(fac2*fplistmax)),fcol(finmax*ceiling(fac2*fplistmax)))
         allocate(fmatrix(finmax),perm(finmax),pguess(finmax))
 
         fguess=1000.0_dp

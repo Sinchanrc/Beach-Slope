@@ -44,9 +44,9 @@ module integrator
                             dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%part=>dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%ftemp(dpcell(i,j)%temfct)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                                 
                             end if
                         elseif(y1<dpcell(i,j)%ybot) then
@@ -56,9 +56,9 @@ module integrator
                             dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%ts%list(dpcell(i,j)%ts%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         elseif(y1>=dpcell(i,j)%ytop) then
                             if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
@@ -67,9 +67,9 @@ module integrator
                             dpcell(i,j)%tn%list(dpcell(i,j)%tn%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%tn%list(dpcell(i,j)%tn%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%tn%list(dpcell(i,j)%tn%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         end if
                         elseif(x1>=dpcell(i,j)%xright) then
@@ -80,9 +80,9 @@ module integrator
                             dpcell(i,j)%tne%list(dpcell(i,j)%tne%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%tne%list(dpcell(i,j)%tne%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%tne%list(dpcell(i,j)%tne%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         elseif((y1>=dpcell(i,j)%ybot).and.(y1<dpcell(i,j)%ytop)) then
                             if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
@@ -91,9 +91,9 @@ module integrator
                             dpcell(i,j)%te%list(dpcell(i,j)%te%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%te%list(dpcell(i,j)%te%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%te%list(dpcell(i,j)%te%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         elseif(y1<dpcell(i,j)%ybot) then
                             if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
@@ -102,9 +102,9 @@ module integrator
                             dpcell(i,j)%tse%list(dpcell(i,j)%tse%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%tse%list(dpcell(i,j)%tse%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%tse%list(dpcell(i,j)%tse%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         end if
                         elseif (x1<dpcell(i,j)%xleft) then
@@ -115,9 +115,9 @@ module integrator
                             dpcell(i,j)%tnw%list(dpcell(i,j)%tnw%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%tnw%list(dpcell(i,j)%tnw%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%tnw%list(dpcell(i,j)%tnw%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         elseif((y1>=dpcell(i,j)%ybot).and.(y1<dpcell(i,j)%ytop)) then
                             if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
@@ -126,9 +126,9 @@ module integrator
                             dpcell(i,j)%tw%list(dpcell(i,j)%tw%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%tw%list(dpcell(i,j)%tw%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%tw%list(dpcell(i,j)%tw%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         elseif (y1<dpcell(i,j)%ybot) then
                             if ((x1>xlcutoff).or.(dpcell(i,j)%plist(k)%buffer).or. &
@@ -137,9 +137,9 @@ module integrator
                             dpcell(i,j)%tsw%list(dpcell(i,j)%tsw%count)=dpcell(i,j)%plist(k)
                             ! dpcell(i,j)%tsw%list(dpcell(i,j)%tsw%count)%dead=merge(.false.,.true.,x1<=domain_ex)
                             ! dpcell(i,j)%tsw%list(dpcell(i,j)%tsw%count)%buffer=merge(.false.,.true.,x1<=domain_en)
-                            else
-                                dpcell(i,j)%elist=dpcell(i,j)%elist+1
-                                dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
+                            ! else
+                            !     dpcell(i,j)%elist=dpcell(i,j)%elist+1
+                            !     dpcell(i,j)%exitlist(dpcell(i,j)%elist)=dpcell(i,j)%plist(k)%pid
                             end if
                         end if
                         end if
@@ -736,8 +736,6 @@ module integrator
         !$omp do schedule (runtime) private(i,k,j) collapse(2)   
         do j=sx,ex
             do i=sy,ey
-                if(dpcell(i,j)%ptot/=0) then
-
                 do k=1,dpcell(i,j)%ptot
 
                     if (dpcell(i,j)%plist(k)%tid==3) then
@@ -748,12 +746,20 @@ module integrator
                     dpcell(i,j)%plist(k)%y=(dpcell(i,j)%plist(k)%y + &
                     dpcell(i,j)%plist(k)%ys+dt*dpcell(i,j)%plist(k)%vy/dpcell(i,j)%pplist(k)%porosity)/2.0_dp
 
+                    if (dpcell(i,j)%plist(k)%buffer) then
+
+                            if((dpcell(i,j)%plist(k)%x>((brrealx)*((2*bl)-1))+brrealx+domain_shift) &
+                            .and.(dpcell(i,j)%plist(k)%x<xrcutoff)) then
+
+                                dpcell(i,j)%plist(k)%buffer=.false.
+
+                            end if
+
+                    end if
 
                     end if
 
                 end do
-
-                end if
             end do
         end do
         !$omp end do        

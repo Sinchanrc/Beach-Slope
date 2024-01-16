@@ -71,7 +71,7 @@ module setup
         fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
         fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
-        xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)
+        xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)+domain_shift
         xlcutoff=((brrealx)*((2*bl)-1))+brrealx+2*h1+domain_shift
         ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)-2*prrealy/sqrt(por)
 
@@ -94,10 +94,10 @@ module setup
                 allocate(dpcell(i,j)%plist(fplistmax),dpcell(i,j)%ftemp(fplistmax), &
                 dpcell(i,j)%cellid(2),dpcell(i,j)%porlist(fplistmax))
 
-                if ((dpcell(i,j)%ybot<=ytcutoff).and.(dpcell(i,j)%xleft<=xlcutoff)) then
-                    allocate(dpcell(i,j)%exitlist(ceiling(0.25*fplistmax)))
-                    dpcell(i,j)%exitbuff=.true.
-                end if
+                ! if ((dpcell(i,j)%ybot<=ytcutoff).and.(dpcell(i,j)%xleft<=xlcutoff)) then
+                !     allocate(dpcell(i,j)%exitlist(ceiling(0.25*fplistmax)))
+                !     dpcell(i,j)%exitbuff=.true.
+                ! end if
 
                 do k=1,fplistmax 
                     dpcell(i,j)%ftemp(k)%part=>dpcell(i,j)%plist(k)
