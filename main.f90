@@ -74,6 +74,8 @@ program dam_break
 
     iter=1
 
+    !TODO:Add gravity acceleration to buffer particles
+
     do j1=sx,ex 
         do i1=sy,ey
         if (dpcell(i1,j1)%ptot/=0) then
@@ -82,8 +84,7 @@ program dam_break
                 if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
                 (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
 
-                    dpcell(i1,j1)%plist(cout)%vx=entry_vel*3.0_dp*(((dpcell(i1,j1)%plist(cout)%y-(brrealy)*(2*bl-1))/wc) &
-                    -0.5_dp*((dpcell(i1,j1)%plist(cout)%y-(brrealy)*(2*bl-1))/wc)**2)
+                    dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
                     dpcell(i1,j1)%plist(cout)%vy=0.0_dp
 
                     ! if(((dpcell(i1,j1)%plist(cout)%y-yl-prrealy)-line_grad* &
@@ -99,7 +100,7 @@ program dam_break
         end do
     end do
 
-    do while(iter<5001)
+    do while(iter<8001)
 
         told=t
         t=t+dt

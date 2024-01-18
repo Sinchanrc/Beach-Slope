@@ -59,7 +59,7 @@ module setup
         bnx=bnx+2*(bl)
         bny=bny+2*(bl)
 
-        allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))
+        ! allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))
 
         xl=(2*bl-1)*brrealx+brrealx 
         yl=(2*bl-1)*brrealy+solidy+set_ht
@@ -68,11 +68,13 @@ module setup
         ! line_grad=(yu-yl)/(xu-xl)
         line_grad=(line_grad*22)/(180.0_dp*7)
 
-        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
+        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+3
         fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
+        allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))
+
         xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)+domain_shift
-        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+2*h1+domain_shift
+        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+domain_shift
         ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)-2*prrealy/sqrt(por)
 
         icount=0

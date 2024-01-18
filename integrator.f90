@@ -599,16 +599,16 @@ module integrator
                 dpcell(i,j)%plist(k)%vxs))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity)
 
                 dpcell(i,j)%plist(k)%vys=(dpcell(i,j)%plist(k)%vy+dt* &
-                (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity))/ &
-                (1.0_dp-dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity)
+                (dpcell(i,j)%plist(k)%vys))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity)
+
+                dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity*dt
 
             end if
 
             if ((dpcell(i,j)%plist(k)%buffer)) then
 
                 dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx
-                dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy
-
+                dpcell(i,j)%plist(k)%vys=g*dpcell(i,j)%pplist(k)%porosity*dt
             end if
 
                 end do
@@ -714,7 +714,7 @@ module integrator
 
                     if ((dpcell(i,j)%plist(k)%buffer)) then
                         dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vxs
-                        ! dpcell(i,j)%plist(k)%vxs=entry_vel
+                        dpcell(i,j)%plist(k)%vy=0.0_dp
                     end if
 
                 end do
@@ -816,7 +816,7 @@ module integrator
         ! elseif ((t>3.0_dp).and.(t<=4.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.004))
         else
-        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0040_dp)
+        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0050_dp)
         end if
         if((.not.(ieee_is_finite(numax))).or.(ieee_is_nan(numax))) then
         numax=0.0_dp

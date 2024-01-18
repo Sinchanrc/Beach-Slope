@@ -213,7 +213,7 @@ module isph
                                 
 
 
-                                if (.not.(x%buffer)) then
+                                ! if (.not.(x%buffer)) then
 
                                 ! fmatrix(pos)%val(m)=(-(t1+t2))*lamp
                                 ! fmatrix(pos)%col(m)=x%matid
@@ -221,16 +221,16 @@ module isph
                                 fmatrix(pos)%val(ins_pt)=(-(t1+t2))*lamp
                                 fmatrix(pos)%col(ins_pt)=x%matid
 
-                                else 
-                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp*x%pressure
+                                ! else 
+                                !     fvec(pos)=fvec(pos)+(t1+t2)*lamp*x%pressure
 
-                                end if
+                                ! end if
 
                                 ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)
                                 dia_term=dia_term+(t1+t2)
 
 
-                                if (x%tid==3) then
+                                ! if (x%tid==3) then
 
 
                                 t1=(pvol*(x%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
@@ -244,20 +244,20 @@ module isph
                                 (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
                                 z(2,m)))
 
-                                else 
+                                ! else 
 
-                                    t1=(pvol*(x%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
-                                    dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
-                                    (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
-                                    z(2,m)))
+                                !     t1=(pvol*(x%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
+                                !     dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
+                                !     (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                                !     z(2,m)))
 
 
-                                    t2=(pvol*(x%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
-                                    dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
-                                    (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
-                                    z(2,m)))
+                                !     t2=(pvol*(x%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
+                                !     dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
+                                !     (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                                !     z(2,m)))
 
-                                end if
+                                ! end if
 
                                 fvec(pos)=fvec(pos)+(t1+t2)*lamp/real(dt,dp) !lamp
 
@@ -338,16 +338,16 @@ module isph
                                 ! Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1)) &
                                 ! *(dpcell(i,j)%plist(k)%y-x%y)*(p_dist)
 
-                                if (.not.(x%buffer)) then
+                                ! if (.not.(x%buffer)) then
 
                                 ! fmatrix(pos)%val(m)=-(t1+t2)*lamp2!*y%lamp
                                 ! fmatrix(pos)%col(m)=x%matid
 
                                 fmatrix(pos)%val(ins_pt)=-(t1+t2)*lamp2!*y%lamp
                                 fmatrix(pos)%col(ins_pt)=x%matid
-                                else 
-                                    fvec(pos)=fvec(pos)+(t1+t2)*lamp2*x%pressure
-                                end if
+                                ! else 
+                                !     fvec(pos)=fvec(pos)+(t1+t2)*lamp2*x%pressure
+                                ! end if
 
                                 ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*y%lamp
                                 dia_term=dia_term+(t1+t2)
@@ -363,8 +363,11 @@ module isph
                                     (y%coff(3)*z(1,m)+y%coff(4)* &
                                     z(2,m)))/(dpcell(i,j)%plist(k)%density)
 
+                                    ! if (.not.(x%buffer)) then
 
                                     fvec(pos)=fvec(pos)+(t1+t2)*lamp2/real(dt,dp)  !lamp
+
+                                    ! end if
 
                                 
                                 elseif (x%tid<=2) then
@@ -457,11 +460,11 @@ module isph
 
                         do k=1,dpcell(i,j)%ptot
 
-                        if (.not.(dpcell(i,j)%plist(k)%buffer)) then
+                        ! if (.not.(dpcell(i,j)%plist(k)%buffer)) then
                         
                         dpcell(i,j)%plist(k)%pressure=fsol(dpcell(i,j)%plist(k)%matid)
 
-                        end if
+                        ! end if
 
                         end do
 

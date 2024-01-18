@@ -528,7 +528,7 @@ module part_shift
         real(dp) :: heff,frac=0.0010_dp,t1,t2,xs,ys,vxs,vys!0.0420_dp
         
         ! Optimized Particle Shifting
-        !$omp do private(i,k,m,t1,t2,normx,normy,heff,pint,xs,ys,vxs,vys) &
+        !$omp do private(i,k,m,t1,t2,normx,normy,heff,pint,xs,ys,vxs,vys,frac) &
         !$omp schedule (runtime) collapse(2)
             do j=sx,ex
             do i=sy,ey
@@ -574,16 +574,17 @@ module part_shift
                     normx=normx/t1
                     normy=normy/t1
 
-                    normx=merge(normx,0.0_dp,dpcell(i,j)%plist(k)%free)
-                    normy=merge(normy,0.0_dp,dpcell(i,j)%plist(k)%free)
+                    normx=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free)
+                    normy=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free)
                     pint=merge(1,1,(.not.(dpcell(i,j)%plist(k)%free)))
+                    frac=merge(0.0110_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
 
-                        xs=xs-csh*(heff**2)* &
+                        xs=xs-csh*(heff**2)*frac* &
                         ((1-normx**2)*z(1,m)-normx*normy* &
                         z(2,m))&
                         *(x%mass/x%density)* &
@@ -603,7 +604,7 @@ module part_shift
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
 
-                        ys=ys-csh*(heff**2)*&
+                        ys=ys-csh*(heff**2)*frac* &
                         (-normx*normy*z(1,m)+(1-normy**2)* &
                         z(2,m))&
                         *(x%mass/x%density)* &

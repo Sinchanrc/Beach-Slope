@@ -197,7 +197,7 @@ module boundary
 
                 remain_len=wc-lhs_btm-open_lhs*2*prrealy
 
-                bn1=floor((real(remain_len,dp)/(2*real(brrealy,dp))))-2
+                bn1=floor((real(remain_len,dp)/(2*real(brrealy,dp))))-3
 
                 deallocate(blist)
                 allocate(blist(bn1,bl))
@@ -296,12 +296,12 @@ module boundary
 
         !$omp single
             deallocate(blist)
-            allocate(blist(bl,(bnx-2*bl+6)))
+            allocate(blist(bl,(bnx-2*bl+7)))
         !$omp end single
 
         !Setting bottom boundary positions
         !$omp do schedule(runtime) private(i,j) collapse(2) 
-            do j =1,bnx-2*bl+6
+            do j =1,bnx-2*bl+7
                 do i=1,bl           
     
                 blist(i,j)%y=(bl-i)*2*brrealy
@@ -315,7 +315,7 @@ module boundary
         !Allocating index number to bottom boundary particles
         !$omp single 
     
-            do j =1,bnx-2*bl+6
+            do j =1,bnx-2*bl+7
                 do i=1,bl
                     if (i==1) then
 
@@ -343,7 +343,7 @@ module boundary
         !$omp do schedule(runtime) private(i,m,k) collapse(2) 
             do j=2,cellx-1
                 do i=2,celly-1
-                do m=1,bnx-2*bl+6
+                do m=1,bnx-2*bl+7
                     do k=1,bl
 
                     if ((blist(k,m)%x>=dpcell(i,j)%xleft) .and. &
@@ -399,7 +399,7 @@ module boundary
             do j =1,bl
                 do i=20,1,-1           
     
-                blist(i,j)%y=(((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)+prrealy/sqrt(por)) &
+                blist(i,j)%y=(((brrealy)*((2*bl)-1))+(fpy-3)*2*prrealy/sqrt(por)+prrealy/sqrt(por)) &
                 +prrealy+brrealy+(20-i)*2*brrealy
                 blist(i,j)%x=(((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)) &
                 +prrealx+brrealx+(j-1)*2*brrealx+domain_shift
