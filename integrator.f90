@@ -13,7 +13,7 @@ module integrator
     subroutine cellshiftalt
         implicit none  
         
-        integer :: i,j,k,m
+        integer :: i,j,k
 
         ! Preparing particle transfers to surrounding cells    
         !$omp do private(i,j,k) schedule (runtime) collapse(2)
@@ -231,7 +231,7 @@ module integrator
     subroutine cellshift
         implicit none 
         
-        integer :: i,j,k,m
+        integer :: i,j,k
         
         ! Preparing particle transfers to surrounding cells    
         !$omp do private(i,j,k) schedule (runtime) collapse(2)
@@ -439,12 +439,12 @@ module integrator
     subroutine int_vel
         implicit none
 
-        real(dp) :: vart,ps=0.0_dp,t1,t2,pvol,p_dist
+        real(dp) :: t1,t2,pvol,p_dist
 
         integer :: i,j,k,m
 
         ! Non-pressure velocity calculation for fluid particles
-        !$omp do schedule (runtime) private(m,t1,t2,k,i,j,vart,pvol,p_dist) collapse(2)
+        !$omp do schedule (runtime) private(m,t1,t2,k,i,j,pvol,p_dist) collapse(2)
         do j=sx,ex
             do i=sy,ey            
             
@@ -730,7 +730,7 @@ module integrator
         
         implicit none   
         
-        integer :: i,j,k,m
+        integer :: i,j,k
 
         ! New position calculations for fluid particles
         !$omp do schedule (runtime) private(i,k,j) collapse(2)   
@@ -772,7 +772,7 @@ module integrator
 
         implicit none
 
-        integer :: i,j,k,m
+        integer :: i,j
         
         ! Finding max velocity
         !$omp single

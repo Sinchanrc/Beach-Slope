@@ -74,8 +74,6 @@ program dam_break
 
     iter=1
 
-    !TODO:Add gravity acceleration to buffer particles
-
     do j1=sx,ex 
         do i1=sy,ey
         if (dpcell(i1,j1)%ptot/=0) then
