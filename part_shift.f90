@@ -577,7 +577,7 @@ module part_shift
                     normx=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free)
                     normy=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free)
                     pint=merge(1,1,(.not.(dpcell(i,j)%plist(k)%free)))
-                    frac=merge(0.0130_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
+                    frac=merge(0.0140_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
@@ -1705,106 +1705,106 @@ module part_shift
         
     ! end subroutine opt1_shift
 
-    ! subroutine coll_pos_shift
-    !     implicit none
+    subroutine coll_pos_shift
+        implicit none
         
-    !     real(dp) :: t1,t2
-    !     integer :: i,j,k,m
-    !     real(dp),parameter :: cr=0.0_dp,disfac=1.0_dp
-    !     real(dp) :: dcol
-    !     ! Explicit particle shifting
-    !     !$omp do private(i,j,k,m,t1,t2,dcol) schedule (runtime) collapse(2)
-    !         do j=sx,ex
-    !             do i=sy,ey
-    !                 if(dpcell(i,j)%ptot/=0) then
+        real(dp) :: t1,t2
+        integer :: i,j,k,m
+        real(dp),parameter :: cr=0.0_dp,disfac=1.0_dp
+        real(dp) :: dcol
+        ! Explicit particle shifting
+        !$omp do private(i,j,k,m,t1,t2,dcol) schedule (runtime) collapse(2)
+            do j=sx,ex
+                do i=sy,ey
+                    if(dpcell(i,j)%ptot/=0) then
                     
-    !                 do k=1,dpcell(i,j)%ptot
-    !                     dpcell(i,j)%plist(k)%ys=0.0_dp
-    !                     dpcell(i,j)%plist(k)%xs=0.0_dp
+                    do k=1,dpcell(i,j)%ptot
+                        dpcell(i,j)%plist(k)%ys=0.0_dp
+                        dpcell(i,j)%plist(k)%xs=0.0_dp
 
-    !                     if ((dpcell(i,j)%list(k)%count/=0) &
-    !                     .and.(dpcell(i,j)%pplist(k)%gradvx>=0.70_dp) &
-    !                     .and.(dpcell(i,j)%plist(k)%tid==3).and. &
-    !                     (.not.(dpcell(i,j)%plist(k)%buffer))) then
-    !                     dpcell(i,j)%plist(k)%ys=0.0_dp
-    !                     dpcell(i,j)%plist(k)%xs=0.0_dp
-    !                     t1=0.0_dp
-    !                     t2=0.0_dp
+                        if ((dpcell(i,j)%list(k)%count/=0) &
+                        .and.(dpcell(i,j)%pplist(k)%gradvx>=0.70_dp) &
+                        .and.(dpcell(i,j)%plist(k)%tid==3).and. &
+                        (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                        dpcell(i,j)%plist(k)%ys=0.0_dp
+                        dpcell(i,j)%plist(k)%xs=0.0_dp
+                        t1=0.0_dp
+                        t2=0.0_dp
 
-    !                     do m=1,dpcell(i,j)%list(k)%count
-    !                     associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-    !                         y=>dpcell(i,j)%list(k)%interlist(2,m), &
-    !                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
+                        do m=1,dpcell(i,j)%list(k)%count
+                            associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
+                                y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
+                                z=>dpcell(i,j)%list(k)%klt)
 
-    !                         dcol=0.5_dp*2*prrealx*disfac* &
-    !                         ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
-    !                         (sqrt(y%porosity)**(-1)))
+                            dcol=0.5_dp*2*prrealx*disfac* &
+                            ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
+                            (sqrt(y%porosity)**(-1)))
 
-    !                         t1=t1+(x%mass)
+                            t1=t1+(x%mass)
                         
-    !                         t2=t2+merge(-1.0_dp*(x%mass*(1.0_dp+cr)* &
-    !                         dpcell(i,j)%list(k)%dist(m)-dcol)*((dpcell(i,j)%plist(k)%x- &
-    !                         x%x)/dpcell(i,j)%list(k)%dist(m)),0.0_dp, &
-    !                         (dpcell(i,j)%list(k)%dist(m)<dcol))
+                            t2=t2+merge(-1.0_dp*(x%mass*(1.0_dp+cr)* &
+                            (dpcell(i,j)%list(k)%dist(m)-dcol))*((dpcell(i,j)%plist(k)%x- &
+                            x%x)/dpcell(i,j)%list(k)%dist(m)),0.0_dp, &
+                            (dpcell(i,j)%list(k)%dist(m)<dcol))
 
-    !                         end associate
-    !                     end do
+                            end associate
+                        end do
 
-    !                     dpcell(i,j)%plist(k)%xs=t2/(dpcell(i,j)%plist(k)%mass+t1)
+                        dpcell(i,j)%plist(k)%xs=t2/(dpcell(i,j)%plist(k)%mass+t1)
 
-    !                     t1=0.0_dp
-    !                     t2=0.0_dp
-    !                     if (dpcell(i,j)%list(k)%count/=0) then
-    !                     do m=1,dpcell(i,j)%list(k)%count
-    !                     associate(x=>dpcell(i,j)%list(k)%interlist(1,m), &
-    !                         y=>dpcell(i,j)%list(k)%interlist(2,m), &
-    !                         pp=>dpcell(i,j)%list(k)%interlist(3,m))
+                        t1=0.0_dp
+                        t2=0.0_dp
+                        if (dpcell(i,j)%list(k)%count/=0) then
+                        do m=1,dpcell(i,j)%list(k)%count
+                            associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
+                                y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
+                                z=>dpcell(i,j)%list(k)%klt)
 
-    !                         dcol=0.5_dp*2*prrealy*disfac* &
-    !                         ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
-    !                         (sqrt(y%porosity)**(-1)))
+                            dcol=0.5_dp*2*prrealy*disfac* &
+                            ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
+                            (sqrt(y%porosity)**(-1)))
 
-    !                         t1=t1+(x%mass)
+                            t1=t1+(x%mass)
                         
-    !                         t2=t2+merge(-1.0_dp*(x%mass*(1.0_dp+cr)* &
-    !                         dpcell(i,j)%list(k)%dist(m)-dcol)*((dpcell(i,j)%plist(k)%y- &
-    !                         x%y)/dpcell(i,j)%list(k)%dist(m)),0.0_dp, &
-    !                         (dpcell(i,j)%list(k)%dist(m)<dcol))
+                            t2=t2+merge(-1.0_dp*(x%mass*(1.0_dp+cr)* &
+                            (dpcell(i,j)%list(k)%dist(m)-dcol))*((dpcell(i,j)%plist(k)%y- &
+                            x%y)/dpcell(i,j)%list(k)%dist(m)),0.0_dp, &
+                            (dpcell(i,j)%list(k)%dist(m)<dcol))
 
-    !                         end associate
-    !                     end do
-    !                     end if
+                            end associate
+                        end do
+                        end if
 
-    !                     dpcell(i,j)%plist(k)%ys=t2/(dpcell(i,j)%plist(k)%mass+t1)
+                        dpcell(i,j)%plist(k)%ys=t2/(dpcell(i,j)%plist(k)%mass+t1)
 
-    !                     end if
-    !                 end do  
+                        end if
+                    end do  
                                     
-    !                 end if
-    !             end do
-    !         end do
-    !     !$omp end do
+                    end if
+                end do
+            end do
+        !$omp end do
 
-    !     ! Shifting hydrodynamic values
-    !     !$omp do schedule(dynamic) private(i,j,k) collapse(2)
-    !         do j=sx,ex
-    !         do i=sy,ey
-    !             if (dpcell(i,j)%ptot/=0) then
-    !             do k=1,dpcell(i,j)%ptot
-    !                 if ((dpcell(i,j)%pplist(k)%gradvx>=0.70_dp) &
-    !                 .and.(dpcell(i,j)%plist(k)%tid==3).and. &
-    !                 (.not.(dpcell(i,j)%plist(k)%buffer))) then
-    !                 dpcell(i,j)%plist(k)%x=dpcell(i,j)%plist(k)%x+dpcell(i,j)%plist(k)%xs
-    !                 dpcell(i,j)%plist(k)%y=dpcell(i,j)%plist(k)%y+dpcell(i,j)%plist(k)%ys
+        ! Shifting hydrodynamic values
+        !$omp do schedule(dynamic) private(i,j,k) collapse(2)
+            do j=sx,ex
+            do i=sy,ey
+                if (dpcell(i,j)%ptot/=0) then
+                do k=1,dpcell(i,j)%ptot
+                    if ((dpcell(i,j)%pplist(k)%gradvx>=0.70_dp) &
+                    .and.(dpcell(i,j)%plist(k)%tid==3).and. &
+                    (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                    dpcell(i,j)%plist(k)%x=dpcell(i,j)%plist(k)%x+dpcell(i,j)%plist(k)%xs
+                    dpcell(i,j)%plist(k)%y=dpcell(i,j)%plist(k)%y+dpcell(i,j)%plist(k)%ys
 
-    !                 end if
-    !             end do
-    !             end if
-    !         end do
-    !         end do
-    !     !$omp end do   
+                    end if
+                end do
+                end if
+            end do
+            end do
+        !$omp end do   
         
-    ! end subroutine coll_pos_shift
+    end subroutine coll_pos_shift
 
     ! subroutine implicit_shift
 
