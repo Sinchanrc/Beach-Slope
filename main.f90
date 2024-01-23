@@ -45,12 +45,13 @@ program dam_break
 
         call projection 
         call cellshift
+        call resetid
         call neighbour
         call effpor
         call eddyvis
         call int_vel
         !$omp end parallel
-        call resetid
+        ! call resetid
         call ppesolve
     
         !$omp parallel default(shared)
@@ -121,6 +122,7 @@ program dam_break
 
         call projection 
         call cellshift
+        call resetid
         call neighbour
         call effpor
         ! call freesurf
@@ -129,7 +131,7 @@ program dam_break
         ! call ghost_en
         call int_vel
         !$omp end parallel
-        call resetid
+        ! call resetid
         call ppesolve
     
         !$omp parallel default(shared)

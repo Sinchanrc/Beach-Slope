@@ -89,6 +89,8 @@ module isph
 
         integer :: mat_count,t1,i,j
 
+        !$omp single
+
         mat_count=0
 
         do j=1,cellx 
@@ -103,6 +105,8 @@ module isph
             end if
             end do
         end do
+
+        !$omp end single
     
         
     end subroutine resetid

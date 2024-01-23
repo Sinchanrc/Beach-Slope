@@ -201,7 +201,7 @@ module boundary
 
                 deallocate(blist)
                 allocate(blist(bn1,bl))
-                ytcutoff=(bny*2*brrealy)+(open_lhs*2*prrealy)+(bn1-1)*brrealy*2
+                ytcutoff=(bny*2*brrealy)+(open_lhs*2*prrealy)+(bn1)*brrealy*2-brrealy
 
 
         !$omp end single
