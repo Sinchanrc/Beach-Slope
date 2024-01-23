@@ -22,7 +22,7 @@ real(dp),public :: wc=0.650_dp,L=3.11_dp ,H=0.80_dp,&
                     csh=0.50_dp,rx,ry,lid_driven=0.0010_dp,rhomin=1000.0_dp, &
                     rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.230_dp,soilh=0.80_dp,set_ht=0.20_dp,&
                     outlet_ht=0.7_dp,coastal_ht=0.450_dp,por=0.380_dp,bulkden=1800_dp,entry_vel=-2.5_dp/(3600*24), &
-                    lhs_btm=0.23_dp
+                    lhs_btm=0.23_dp,rel_den=1.025_dp
 
 ! dt=time step,t=simulation time
 real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7.60_dp,displaytime=0.050_dp,dtsol=0.010_dp !0.00001
@@ -56,7 +56,7 @@ integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2,spx,s
 
 !frow=vector for carrying row values,fcol=vector for carrying correspomding column values
 integer,allocatable,public :: brow(:),bcol(:),frow(:),fcol(:)
-type(particles),allocatable,public :: blist(:,:),flist(:,:)
+type(particles),allocatable,public :: blist(:,:),flist(:,:),buffer1(:,:),buffer2(:,:)
 type(matrixsetup),allocatable,public :: bmatrix(:),fmatrix(:)
 integer,public ::sx,ex,sy,ey,threads,modifier=1000,fac=1,iter=0,icount=0
 integer,parameter,public :: ghost=1 ! 0=> No ghost boundary,1=>ghost + fixed,2=> only ghost boundary

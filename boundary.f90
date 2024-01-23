@@ -401,8 +401,8 @@ module boundary
     
                 blist(i,j)%y=(((brrealy)*((2*bl)-1))+(fpy-3)*2*prrealy/sqrt(por)+prrealy/sqrt(por)) &
                 +prrealy+brrealy+(20-i)*2*brrealy
-                blist(i,j)%x=(((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)) &
-                +prrealx+brrealx+(j-1)*2*brrealx+domain_shift
+                blist(i,j)%x=(((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+3*prrealx/sqrt(por)) &
+                +(j-1)*2*brrealx+domain_shift
     
                 end do
             end do

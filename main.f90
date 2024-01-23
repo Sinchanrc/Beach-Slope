@@ -25,7 +25,7 @@ program dam_break
     call gen_fluid    
     call memalloc
 
-    call print_fluid
+    call combined
     call print_porous
     call print_fixbd
     call print_ghostbd

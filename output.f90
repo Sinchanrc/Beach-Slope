@@ -189,12 +189,12 @@ module output
         implicit none
 
         integer :: i,j,k,m
-        character(len=70):: fluid,buffer1
+        character(len=70):: fluid,buffer3
 
         write(fluid,'("fluid_",i0,".txt")')(modifier+iter)
-        write(buffer1,'("buffer_",i0,".txt")')(modifier+iter)
+        write(buffer3,'("buffer_",i0,".txt")')(modifier+iter)
         open(11,file='fluid/'//fluid,status='replace',action='write')
-        open(14,file='buffer/'//buffer1,status='replace',action='write')
+        open(14,file='buffer/'//buffer3,status='replace',action='write')
 
         do j=sx,ex
             do i=sy,ey

@@ -748,7 +748,7 @@ module integrator
 
                     if (dpcell(i,j)%plist(k)%buffer) then
 
-                            if((dpcell(i,j)%plist(k)%x>((brrealx)*((2*bl)-1))+brrealx+domain_shift) &
+                            if((dpcell(i,j)%plist(k)%x>(8*prrealx+brrealx+0.001_dp)) &
                             .and.(dpcell(i,j)%plist(k)%x<xrcutoff)) then
 
                                 dpcell(i,j)%plist(k)%buffer=.false.

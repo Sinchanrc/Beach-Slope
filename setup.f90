@@ -73,7 +73,7 @@ module setup
 
         allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))
 
-        xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+2*prrealx/sqrt(por)+domain_shift
+        xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+3*prrealx/sqrt(por)+domain_shift-0.001_dp
         xlcutoff=((brrealx)*((2*bl)-1))+brrealx+domain_shift
         ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)-2*prrealy/sqrt(por)
 
