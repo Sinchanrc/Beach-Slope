@@ -151,6 +151,34 @@ program dam_break
         ! call eddyvis 
         !$omp end parallel
 
+        if (iter==2000) then
+
+            do j1=sx,ex 
+                do i1=sy,ey
+                if (dpcell(i1,j1)%ptot/=0) then
+                    do cout=1,dpcell(i1,j1)%ptot
+        
+                        if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
+                        (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
+        
+                            dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
+                            dpcell(i1,j1)%plist(cout)%vy=0.0_dp
+        
+                            ! if(((dpcell(i1,j1)%plist(cout)%y-yl-prrealy)-line_grad* &
+                            ! (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
+                            !     dpcell(i1,j1)%plist(cout)%vx=entry_vel
+                            ! end if
+        
+                        end if
+        
+        
+                    end do
+                end if
+                end do
+            end do
+
+        end if
+
         ! call implicit_shift()
 
         ! !$omp parallel default(shared)

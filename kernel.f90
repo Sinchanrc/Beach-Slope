@@ -27,7 +27,7 @@ module kernel
 
     implicit none
 
-    real(dp),parameter :: alp=0.15_dp
+    real(dp),parameter :: alp=0.1_dp
     
     contains
     
