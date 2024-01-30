@@ -11,13 +11,18 @@ module internal
 
         implicit none
 
-        integer :: i,j,k,m
+        integer :: i,j,k,m,bfy1
         integer :: step=0
 
         real(dp) :: bounlen,bounlen2
 
+        bfy1=fpy-2
+
         bounlen=fpy*2*prrealy/sqrt(por)
         bounlen2=open_lhs*2*prrealy
+
+        ins_1=(4*prrealx/sqrt(por))/abs(entry_vel)
+        ins_2=4*prrealx/((bounlen/bounlen2)*abs(entry_vel))
 
         !$omp parallel default(shared)
         !Setting up fluid particle positions and pressure
@@ -92,20 +97,20 @@ module internal
         !$omp single
 
             deallocate(flist)
-            allocate(flist((fpy-2),5),buffer1((fpy-2),5))
+            allocate(flist(bfy1,5),buffer1(bfy1,5))
 
             
         !$omp end single
 
             !$omp do schedule(runtime) private(i,j) collapse(2) 
             do j =1,5
-                do i=(fpy-2),1,-1
+                do i=bfy1,1,-1
 
-                flist(i,j)%y=((brrealy)*((2*bl)-1))+(fpy-i-2)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
+                flist(i,j)%y=((brrealy)*((2*bl)-1))+(bfy1-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
                 flist(i,j)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift&
                     +j*2*prrealx/sqrt(por)
 
-                buffer1(i,j)%y=((brrealy)*((2*bl)-1))+(fpy-i-2)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
+                buffer1(i,j)%y=((brrealy)*((2*bl)-1))+(bfy1-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
                 buffer1(i,j)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift&
                     +j*2*prrealx/sqrt(por)
 
@@ -129,7 +134,7 @@ module internal
 
         !$omp single 
             do j =1,5
-                do i=(fpy-2),1,-1
+                do i=bfy1,1,-1
 
                     count=count+1
                     flist(i,j)%pid=count
@@ -144,7 +149,7 @@ module internal
             do j=2,cellx-1
                 do i=2,celly-1
                 do l1=1,5
-                    do k=1,(fpy-2)
+                    do k=1,bfy1
                     if ((flist(k,l1)%x>=dpcell(i,j)%xleft) .and. &
                         (flist(k,l1)%x<dpcell(i,j)%xright).and. &
                         (flist(k,l1)%y>=dpcell(i,j)%ybot).and. &
@@ -475,8 +480,8 @@ module internal
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)=buffer2(k,i)
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%tid=3
 
-                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%mass=fmass
-                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%density=rho
+                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%mass=fmass*rel_den
+                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%density=rho*rel_den
 
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%oden=entrycell2(j)%bcell &
                         %plist(entrycell2(j)%bcell%ptot)%density

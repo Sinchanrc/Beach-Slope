@@ -439,12 +439,55 @@ module integrator
     subroutine int_vel
         implicit none
 
-        real(dp) :: t1,t2,pvol,p_dist
+        real(dp) :: t1,t2,pvol,p_dist,vart,ps=1.0_dp
 
         integer :: i,j,k,m
 
+        vart=0.0_dp
+
+        !$omp do schedule (runtime) private(m,t1,t2,k,i,j) collapse(2)
+        do j=sx,ex
+            do i=sy,ey 
+
+            do k=1,dpcell(i,j)%ptot
+
+            t1=0.0_dp
+            t2=0.0_dp
+            if(dpcell(i,j)%plist(k)%free) then
+            dpcell(i,j)%pplist(k)%varts=0.0_dp
+
+            do m=1,dpcell(i,j)%list(k)%count
+                associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
+                    y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
+                    z=>dpcell(i,j)%list(k)%klt)
+
+
+                t1=t1+(x%vx/y%porosity-dpcell(i,j)%plist(k)%vx/dpcell(i,j)%pplist(k)%porosity)* &
+                (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                    z(2,m))*(x%mass/x%density)
+
+                t2=t2+(x%vy/y%porosity-dpcell(i,j)%plist(k)%vy/dpcell(i,j)%pplist(k)%porosity)* &
+                (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                    z(2,m))*(x%mass/x%density)
+
+                end associate
+            end do
+
+            dpcell(i,j)%pplist(k)%varts=ps*(dl**2)*sqrt(t1**2+t2**2)*&
+            sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)/ &
+                ((umax+1e-6)*dpcell(i,j)%pplist(k)%porosity)
+
+
+            end if
+
+            end do
+
+            end do
+        end do
+        !$omp end do
+
         ! Non-pressure velocity calculation for fluid particles
-        !$omp do schedule (runtime) private(m,t1,t2,k,i,j,pvol,p_dist) collapse(2)
+        !$omp do schedule (runtime) private(m,t1,t2,k,i,j,pvol,p_dist,vart) collapse(2)
         do j=sx,ex
             do i=sy,ey            
             
@@ -462,6 +505,18 @@ module integrator
                 associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
                     y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                     z=>dpcell(i,j)%list(k)%klt)
+
+                    if (dpcell(i,j)%plist(k)%free) then
+                        vart=dpcell(i,j)%pplist(k)%varts
+                        elseif ((.not.(dpcell(i,j)%plist(k)%free)).and. &
+                        (x%free).and.(.not.(dpcell(i,j)%plist(k)%buffer))) then
+                        vart=Wab(dpcell(i,j)%list(k)%dist(m),h1)*y%varts &
+                                /Wo(h1)
+        
+                        else
+                        vart=0.0_dp
+                    end if
+        
 
                 pvol=x%mass/x%density
                 p_dist=(dpcell(i,j)%list(k)%dist(m)**2+lam)**(-1)
@@ -483,7 +538,7 @@ module integrator
                     (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
                     (mu*y%porosity/x%density)/ &
                     ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
-                    +(mu*y%porosity/x%density)))) !+vart
+                    +(mu*y%porosity/x%density)))+vart) !+vart
 
                     if (x%tid>2) then
 
@@ -523,7 +578,7 @@ module integrator
                     (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
                     (mu*y%porosity/x%density)/ &
                     ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
-                    +(mu*y%porosity/x%density)))) !+vart
+                    +(mu*y%porosity/x%density)))+vart) !+vart
 
                     if (x%tid>2) then
 
@@ -631,55 +686,41 @@ module integrator
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
 
-                        ! t1=(y%porosity**2)*(x%mass/(x%density**2))* &
+                        ! t1=(dpcell(i,j)%pplist(k)%porosity**2)*(x%mass/x%density)* &
                         !     (x%pressure-dpcell(i,j)%plist(k)%pressure)* &
-                        !     (dpcell(i,j)%pplist(k)%coff(1)*Wabx(x,dpcell(i,j)%plist(k), &
-                        ! dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(2)* &
-                        ! Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))
+                        !     (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                        ! z(2,m))/dpcell(i,j)%plist(k)%density
 
+                        t1=((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        (x%pressure+dpcell(i,j)%plist(k)%pressure)* &
+                        (z(1,m)))/dpcell(i,j)%plist(k)%density
 
-
-                        ! t1=2*((x%mass*dpcell(i,j)%pplist(k)%porosity/x%density)*&
+                        ! t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
                         ! ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
                         ! (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        ! (Wabx(x,dpcell(i,j)%plist(k), &
-                        ! dpcell(i,j)%list(k)%dist(m),h1))) &
-                        ! /((x%density/y%porosity)* &
-                        ! ((x%density/y%porosity) &
-                        ! +(dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)))
-
-                        t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
-                        (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        (z(1,m)))/((dpcell(i,j)%plist(k)%density)* &
-                        ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
-                        (x%density/y%porosity)))
+                        ! (z(1,m)))/((dpcell(i,j)%plist(k)%density)* &
+                        ! ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
+                        ! (x%density/y%porosity)))
 
 
                         dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx-t1*dt
 
-                        ! t1=(y%porosity**2)*(x%mass/(x%density**2))* &
+                        ! t1=(dpcell(i,j)%pplist(k)%porosity**2)*(x%mass/x%density)* &
                         !     (x%pressure-dpcell(i,j)%plist(k)%pressure)* &
-                        !     (dpcell(i,j)%pplist(k)%coff(3)*Wabx(x,dpcell(i,j)%plist(k), &
-                        ! dpcell(i,j)%list(k)%dist(m),h1)+dpcell(i,j)%pplist(k)%coff(4)* &
-                        ! Waby(x,dpcell(i,j)%plist(k),dpcell(i,j)%list(k)%dist(m),h1))
+                        !     (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                        ! z(2,m))/dpcell(i,j)%plist(k)%density
 
 
-                        ! t1=2*((x%mass*dpcell(i,j)%pplist(k)%porosity/x%density)*&
+                        t1=((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        (x%pressure+dpcell(i,j)%plist(k)%pressure)* &
+                        (z(2,m)))/dpcell(i,j)%plist(k)%density
+
+                        ! t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
                         ! ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
                         ! (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        ! (Waby(x,dpcell(i,j)%plist(k), &
-                        ! dpcell(i,j)%list(k)%dist(m),h1))) &
-                        ! /((x%density/y%porosity)* &
-                        ! ((x%density/y%porosity) &
-                        ! +(dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)))
-
-                        t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
-                        (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        (z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
-                        ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
-                        (x%density/y%porosity)))
+                        ! (z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
+                        ! ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
+                        ! (x%density/y%porosity)))
 
 
                         dpcell(i,j)%plist(k)%vy=dpcell(i,j)%plist(k)%vy-t1*dt

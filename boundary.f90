@@ -13,9 +13,11 @@ module boundary
 
         implicit none
 
-        integer :: i,j,k,m,bn1
+        integer :: i,j,k,m,bn1,buy1
 
         real(dp) :: remain_len
+
+        buy1=fpy-3
 
         ! Setting left hand vertical boundary positions
         !$omp parallel default(shared)
@@ -197,7 +199,7 @@ module boundary
 
                 remain_len=wc-lhs_btm-open_lhs*2*prrealy
 
-                bn1=floor((real(remain_len,dp)/(2*real(brrealy,dp))))-3
+                bn1=floor((real(remain_len,dp)/(2*real(brrealy,dp))))-2
 
                 deallocate(blist)
                 allocate(blist(bn1,bl))
@@ -399,8 +401,8 @@ module boundary
             do j =1,bl
                 do i=20,1,-1           
     
-                blist(i,j)%y=(((brrealy)*((2*bl)-1))+(fpy-3)*2*prrealy/sqrt(por)+prrealy/sqrt(por)) &
-                +prrealy+brrealy+(20-i)*2*brrealy
+                blist(i,j)%y=(((brrealy)*((2*bl)-1))+buy1*2*prrealy/sqrt(por)+2*prrealy/sqrt(por)) &
+                +brrealy+(20-i)*2*brrealy
                 blist(i,j)%x=(((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+3*prrealx/sqrt(por)) &
                 +(j-1)*2*brrealx+domain_shift
     

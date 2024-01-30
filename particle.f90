@@ -61,7 +61,7 @@ module particle
         real(dp),allocatable,public :: meanstrn(:),tau(:),coff(:),bmls(:)
         real(dp),public :: cdiff=0.0_dp,gradvx=0.0_dp,tden=0.0_dp,vel=0.0_dp,&
                             nut=0.0_dp,tke=0.0_dp,porosity=1.0_dp,resistx=0.0_dp, &
-                            resisty=0.0_dp
+                            resisty=0.0_dp,varts=0.0_dp
                 
         
 

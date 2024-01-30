@@ -52,7 +52,7 @@ subroutine scalart
 
             if(dpcell(i,j)%plist(k)%tid==3) then
 
-            dpcell(i,j)%pplist(k)%cdiff=0.0_dp
+            dpcell(i,j)%plist(k)%con=0.0_dp
 
             dpcell(i,j)%plist(k)%con=dpcell(i,j)%plist(k)%mass/dpcell(i,j)%plist(k)%ovol
 
@@ -81,7 +81,7 @@ subroutine scalart
                 t3=(dpcell(i,j)%plist(k)%ovol**2)*(dpcell(i,j)%pplist(k)%porosity+y%porosity)/&
                 (dpcell(i,j)%pplist(k)%porosity*y%porosity)
 
-                dpcell(i,j)%pplist(k)%cdiff=dpcell(i,j)%pplist(k)%cdiff + &
+                dpcell(i,j)%plist(k)%con=dpcell(i,j)%plist(k)%con + &
                 (t1*t2*t3*(dpcell(i,j)%plist(k)%con-x%con)* &
                 (dpcell(i,j)%plist(k)%x-x%x)*z(1,m)/(dpcell(i,j)%list(k)%dist(m)**2+lam))+ &
                 (t1*t2*t3*(dpcell(i,j)%plist(k)%con-x%con)* &
@@ -120,7 +120,7 @@ subroutine scalarupdate(stime)
 
                     ! dpcell(i,j)%plist(k)%con=dpcell(i,j)%plist(k)%con+dpcell(i,j)%pplist(k)%cdiff*stime
 
-                    dpcell(i,j)%plist(k)%mass=dpcell(i,j)%plist(k)%mass+dpcell(i,j)%pplist(k)%cdiff*stime
+                    dpcell(i,j)%plist(k)%mass=dpcell(i,j)%plist(k)%mass+dpcell(i,j)%plist(k)%con*stime
 
 
                 end if
