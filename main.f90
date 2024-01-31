@@ -51,7 +51,6 @@ program dam_break
         call eddyvis
         call int_vel
         !$omp end parallel
-        ! call resetid
         call ppesolve
     
         !$omp parallel default(shared)
@@ -62,15 +61,9 @@ program dam_break
         call freesurf
         call effpor
         call opt2_shift
-        ! call massupdate
         call timestep
-        ! call eddyvis 
         !$omp end parallel
-
-        ! call print_fluid
         iter=iter+1
-
-
     end do
 
     iter=1
@@ -103,20 +96,6 @@ program dam_break
 
         told=t
         t=t+dt
-        
-        ! if (dtsol>dt) then
-        ! !$omp parallel default(shared)
-        ! call scalart
-        ! call scalarupdate(dt)
-        ! !$omp end parallel
-        ! else
-        ! do i=1,solsteps
-        ! !$omp parallel default(shared)
-        ! call scalart
-        ! call scalarupdate(dtsol)
-        ! !$omp end parallel
-        ! end do
-        ! end if
 
         !$omp parallel default(shared)
 
@@ -125,13 +104,9 @@ program dam_break
         call resetid
         call neighbour
         call effpor
-        ! call freesurf
-        ! call compcorr(3,1)
         call eddyvis
-        ! call ghost_en
         call int_vel
         !$omp end parallel
-        ! call resetid
         call ppesolve
     
         !$omp parallel default(shared)
@@ -141,32 +116,11 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        ! call freesurf
-        ! call compcorr(3,1)
-        ! call comp_ghost
-        ! call boun_vel 
         call opt2_shift
-        ! call massupdate
         call timestep
-        ! call eddyvis 
         !$omp end parallel
-
-        ! call implicit_shift()
-
-        ! !$omp parallel default(shared)
-        ! ! call massupdate
-        ! call timestep
-        ! call eddyvis
-        ! !$omp end parallel
-
-        ! if (((told*sqrt(abs(g)/wc))<iter*displaytime).and. &
-        ! ((t*sqrt(abs(g)/wc))>=iter*displaytime)) then
-        
-        ! call probevalue
-        call combined
+        ! call combined
         iter=iter+1
-        ! end if
-
     end do
 
     do j1=sx,ex 
@@ -201,24 +155,34 @@ program dam_break
         end do
     end do
 
-    do while(iter<9001)
+    time_shift=t 
+    iter=1
+    iter1=1
+    iter2=1
+    t=0.0_dp
+
+    do while(t<time)
 
         told=t
         t=t+dt
         
-        ! if (dtsol>dt) then
-        ! !$omp parallel default(shared)
-        ! call scalart
-        ! call scalarupdate(dt)
-        ! !$omp end parallel
-        ! else
-        ! do i=1,solsteps
-        ! !$omp parallel default(shared)
-        ! call scalart
-        ! call scalarupdate(dtsol)
-        ! !$omp end parallel
-        ! end do
-        ! end if
+        if (dtsol>dt) then
+        !$omp parallel default(shared)
+        call scalart
+        call scalarupdate(dt)
+        !$omp end parallel
+        else
+        do j1=1,solsteps
+        !$omp parallel default(shared)
+        call scalart
+        if (j1<solsteps) then
+        call massupdate(dtsol)
+        else
+            call scalarupdate(dtsol)
+        end if
+        !$omp end parallel
+        end do
+        end if
 
         !$omp parallel default(shared)
 
@@ -227,13 +191,9 @@ program dam_break
         call resetid
         call neighbour
         call effpor
-        ! call freesurf
-        ! call compcorr(3,1)
         call eddyvis
-        ! call ghost_en
         call int_vel
         !$omp end parallel
-        ! call resetid
         call ppesolve
     
         !$omp parallel default(shared)
@@ -243,36 +203,40 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        ! call freesurf
-        ! call compcorr(3,1)
-        ! call comp_ghost
-        ! call boun_vel 
         call opt2_shift
-        ! call massupdate
+        call densityupdate
         call timestep
-        ! call eddyvis 
+        call eddyvis 
         !$omp end parallel
 
-        ! call implicit_shift()
+        if ((told<iter*displaytime).and. &
+        (t>=iter*displaytime)) then
 
-        ! !$omp parallel default(shared)
-        ! ! call massupdate
-        ! call timestep
-        ! call eddyvis
-        ! !$omp end parallel
-
-        ! if (((told*sqrt(abs(g)/wc))<iter*displaytime).and. &
-        ! ((t*sqrt(abs(g)/wc))>=iter*displaytime)) then
-        
-        ! call probevalue
         call combined
         iter=iter+1
-        ! end if
+        end if
+
+        if(((told+time_shift)<iter1*ins_1).and. &
+        (t+time_shift)>=iter1*ins_1) then
+
+            call remove_buffer1
+            call insert_buffer1
+
+            iter1=iter1+1
+
+        end if
+
+        if(((told+time_shift)<iter2*ins_2).and. &
+        (t+time_shift)>=iter2*ins_2) then
+
+            call remove_buffer2
+            call insert_buffer2
+
+            iter2=iter2+1
+
+        end if
 
     end do
-
-    write(*,*)t
-
     
 end program dam_break
 

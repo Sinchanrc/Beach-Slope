@@ -200,14 +200,14 @@ module output
             do i=sy,ey
                 do cout=1,dpcell(i,j)%ptot
                 if ((dpcell(i,j)%plist(cout)%tid==3).and.(.not.(dpcell(i,j)%plist(cout)%buffer))) then
-                write(11,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x,&
+                write(11,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.5)')dpcell(i,j)%plist(cout)%x,&
                 dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
-                ,dpcell(i,j)%plist(cout)%vy,dpcell(i,j)%plist(cout)%mass/fmass
+                ,dpcell(i,j)%plist(cout)%vy,((dpcell(i,j)%plist(cout)%mass/fmass)-1.0_dp)*con_fac
 
                 elseif ((dpcell(i,j)%plist(cout)%tid==3).and.(dpcell(i,j)%plist(cout)%buffer)) then
-                write(14,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.3)')dpcell(i,j)%plist(cout)%x,&
+                write(14,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.5)')dpcell(i,j)%plist(cout)%x,&
                 dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
-                ,dpcell(i,j)%plist(cout)%vy,dpcell(i,j)%plist(cout)%mass/fmass
+                ,dpcell(i,j)%plist(cout)%vy,((dpcell(i,j)%plist(cout)%mass/fmass)-1.0_dp)*con_fac
 
                 end if
                 end do

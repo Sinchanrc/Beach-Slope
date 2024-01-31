@@ -84,7 +84,7 @@ module setup
         sy=2
         ex=cellx-1
         ey=celly-1
-        ! umax=sig1*dl/dt     
+        con_fac=(rel_den-1.0_dp)**(-1) 
     
 
         !$omp parallel default(shared)

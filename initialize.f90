@@ -22,11 +22,11 @@ real(dp),public :: wc=0.650_dp,L=3.11_dp ,H=0.80_dp,&
                     csh=0.50_dp,rx,ry,lid_driven=0.0010_dp,rhomin=1000.0_dp, &
                     rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.230_dp,soilh=0.80_dp,set_ht=0.20_dp,&
                     outlet_ht=0.7_dp,coastal_ht=0.450_dp,por=0.380_dp,bulkden=1800_dp,entry_vel=-2.5_dp/(3600*24), &
-                    lhs_btm=0.23_dp,rel_den=1.020_dp
+                    lhs_btm=0.23_dp,rel_den=1.020_dp,con_fac
 
 ! dt=time step,t=simulation time
-real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7.60_dp,displaytime=0.050_dp,dtsol=0.010_dp, &
-                    ins_1=0.0_dp,ins_2=0.0_dp !0.00001
+real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7360.0_dp,displaytime=60.0_dp,dtsol=0.010_dp, &
+                    ins_1=0.0_dp,ins_2=0.0_dp,time_shift=0.0_dp !0.00001
 
 ! fmass=fluid particle mass,prrealx=half particle spacing x dir,prrealy=half particle spacing y direction
 ! brrealx,brrealy=half boundary spacing ,lam=coefff to prevent singularity,mu=viscosity,beta=coff to control particle shifting
