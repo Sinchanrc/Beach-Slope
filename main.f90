@@ -131,8 +131,13 @@ program dam_break
                 if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
                 (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
 
+                    ! if(((dpcell(i1,j1)%plist(cout)%y-yl)-line_grad* &
+                    ! (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
+
                     dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
                     dpcell(i1,j1)%plist(cout)%vy=0.0_dp
+
+                    ! end if
 
                 end if
 
@@ -156,12 +161,18 @@ program dam_break
     end do
 
     time_shift=t 
-    iter=1
+    ! iter=1
     iter1=1
     iter2=1
     t=0.0_dp
 
-    do while(t<time)
+    call remove_buffer1
+    call insert_buffer1
+
+    call remove_buffer2
+    call insert_buffer2
+
+    do while(iter<9001)
 
         told=t
         t=t+dt
@@ -229,12 +240,12 @@ program dam_break
         call eddyvis 
         !$omp end parallel
 
-        if ((told<iter*displaytime).and. &
-        (t>=iter*displaytime)) then
+        ! if ((told<iter*displaytime).and. &
+        ! (t>=iter*displaytime)) then
 
         call combined
         iter=iter+1
-        end if
+        ! end if
 
 
 

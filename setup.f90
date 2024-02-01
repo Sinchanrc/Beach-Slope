@@ -68,7 +68,7 @@ module setup
         ! line_grad=(yu-yl)/(xu-xl)
         line_grad=(line_grad*22)/(180.0_dp*7)
 
-        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+3
+        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
         fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
         allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))

@@ -17,7 +17,7 @@ module boundary
 
         real(dp) :: remain_len
 
-        buy1=fpy-3
+        buy1=fpy-1
 
         ! Setting left hand vertical boundary positions
         !$omp parallel default(shared)

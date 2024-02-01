@@ -16,13 +16,18 @@ module internal
 
         real(dp) :: bounlen,bounlen2
 
-        bfy1=fpy-2
+        bfy1=fpy
 
         bounlen=fpy*2*prrealy/sqrt(por)
         bounlen2=open_lhs*2*prrealy
 
-        ins_1=(4*prrealx/sqrt(por))/abs(entry_vel)
+        ins_1=(4*prrealx/sqrt(por))/abs(entry_vel/0.387_dp)
         ins_2=4*prrealx/((bounlen/bounlen2)*abs(entry_vel))
+
+        rv_buf_r=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift&
+                    +3*2*prrealx/sqrt(por)+0.5*prrealx/sqrt(por)
+
+        rv_buf_l=2*prrealx+brrealx+0.5*prrealx
 
         !$omp parallel default(shared)
         !Setting up fluid particle positions and pressure
@@ -97,8 +102,8 @@ module internal
         !$omp single
 
             deallocate(flist)
-            allocate(flist(bfy1,5),buffer1(bfy1,5))
-
+            allocate(flist(bfy1,5),buffer1(bfy1,2))
+            k=1
             
         !$omp end single
 
@@ -110,24 +115,29 @@ module internal
                 flist(i,j)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift&
                     +j*2*prrealx/sqrt(por)
 
-                buffer1(i,j)%y=((brrealy)*((2*bl)-1))+(bfy1-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
-                buffer1(i,j)%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift&
-                    +j*2*prrealx/sqrt(por)
-
                 flist(i,j)%buffer=.true.
-                buffer1(i,j)%buffer=.true.
-
                 flist(i,j)%vx=entry_vel!*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen) &
                             ! -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen)**2)
                 flist(i,j)%vy=0.0_dp
-
-                buffer1(i,j)%vx=entry_vel!*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen) &
-                            ! -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen)**2)
-                buffer1(i,j)%vy=0.0_dp
-
                 flist(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy/sqrt(por))*rho*abs(g)
-                buffer1(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy/sqrt(por))*rho*abs(g)
 
+                if(j>3) then
+
+                buffer1(i,(j-3))%y=((brrealy)*((2*bl)-1))+(bfy1-i)*2*prrealy/sqrt(por)+prrealy/sqrt(por)
+                buffer1(i,(j-3))%x=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+prrealx/sqrt(por)+domain_shift&
+                    +j*2*prrealx/sqrt(por)
+
+                buffer1(i,(j-3))%buffer=.true.                
+
+                buffer1(i,(j-3))%vx=entry_vel!*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen) &
+                            ! -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bl-1))/bounlen)**2)
+                buffer1(i,(j-3))%vy=0.0_dp
+        
+                buffer1(i,(j-3))%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy/sqrt(por))*rho*abs(g)
+                k=k+1
+
+
+                end if
                 end do
             end do
             !$omp end do
@@ -211,7 +221,7 @@ module internal
             end do
         
             deallocate(flist)
-            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))-1!+1
+            fpy=floor(real(coastal_ht,dp)/(2*real(prrealy,dp)))+1
             fpx=floor(real(2.0_dp,dp)/(2*real(prrealx,dp)))!+1
             allocate(flist(fpy,fpx))
         !$omp end single
@@ -304,7 +314,8 @@ module internal
         !$omp single
 
             deallocate(flist)
-            allocate(flist(open_lhs,5),buffer2(open_lhs,5))
+            allocate(flist(open_lhs,5),buffer2(open_lhs,2))
+            k=1
 
         !$omp end single
 
@@ -313,24 +324,28 @@ module internal
                 do i=open_lhs,1,-1
                     flist(i,j)%y=2*bny*brrealy-brrealy+prrealy+(open_lhs-i)*2*prrealy
                     flist(i,j)%x=(j-1)*2*prrealx+brrealx
-
-                    buffer2(i,j)%y=2*bny*brrealy-brrealy+prrealy+(open_lhs-i)*2*prrealy
-                    buffer2(i,j)%x=(j-1)*2*prrealx+brrealx
-
-
                 flist(i,j)%vx=(-bounlen/bounlen2)*entry_vel!*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bny-1))/bounlen2) &
                                 ! -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bny-1))/bounlen2)**2)
                 flist(i,j)%vy=0.0_dp
+
+                    flist(i,j)%buffer=.true.
+                    flist(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy)*rho*abs(g)
+
+                    if (j<=2) then
+
+                    buffer2(i,j)%y=2*bny*brrealy-brrealy+prrealy+(open_lhs-i)*2*prrealy
+                    buffer2(i,j)%x=(j-1)*2*prrealx+brrealx
 
                 buffer2(i,j)%vx=(-bounlen/bounlen2)*entry_vel!*3.0_dp*(((flist(i,j)%y-(brrealy)*(2*bny-1))/bounlen2) &
                                 ! -0.5_dp*((flist(i,j)%y-(brrealy)*(2*bny-1))/bounlen2)**2)
                 buffer2(i,j)%vy=0.0_dp
 
-                    flist(i,j)%buffer=.true.
-                    flist(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy)*rho*abs(g)
-
                     buffer2(i,j)%buffer=.true.
                     buffer2(i,j)%pressure=(-flist(i,j)%y+((brrealy*distfac)*((2*bl)-1))+wc+prrealy)*rho*abs(g)*rel_den
+                    k=k+1
+
+                    end if
+
 
                 end do
                 end do
@@ -508,7 +523,8 @@ module internal
 
             do j=1,entrycell1(i)%bcell%ptot
 
-                if (.not.(entrycell1(i)%bcell%plist(j)%buffer)) then
+                if ((.not.(entrycell1(i)%bcell%plist(j)%buffer)).or. &
+                (entrycell1(i)%bcell%plist(j)%buffer.and.(entrycell1(i)%bcell%plist(j)%x<rv_buf_r))) then
 
                     entrycell1(i)%bcell%temfct=entrycell1(i)%bcell%temfct+1
                     entrycell1(i)%bcell%ftemp(entrycell1(i)%bcell%temfct)%part=>entrycell1(i)%bcell%plist(j)
@@ -543,7 +559,8 @@ module internal
 
             do j=1,entrycell2(i)%bcell%ptot
 
-                if (.not.(entrycell2(i)%bcell%plist(j)%buffer)) then
+                if ((.not.(entrycell2(i)%bcell%plist(j)%buffer)).or. &
+                (entrycell2(i)%bcell%plist(j)%buffer.and.(entrycell2(i)%bcell%plist(j)%x>rv_buf_l))) then
 
                     entrycell2(i)%bcell%temfct=entrycell2(i)%bcell%temfct+1
                     entrycell2(i)%bcell%ftemp(entrycell2(i)%bcell%temfct)%part=>entrycell2(i)%bcell%plist(j)
