@@ -88,7 +88,7 @@ module porous
     
         implicit none
 
-        real(dp) :: solidfrac,lamk=299.17_dp,d50=0.001020_dp,Fch,kper
+        real(dp) :: solidfrac,lamk=299.71_dp,d50=0.001020_dp,Fch,kper
 
         type(cell),pointer :: cell1,cell2,cell3,cell4
 
