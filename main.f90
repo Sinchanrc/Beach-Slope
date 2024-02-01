@@ -184,6 +184,26 @@ program dam_break
         end do
         end if
 
+        if(((told+time_shift)<iter1*ins_1).and. &
+            (t+time_shift)>=iter1*ins_1) then
+
+            call remove_buffer1
+            call insert_buffer1
+
+            iter1=iter1+1
+
+        end if
+
+        if(((told+time_shift)<iter2*ins_2).and. &
+            (t+time_shift)>=iter2*ins_2) then
+
+            call remove_buffer2
+            call insert_buffer2
+
+            iter2=iter2+1
+
+        end if
+
         !$omp parallel default(shared)
 
         call projection 
@@ -216,27 +236,11 @@ program dam_break
         iter=iter+1
         end if
 
-        if(((told+time_shift)<iter1*ins_1).and. &
-        (t+time_shift)>=iter1*ins_1) then
 
-            call remove_buffer1
-            call insert_buffer1
-
-            iter1=iter1+1
-
-        end if
-
-        if(((told+time_shift)<iter2*ins_2).and. &
-        (t+time_shift)>=iter2*ins_2) then
-
-            call remove_buffer2
-            call insert_buffer2
-
-            iter2=iter2+1
-
-        end if
 
     end do
+
+    call combined
     
 end program dam_break
 

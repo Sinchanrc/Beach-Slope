@@ -25,7 +25,7 @@ real(dp),public :: wc=0.650_dp,L=3.11_dp ,H=0.80_dp,&
                     lhs_btm=0.23_dp,rel_den=1.020_dp,con_fac
 
 ! dt=time step,t=simulation time
-real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7360.0_dp,displaytime=60.0_dp,dtsol=0.010_dp, &
+real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7320.0_dp,displaytime=100.0_dp,dtsol=0.010_dp, &
                     ins_1=0.0_dp,ins_2=0.0_dp,time_shift=0.0_dp !0.00001
 
 ! fmass=fluid particle mass,prrealx=half particle spacing x dir,prrealy=half particle spacing y direction
