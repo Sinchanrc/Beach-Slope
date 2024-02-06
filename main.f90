@@ -92,7 +92,7 @@ program dam_break
         end do
     end do
 
-    do while(iter<8001)
+    do while(iter<8401)
 
         told=t
         t=t+dt
@@ -161,18 +161,18 @@ program dam_break
     end do
 
     time_shift=t 
-    ! iter=1
+    iter=1
     iter1=1
     iter2=1
     t=0.0_dp
 
-    call remove_buffer1
-    call insert_buffer1
+    ! call remove_buffer1
+    ! call insert_buffer1
 
-    call remove_buffer2
-    call insert_buffer2
+    ! call remove_buffer2
+    ! call insert_buffer2
 
-    do while(iter<9001)
+    do while(t<time)
 
         told=t
         t=t+dt
@@ -240,12 +240,12 @@ program dam_break
         call eddyvis 
         !$omp end parallel
 
-        ! if ((told<iter*displaytime).and. &
-        ! (t>=iter*displaytime)) then
+        if ((told<iter*displaytime).and. &
+        (t>=iter*displaytime)) then
 
         call combined
         iter=iter+1
-        ! end if
+        end if
 
 
 

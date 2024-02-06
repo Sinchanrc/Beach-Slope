@@ -99,7 +99,7 @@ module memory
             end do
         end do        
 
-        finmax=count+reserve_par-50
+        finmax=count!+reserve_par-50
 
         do i=1,reserve_par
             count=count+1
