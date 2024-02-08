@@ -665,10 +665,10 @@ module integrator
 
         integer :: i,j,k,m
         
-        real(dp) :: t1 
+        real(dp) :: t1,t2 
 
         ! New velocity calculations for particles 
-        !$omp do private(m,t1,i,k,j) schedule (runtime) collapse(2)
+        !$omp do private(m,t1,i,k,j,t2) schedule (runtime) collapse(2)
         do j=sx,ex
             do i=sy,ey
                 if(dpcell(i,j)%ptot/=0) then
@@ -686,21 +686,24 @@ module integrator
                             y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                             z=>dpcell(i,j)%list(k)%klt)
 
+                        t2=2*dpcell(i,j)%pplist(k)%porosity*y%porosity/ &
+                        (y%porosity+dpcell(i,j)%pplist(k)%porosity)
+
                         ! t1=(dpcell(i,j)%pplist(k)%porosity**2)*(x%mass/x%density)* &
                         !     (x%pressure-dpcell(i,j)%plist(k)%pressure)* &
                         !     (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
                         ! z(2,m))/dpcell(i,j)%plist(k)%density
 
-                        t1=((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        (x%pressure+dpcell(i,j)%plist(k)%pressure)* &
-                        (z(1,m)))/dpcell(i,j)%plist(k)%density
+                        ! t1=((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        ! (x%pressure+dpcell(i,j)%plist(k)%pressure)* &
+                        ! (z(1,m)))/dpcell(i,j)%plist(k)%density
 
-                        ! t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        ! ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
-                        ! (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        ! (z(1,m)))/((dpcell(i,j)%plist(k)%density)* &
-                        ! ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
-                        ! (x%density/y%porosity)))
+                        t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
+                        (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
+                        (z(1,m)))/((dpcell(i,j)%plist(k)%density)* &
+                        ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
+                        (x%density/y%porosity)))
 
 
                         dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx-t1*dt
@@ -711,16 +714,16 @@ module integrator
                         ! z(2,m))/dpcell(i,j)%plist(k)%density
 
 
-                        t1=((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        (x%pressure+dpcell(i,j)%plist(k)%pressure)* &
-                        (z(2,m)))/dpcell(i,j)%plist(k)%density
+                        ! t1=((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        ! (x%pressure+dpcell(i,j)%plist(k)%pressure)* &
+                        ! (z(2,m)))/dpcell(i,j)%plist(k)%density
 
-                        ! t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
-                        ! ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
-                        ! (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        ! (z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
-                        ! ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
-                        ! (x%density/y%porosity)))
+                        t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
+                        ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
+                        (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
+                        (z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
+                        ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
+                        (x%density/y%porosity)))
 
 
                         dpcell(i,j)%plist(k)%vy=dpcell(i,j)%plist(k)%vy-t1*dt

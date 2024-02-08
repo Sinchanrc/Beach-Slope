@@ -202,12 +202,12 @@ module output
                 if ((dpcell(i,j)%plist(cout)%tid==3).and.(.not.(dpcell(i,j)%plist(cout)%buffer))) then
                 write(11,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.5)')dpcell(i,j)%plist(cout)%x,&
                 dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
-                ,dpcell(i,j)%plist(cout)%vy,((dpcell(i,j)%plist(cout)%mass/fmass)-1.0_dp)*con_fac
+                ,dpcell(i,j)%plist(cout)%vy,(dpcell(i,j)%plist(cout)%con+0.50_dp)
 
                 elseif ((dpcell(i,j)%plist(cout)%tid==3).and.(dpcell(i,j)%plist(cout)%buffer)) then
                 write(14,'(F10.3,1X,F10.3,1X,F10.3,1X,ES10.3,1X,ES10.3,1X,F10.5)')dpcell(i,j)%plist(cout)%x,&
                 dpcell(i,j)%plist(cout)%y,dpcell(i,j)%plist(cout)%pressure,dpcell(i,j)%plist(cout)%vx &
-                ,dpcell(i,j)%plist(cout)%vy,((dpcell(i,j)%plist(cout)%mass/fmass)-1.0_dp)*con_fac
+                ,dpcell(i,j)%plist(cout)%vy,(dpcell(i,j)%plist(cout)%con+0.50_dp)
 
                 end if
                 end do

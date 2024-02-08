@@ -468,6 +468,7 @@ module internal
                         entrycell1(j)%bcell%plist(entrycell1(j)%bcell%ptot)%oden=entrycell1(j)%bcell &
                         %plist(entrycell1(j)%bcell%ptot)%density
                         entrycell1(j)%bcell%plist(entrycell1(j)%bcell%ptot)%ovol=fmass/rho
+                        entrycell1(j)%bcell%plist(entrycell1(j)%bcell%ptot)%con=-0.50_dp
 
                     end if
                     end do
@@ -477,11 +478,12 @@ module internal
         
     end subroutine insert_buffer1
 
-    subroutine insert_buffer2()
+    subroutine insert_buffer2(relden)
 
         implicit none
 
         integer :: i,j,k
+        real(dp),intent(in) :: relden
 
         !$omp parallel do schedule(runtime) private(j) default(shared)
             do j=1,entrycounter2
@@ -495,12 +497,13 @@ module internal
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)=buffer2(k,i)
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%tid=3
 
-                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%mass=fmass*rel_den
-                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%density=rho*rel_den
+                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%mass=fmass*relden
+                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%density=rho*relden
 
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%oden=entrycell2(j)%bcell &
                         %plist(entrycell2(j)%bcell%ptot)%density
                         entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%ovol=fmass/rho
+                        entrycell2(j)%bcell%plist(entrycell2(j)%bcell%ptot)%con=0.50_dp
 
                     end if
                     end do

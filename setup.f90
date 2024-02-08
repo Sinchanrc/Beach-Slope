@@ -15,9 +15,9 @@ module setup
 
         integer :: i,j,k,m
 
-        rhomax=1108.373!1090.0_dp!(1.0_dp+atwood)*rhomin/(1.0_dp-atwood)
-        ! fpy=floor((wc/(2*pr))-1)+1
-        ! fpx=floor((wl/(2*pr)))+1
+        ! rhomax=1108.373!1090.0_dp!(1.0_dp+atwood)*rhomin/(1.0_dp-atwood)
+        rhomax=rho*rel_den
+
         fpy=floor(real(wc,dp)/(2*real(pr,dp)))+1
         fpx=floor(real((wl),dp)/(2*real(pr,dp)))!+1
         prrealx= ((real(wl,dp)/(fpx))/2.0)!*(fpx-1)/fpx

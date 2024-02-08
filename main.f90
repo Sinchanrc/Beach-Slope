@@ -92,10 +92,33 @@ program dam_break
         end do
     end do
 
-    do while(iter<8001)
+    iter1=1
+    iter2=1
+
+    do while(iter<10001)
 
         told=t
         t=t+dt
+
+        if(((told)<iter1*ins_1).and. &
+        (t)>=iter1*ins_1) then
+
+        call remove_buffer1
+        call insert_buffer1
+
+        iter1=iter1+1
+
+        end if
+
+        if(((told)<iter2*ins_2).and. &
+            (t)>=iter2*ins_2) then
+
+            call remove_buffer2
+            call insert_buffer2(1.0_dp)
+
+            iter2=iter2+1
+
+        end if
 
         !$omp parallel default(shared)
 
@@ -128,27 +151,34 @@ program dam_break
         if (dpcell(i1,j1)%ptot/=0) then
             do cout=1,dpcell(i1,j1)%ptot
 
-                if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
-                (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
+                ! if ((dpcell(i1,j1)%plist(cout)%tid==3).and. &
+                ! (.not.(dpcell(i1,j1)%plist(cout)%buffer))) then
 
-                    ! if(((dpcell(i1,j1)%plist(cout)%y-yl)-line_grad* &
-                    ! (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
+                !     ! if(((dpcell(i1,j1)%plist(cout)%y-yl)-line_grad* &
+                !     ! (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
 
-                    dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
-                    dpcell(i1,j1)%plist(cout)%vy=0.0_dp
+                !     dpcell(i1,j1)%plist(cout)%vx=0.0_dp!entry_vel
+                !     dpcell(i1,j1)%plist(cout)%vy=0.0_dp
 
-                    ! end if
+                !     ! end if
 
-                end if
+                ! end if
 
                 if ((dpcell(i1,j1)%plist(cout)%tid==3)) then
+
+                    dpcell(i1,j1)%plist(cout)%con=-0.50_dp
 
                     if(((dpcell(i1,j1)%plist(cout)%y-yl)-line_grad* &
                     (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
 
+                        if ((dpcell(i1,j1)%pplist(cout)%porosity>0.85_dp)) then
+
                         dpcell(i1,j1)%plist(cout)%mass=dpcell(i1,j1)%plist(cout)%mass*rel_den
                         dpcell(i1,j1)%plist(cout)%oden=dpcell(i1,j1)%plist(cout)%oden*rel_den
                         dpcell(i1,j1)%plist(cout)%density=dpcell(i1,j1)%plist(cout)%density*rel_den
+                        dpcell(i1,j1)%plist(cout)%con=0.50_dp
+
+                        end if
 
                     end if
 
@@ -165,12 +195,6 @@ program dam_break
     iter1=1
     iter2=1
     t=0.0_dp
-
-    ! call remove_buffer1
-    ! call insert_buffer1
-
-    ! call remove_buffer2
-    ! call insert_buffer2
 
     do while(t<time)
 
@@ -209,7 +233,7 @@ program dam_break
             (t+time_shift)>=iter2*ins_2) then
 
             call remove_buffer2
-            call insert_buffer2
+            call insert_buffer2(rel_den)
 
             iter2=iter2+1
 
