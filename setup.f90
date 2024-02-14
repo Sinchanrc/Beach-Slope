@@ -68,18 +68,18 @@ module setup
         ! line_grad=(yu-yl)/(xu-xl)
         line_grad=(line_grad*22)/(180.0_dp*7)
 
-        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))+1
+        fpy=floor(real(wc,dp)/(2*real(prrealy,dp)/sqrt(por)))!+1
         fpx=floor(real((wl),dp)/(2*real(prrealx,dp)/sqrt(por)))
 
         allocate(blist(bny,bl),dpcell(celly,cellx),flist(fpy,fpx+5))
 
         xrcutoff=((brrealx)*((2*bl)-1))+(fpx-1)*2*prrealx/sqrt(por)+3*prrealx/sqrt(por)+domain_shift-0.001_dp
-        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+domain_shift+0.001_dp
+        xlcutoff=((brrealx)*((2*bl)-1))+brrealx+domain_shift!+0.001_dp
         ytcutoff=((brrealy)*((2*bl)-1))+(fpy-1)*2*prrealy/sqrt(por)-2*prrealy/sqrt(por)
 
         icount=0
         count=0
-        lam=0.010_dp*(h1**2)
+        lam=0.00010_dp*(h1**2)
         sx=2
         sy=2
         ex=cellx-1

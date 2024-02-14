@@ -60,7 +60,7 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        call opt2_shift
+        call coll_shift
         call timestep
         !$omp end parallel
         iter=iter+1
@@ -139,7 +139,7 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        call opt2_shift
+        call coll_shift
         call timestep
         !$omp end parallel
         ! call combined
@@ -171,14 +171,14 @@ program dam_break
                     if(((dpcell(i1,j1)%plist(cout)%y-yl)-line_grad* &
                     (dpcell(i1,j1)%plist(cout)%x-xl))>0.0) then
 
-                        if ((dpcell(i1,j1)%pplist(cout)%porosity>0.85_dp)) then
+                        ! if ((dpcell(i1,j1)%pplist(cout)%porosity>0.85_dp)) then
 
                         dpcell(i1,j1)%plist(cout)%mass=dpcell(i1,j1)%plist(cout)%mass*rel_den
                         dpcell(i1,j1)%plist(cout)%oden=dpcell(i1,j1)%plist(cout)%oden*rel_den
                         dpcell(i1,j1)%plist(cout)%density=dpcell(i1,j1)%plist(cout)%density*rel_den
                         dpcell(i1,j1)%plist(cout)%con=0.50_dp
 
-                        end if
+                        ! end if
 
                     end if
 
@@ -258,7 +258,7 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        call opt2_shift
+        call coll_shift
         call densityupdate
         call timestep
         call eddyvis 

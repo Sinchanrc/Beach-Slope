@@ -238,14 +238,14 @@ module isph
                                 ! if (x%tid==3) then
 
 
-                                t1=(pvol*(x%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
-                                dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
+                                t1=(pvol*(x%vxs*rho_ij/y%porosity- &
+                                dpcell(i,j)%plist(k)%vxs*rho_ij/dpcell(i,j)%pplist(k)%porosity)* &
                                 (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
                                 z(2,m)))
 
 
-                                t2=(pvol*(x%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
-                                dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
+                                t2=(pvol*(x%vys*rho_ij/y%porosity- &
+                                dpcell(i,j)%plist(k)%vys*rho_ij/dpcell(i,j)%pplist(k)%porosity)* &
                                 (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
                                 z(2,m)))
 
@@ -358,14 +358,14 @@ module isph
                                 ! fmatrix(pos)%val(num+1)=fmatrix(pos)%val(num+1)+(t1+t2)!*y%lamp
                                 dia_term=dia_term+(t1+t2)
 
-                                    t1=(dpcell(i,j)%plist(k)%mass*(x%vxs*rho_j/dpcell(i,j)%pplist(k)%porosity- &
-                                    dpcell(i,j)%plist(k)%vxs*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
+                                    t1=(dpcell(i,j)%plist(k)%mass*(x%vxs*rho_ij/y%porosity- &
+                                    dpcell(i,j)%plist(k)%vxs*rho_ij/dpcell(i,j)%pplist(k)%porosity)* &
                                     (y%coff(1)*z(1,m)+y%coff(2)* &
                                     z(2,m)))/(dpcell(i,j)%plist(k)%density)
 
 
-                                    t2=(dpcell(i,j)%plist(k)%mass*(x%vys*rho_j/dpcell(i,j)%pplist(k)%porosity- &
-                                    dpcell(i,j)%plist(k)%vys*rho_i/dpcell(i,j)%pplist(k)%porosity)* &
+                                    t2=(dpcell(i,j)%plist(k)%mass*(x%vys*rho_ij/y%porosity- &
+                                    dpcell(i,j)%plist(k)%vys*rho_ij/dpcell(i,j)%pplist(k)%porosity)* &
                                     (y%coff(3)*z(1,m)+y%coff(4)* &
                                     z(2,m)))/(dpcell(i,j)%plist(k)%density)
 

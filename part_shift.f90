@@ -64,10 +64,10 @@ module part_shift
                     normx=normx/t1
                     normy=normy/t1
 
-                    normx=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free)
-                    normy=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free)
-                    pint=merge(1,1,(.not.(dpcell(i,j)%plist(k)%free)))
-                    frac=merge(0.030_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
+                    normx=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
+                    normy=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
+                    pint=merge(0,0,(.not.(dpcell(i,j)%plist(k)%free)))
+                    frac=merge(0.002_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
@@ -84,7 +84,9 @@ module part_shift
                         end associate
                     end do
 
-                    dpcell(i,j)%plist(k)%xs=xs
+                    ! dpcell(i,j)%plist(k)%xs=xs
+
+                    dpcell(i,j)%plist(k)%xs=min(abs(xs),maxshift*dl)*xs/abs(xs)
 
                     t1=0.0_dp
                     t2=0.0_dp
@@ -104,7 +106,9 @@ module part_shift
                         end associate
                     end do
 
-                    dpcell(i,j)%plist(k)%ys=ys
+                    ! dpcell(i,j)%plist(k)%ys=ys
+
+                    dpcell(i,j)%plist(k)%ys=min(abs(ys),maxshift*dl)*ys/abs(ys)
 
                     t1=0.0_dp
                     t2=0.0_dp
@@ -215,9 +219,9 @@ module part_shift
                                 y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                                 z=>dpcell(i,j)%list(k)%klt)
 
-                            dcol=0.5_dp*2*prrealx*disfac* &
-                            ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
-                            (sqrt(y%porosity)**(-1)))
+                            dcol=disfac* &
+                            (prrealx*(sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
+                            merge(prrealx,brrealx,x%tid==3)*(sqrt(y%porosity)**(-1)))
 
                             t1=t1+(x%mass)
                         
@@ -239,9 +243,9 @@ module part_shift
                                 y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                                 z=>dpcell(i,j)%list(k)%klt)
 
-                            dcol=0.5_dp*2*prrealy*disfac* &
-                            ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
-                            (sqrt(y%porosity)**(-1)))
+                            dcol=disfac* &
+                            (prrealy*(sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
+                            merge(prrealy,brrealy,x%tid==3)*(sqrt(y%porosity)**(-1)))
 
                             t1=t1+(x%mass)
                         
@@ -320,9 +324,9 @@ module part_shift
                             (dpcell(i,j)%plist(k)%y-x%y)*(dpcell(i,j)%plist(k)%vy* &
                             (dpcell(i,j)%pplist(k)%porosity**(-1))-x%vy*(y%porosity**(-1)))
 
-                            dcol=0.5_dp*2*prrealx*disfac* &
-                            ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
-                            (sqrt(y%porosity)**(-1)))
+                            dcol=disfac* &
+                            (prrealx*(sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
+                            merge(prrealx,brrealx,x%tid==3)*(sqrt(y%porosity)**(-1)))
 
                             t1=t1+(x%mass)
                         
@@ -353,9 +357,9 @@ module part_shift
                             (dpcell(i,j)%plist(k)%y-x%y)*(dpcell(i,j)%plist(k)%vy* &
                             (dpcell(i,j)%pplist(k)%porosity**(-1))-x%vy*(y%porosity**(-1)))
 
-                            dcol=0.5_dp*2*prrealy*disfac* &
-                            ((sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
-                            (sqrt(y%porosity)**(-1)))
+                            dcol=disfac* &
+                            (prrealy*(sqrt(dpcell(i,j)%pplist(k)%porosity)**(-1))+ &
+                            merge(prrealy,brrealy,x%tid==3)*(sqrt(y%porosity)**(-1)))
 
                             t1=t1+(x%mass)
                         
@@ -389,8 +393,7 @@ module part_shift
             do i=sy,ey
                 if (dpcell(i,j)%ptot/=0) then
                 do k=1,dpcell(i,j)%ptot
-                    if ((dpcell(i,j)%pplist(k)%gradvx>=0.70_dp) &
-                    .and.(dpcell(i,j)%plist(k)%tid==3).and. &
+                    if ((dpcell(i,j)%plist(k)%tid==3).and. &
                     (.not.(dpcell(i,j)%plist(k)%buffer))) then
                     dpcell(i,j)%plist(k)%vx=dpcell(i,j)%plist(k)%vx+dpcell(i,j)%plist(k)%vxs*dpcell(i,j)%pplist(k)%porosity
                     dpcell(i,j)%plist(k)%vy=dpcell(i,j)%plist(k)%vy+dpcell(i,j)%plist(k)%vys*dpcell(i,j)%pplist(k)%porosity

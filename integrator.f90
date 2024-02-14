@@ -439,7 +439,7 @@ module integrator
     subroutine int_vel
         implicit none
 
-        real(dp) :: t1,t2,pvol,p_dist,vart,ps=1.0_dp
+        real(dp) :: t1,t2,pvol,p_dist,vart,ps=0.0_dp
 
         integer :: i,j,k,m
 
@@ -496,161 +496,161 @@ module integrator
             t1=0.0_dp
             t2=0.0_dp
             if((dpcell(i,j)%plist(k)%tid==3).and. &
-            (.not.(dpcell(i,j)%plist(k)%buffer))) then
-            dpcell(i,j)%plist(k)%vxs=0.0_dp
-            dpcell(i,j)%plist(k)%vys=0.0_dp
-            if (dpcell(i,j)%list(k)%count/=0) then
+                (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                dpcell(i,j)%plist(k)%vxs=0.0_dp
+                dpcell(i,j)%plist(k)%vys=0.0_dp
+                if (dpcell(i,j)%list(k)%count/=0) then
 
-            do m=1,dpcell(i,j)%list(k)%count
-                associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
-                    y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
-                    z=>dpcell(i,j)%list(k)%klt)
+                do m=1,dpcell(i,j)%list(k)%count
+                    associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
+                        y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
+                        z=>dpcell(i,j)%list(k)%klt)
 
-                    if (dpcell(i,j)%plist(k)%free) then
-                        vart=dpcell(i,j)%pplist(k)%varts
-                        elseif ((.not.(dpcell(i,j)%plist(k)%free)).and. &
-                        (x%free).and.(.not.(dpcell(i,j)%plist(k)%buffer))) then
-                        vart=Wab(dpcell(i,j)%list(k)%dist(m),h1)*y%varts &
-                                /Wo(h1)
-        
-                        else
-                        vart=0.0_dp
-                    end if
-        
+                        if (dpcell(i,j)%plist(k)%free) then
+                            vart=dpcell(i,j)%pplist(k)%varts
+                            elseif ((.not.(dpcell(i,j)%plist(k)%free)).and. &
+                            (x%free).and.(.not.(dpcell(i,j)%plist(k)%buffer))) then
+                            vart=Wab(dpcell(i,j)%list(k)%dist(m),h1)*y%varts &
+                                    /Wo(h1)
+            
+                            else
+                            vart=0.0_dp
+                        end if
+            
 
-                pvol=x%mass/x%density
-                p_dist=(dpcell(i,j)%list(k)%dist(m)**2+lam)**(-1)
+                    pvol=x%mass/x%density
+                    p_dist=(dpcell(i,j)%list(k)%dist(m)**2+lam)**(-1)
 
-                    t1=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
-                    x%vx)*(dpcell(i,j)%plist(k)%x- &
-                    x%x)* &
-                    (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
-                    z(2,m)))*p_dist
+                        t1=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
+                        x%vx)*(dpcell(i,j)%plist(k)%x- &
+                        x%x)* &
+                        (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                        z(2,m)))*p_dist
 
 
-                    t2=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
-                    x%vx)*(dpcell(i,j)%plist(k)%y- &
-                    x%y)* &
-                    (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
-                    z(2,m)))*p_dist
+                        t2=(2*pvol*(dpcell(i,j)%plist(k)%vx- &
+                        x%vx)*(dpcell(i,j)%plist(k)%y- &
+                        x%y)* &
+                        (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                        z(2,m)))*p_dist
 
-                    dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
-                    (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
-                    (mu*y%porosity/x%density)/ &
-                    ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
-                    +(mu*y%porosity/x%density)))+vart) !+vart
-
-                    if (x%tid>2) then
-
-                    if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
-                        
-                    dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
-                    (t1+t2)*(dpcell(i,j)%pplist(k)%nut+y%nut)*0.50_dp
-                    else 
                         dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
-                    (t1+t2)*((2*dpcell(i,j)%pplist(k)%nut*y%nut)/ &
-                    (dpcell(i,j)%pplist(k)%nut+y%nut))
+                        (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
+                        (mu*y%porosity/x%density)/ &
+                        ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
+                        +(mu*y%porosity/x%density)))+vart) !+vart
 
-                    end if
+                        if (x%tid>2) then
 
-                    ! else
-
-                    !     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
-                    ! (t1+t2)*(dpcell(i,j)%pplist(k)%nut)
-
-                    end if
-
-
-                    t1=(2*pvol*(dpcell(i,j)%plist(k)%vy- &
-                    x%vy)*(dpcell(i,j)%plist(k)%x- &
-                    x%x)* &
-                    (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
-                    z(2,m)))*p_dist
-
-
-                    t2=(2*pvol*(dpcell(i,j)%plist(k)%vy- &
-                    x%vy)*(dpcell(i,j)%plist(k)%y- &
-                    x%y)* &
-                    (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
-                    z(2,m)))*p_dist
-
-                    dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
-                    (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
-                    (mu*y%porosity/x%density)/ &
-                    ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
-                    +(mu*y%porosity/x%density)))+vart) !+vart
-
-                    if (x%tid>2) then
-
-                    if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
-                        
-                        dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
+                        if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
+                            
+                        dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
                         (t1+t2)*(dpcell(i,j)%pplist(k)%nut+y%nut)*0.50_dp
-                    else 
-                            dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
+                        else 
+                            dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
                         (t1+t2)*((2*dpcell(i,j)%pplist(k)%nut*y%nut)/ &
                         (dpcell(i,j)%pplist(k)%nut+y%nut))
-    
-                    end if
 
-                    ! else
+                        end if
 
-                    !     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
-                    !     (t1+t2)*(dpcell(i,j)%pplist(k)%nut)
+                        ! else
 
-                    end if
+                        !     dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+ &
+                        ! (t1+t2)*(dpcell(i,j)%pplist(k)%nut)
 
-                    ! Turbulence Calculations
-
-                    if (dpcell(i,j)%plist(k)%tid==3) then
-
-                    t1=(pvol*(y%tke- &
-                    dpcell(i,j)%pplist(k)%tke)* &
-                    (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
-                    z(2,m)))
-
-                    ! dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+(t1+t2)*dpcell(i,j)%pplist(k)%porosity
-                    dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs- &
-                    (t1)*dpcell(i,j)%pplist(k)%porosity*2.0_dp/3
+                        end if
 
 
-                    t1=(pvol*(y%tke- &
-                    dpcell(i,j)%pplist(k)%tke)* &
-                    (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
-                    z(2,m)))
+                        t1=(2*pvol*(dpcell(i,j)%plist(k)%vy- &
+                        x%vy)*(dpcell(i,j)%plist(k)%x- &
+                        x%x)* &
+                        (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                        z(2,m)))*p_dist
 
-                    ! dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+(t1+t2)*dpcell(i,j)%pplist(k)%porosity
-                    dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys-&
-                    (t1)*dpcell(i,j)%pplist(k)%porosity*2.0_dp/3
 
-                    end if
+                        t2=(2*pvol*(dpcell(i,j)%plist(k)%vy- &
+                        x%vy)*(dpcell(i,j)%plist(k)%y- &
+                        x%y)* &
+                        (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                        z(2,m)))*p_dist
 
-                    ! end if
+                        dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
+                        (t1+t2)*((2*(mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)* &
+                        (mu*y%porosity/x%density)/ &
+                        ((mu*dpcell(i,j)%pplist(k)%porosity/dpcell(i,j)%plist(k)%density)&
+                        +(mu*y%porosity/x%density)))+vart) !+vart
 
-                end associate
-            end do
-            end if
-                ! dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx+dt* &
-                ! dpcell(i,j)%plist(k)%vxs+dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity
+                        if (x%tid>2) then
 
-                ! dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy+dt* &
-                ! (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity)+ &
-                ! dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity  
-                
-                dpcell(i,j)%plist(k)%vxs=(dpcell(i,j)%plist(k)%vx+(dt* &
-                dpcell(i,j)%plist(k)%vxs))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity)
+                        if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
+                            
+                            dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
+                            (t1+t2)*(dpcell(i,j)%pplist(k)%nut+y%nut)*0.50_dp
+                        else 
+                                dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
+                            (t1+t2)*((2*dpcell(i,j)%pplist(k)%nut*y%nut)/ &
+                            (dpcell(i,j)%pplist(k)%nut+y%nut))
+        
+                        end if
 
-                dpcell(i,j)%plist(k)%vys=(dpcell(i,j)%plist(k)%vy+dt* &
-                (dpcell(i,j)%plist(k)%vys))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity)
+                        ! else
 
-                dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity*dt
+                        !     dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+ &
+                        !     (t1+t2)*(dpcell(i,j)%pplist(k)%nut)
+
+                        end if
+
+                        ! Turbulence Calculations
+
+                        if (dpcell(i,j)%plist(k)%tid==3) then
+
+                        t1=(pvol*(y%tke- &
+                        dpcell(i,j)%pplist(k)%tke)* &
+                        (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                        z(2,m)))
+
+                        ! dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs+(t1+t2)*dpcell(i,j)%pplist(k)%porosity
+                        dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vxs- &
+                        (t1)*dpcell(i,j)%pplist(k)%porosity*2.0_dp/3
+
+
+                        t1=(pvol*(y%tke- &
+                        dpcell(i,j)%pplist(k)%tke)* &
+                        (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                        z(2,m)))
+
+                        ! dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+(t1+t2)*dpcell(i,j)%pplist(k)%porosity
+                        dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys-&
+                        (t1)*dpcell(i,j)%pplist(k)%porosity*2.0_dp/3
+
+                        end if
+
+                        ! end if
+
+                    end associate
+                end do
+                end if
+                    dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx+dt* &
+                    dpcell(i,j)%plist(k)%vxs+dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity
+
+                    dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vy+dt* &
+                    (dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity)+ &
+                    dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity  
+                    
+                    ! dpcell(i,j)%plist(k)%vxs=(dpcell(i,j)%plist(k)%vx+(dt* &
+                    ! dpcell(i,j)%plist(k)%vxs))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resistx*dpcell(i,j)%pplist(k)%porosity)
+
+                    ! dpcell(i,j)%plist(k)%vys=(dpcell(i,j)%plist(k)%vy+dt* &
+                    ! (dpcell(i,j)%plist(k)%vys))/(1.0_dp-dt*dpcell(i,j)%pplist(k)%resisty*dpcell(i,j)%pplist(k)%porosity)
+
+                    ! dpcell(i,j)%plist(k)%vys=dpcell(i,j)%plist(k)%vys+g*dpcell(i,j)%pplist(k)%porosity*dt
 
             end if
 
             if ((dpcell(i,j)%plist(k)%buffer)) then
 
                 dpcell(i,j)%plist(k)%vxs=dpcell(i,j)%plist(k)%vx
-                dpcell(i,j)%plist(k)%vys=g*dpcell(i,j)%pplist(k)%porosity*dt
+                ! dpcell(i,j)%plist(k)%vys=g*dpcell(i,j)%pplist(k)%porosity*dt
             end if
 
                 end do
@@ -665,7 +665,7 @@ module integrator
 
         integer :: i,j,k,m
         
-        real(dp) :: t1,t2 
+        real(dp) :: t1,t2
 
         ! New velocity calculations for particles 
         !$omp do private(m,t1,i,k,j,t2) schedule (runtime) collapse(2)
@@ -701,7 +701,8 @@ module integrator
                         t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
                         ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
                         (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        (z(1,m)))/((dpcell(i,j)%plist(k)%density)* &
+                        (dpcell(i,j)%pplist(k)%coff(1)*z(1,m)+dpcell(i,j)%pplist(k)%coff(2)* &
+                        z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
                         ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
                         (x%density/y%porosity)))
 
@@ -721,7 +722,8 @@ module integrator
                         t1=2*((x%mass/x%density)*(dpcell(i,j)%pplist(k)%porosity**2)*&
                         ((x%pressure*dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+&
                         (dpcell(i,j)%plist(k)%pressure*x%density/y%porosity))* &
-                        (z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
+                        (dpcell(i,j)%pplist(k)%coff(3)*z(1,m)+dpcell(i,j)%pplist(k)%coff(4)* &
+                        z(2,m)))/((dpcell(i,j)%plist(k)%density)* &
                         ((dpcell(i,j)%plist(k)%density/dpcell(i,j)%pplist(k)%porosity)+ &
                         (x%density/y%porosity)))
 
@@ -841,13 +843,13 @@ module integrator
         if (t<=1.0_dp) then
         dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0010_dp)
         elseif ((t>1.0_dp).and.(t<=2.50_dp)) then
-        dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.002))
+        dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.001))
         ! elseif ((t>2.0_dp).and.(t<=3.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.002))
         ! elseif ((t>3.0_dp).and.(t<=4.0_dp)) then
         ! dt=real(min(real(sig1*(dl)/umax),real(sig1*((dl)**2)*rho/mu),0.004))
         else
-        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0050_dp)
+        dt=min(sig1*(dl)/umax,sig1*((dl)**2)/((mu/rho)+numax),0.0010_dp)
         end if
         if((.not.(ieee_is_finite(numax))).or.(ieee_is_nan(numax))) then
         numax=0.0_dp
