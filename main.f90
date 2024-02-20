@@ -201,23 +201,19 @@ program dam_break
         told=t
         t=t+dt
         
-        if (dtsol>dt) then
-        !$omp parallel default(shared)
-        call scalart
-        call scalarupdate(dt)
-        !$omp end parallel
-        else
+        ! if (dtsol>=dt) then
+        ! !$omp parallel default(shared)
+        ! call scalart
+        ! call scalarupdate(dt)
+        ! !$omp end parallel
+        ! else
         do j1=1,solsteps
         !$omp parallel default(shared)
         call scalart
-        if (j1<solsteps) then
-        call massupdate(dtsol)
-        else
-            call scalarupdate(dtsol)
-        end if
+        call scalarupdate(dtsol)
         !$omp end parallel
         end do
-        end if
+        ! end if
 
         if(((told+time_shift)<iter1*ins_1).and. &
             (t+time_shift)>=iter1*ins_1) then

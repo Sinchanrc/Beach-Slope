@@ -304,7 +304,7 @@ module isph
 
                                     if (x%free) then
 
-                                        lamp2=(1.0_dp+dpcell(i,j)%plist(k)%density/(rho*rel_den))**(-1)
+                                        lamp2=(1.0_dp+dpcell(i,j)%plist(k)%oden/(rho*rel_den))**(-1)
                                         ! lamp2=0.50_dp
         
                                     ! elseif((pll<y%gradvx).and.(y%gradvx<pul)) then

@@ -806,6 +806,7 @@ module integrator
         implicit none
 
         integer :: i,j
+        real(dp),parameter :: Dm=1e-9
         
         ! Finding max velocity
         !$omp single
@@ -855,10 +856,14 @@ module integrator
         numax=0.0_dp
         end if
         dtsol=sig1*(dl**2)/(Dm+numax/tschmidt)
+        ! dtsol=dt/20.0_dp
+        solsteps=1
         if (dtsol<dt) then
         solsteps=ceiling(dt/dtsol)
-        dtsol=dt/solsteps
+        dtsol=dt/solsteps        
         end if
+
+        dtsol=merge(dtsol,dt,dtsol<dt)
 
         !$omp end single 
         

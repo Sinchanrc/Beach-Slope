@@ -38,7 +38,7 @@ module domain
         integer,dimension(:),allocatable,public :: cellid,exitlist ! Cell index
         !xleft,xright,ytop,ybot=values defining the extent of the cell
         type(buffer),allocatable,public :: ebuffpt(:)
-        real(dp)  :: xleft=0.0_dp,xright=0.0_dp,ytop=0.0_dp,ybot=0.0_dp,maxvel=0.0_dp,maxeddy=0.0_dp
+        real(dp)  :: xleft=0.0_dp,xright=0.0_dp,ytop=0.0_dp,ybot=0.0_dp,maxvel=0.0_dp,maxeddy=0.0_dp,maxDx,maxDy
         integer,public :: ptot=0,btot=0,temfct=0,gcount=0,porct=0,elist=0,ebuff=0
         logical,public :: entrybuff=.false.,exitbuff=.false.,cutoff=.false.
         
