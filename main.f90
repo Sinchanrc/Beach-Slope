@@ -60,7 +60,7 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        call coll_shift
+        call opt2_shift
         call timestep
         !$omp end parallel
         iter=iter+1
@@ -95,7 +95,7 @@ program dam_break
     iter1=1
     iter2=1
 
-    do while(iter<10001)
+    do while(iter<8001)
 
         told=t
         t=t+dt
@@ -139,7 +139,7 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        call coll_shift
+        call opt2_shift
         call timestep
         !$omp end parallel
         ! call combined
@@ -254,7 +254,7 @@ program dam_break
         call neighbour
         call freesurf
         call effpor
-        call coll_shift
+        call opt2_shift
         call densityupdate
         call timestep
         call eddyvis 

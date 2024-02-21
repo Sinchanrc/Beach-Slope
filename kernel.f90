@@ -161,33 +161,90 @@ module kernel
 
     end function Waby
 
-    ! function sWabx(p1,p2,radial,smln,rw,col,pos) result(res)
-    !     implicit none
-    !     type(particles),intent(in) :: p1,p2
-    !     real(dp) :: res
-    !     real(dp),intent(in) :: smln
-    !     real(dp) ,intent(in):: radial
-    !     integer,intent(in) :: rw,col,pos
+    function hWab(radial,smln) result(res2)
+        implicit none
+        real(dp) :: res2,t1,t2
+        real(dp),intent(in) :: smln
+        real(dp),intent(in) :: radial 
 
-    !     res= (Wabx(p1,p2,radial,smln)/dpcell(rw,col)%pplist(pos)%shep)- &
-    !     (Wab(radial,smln)*dpcell(rw,col)%pplist(pos)%shep_gradx/ &
-    !     (dpcell(rw,col)%pplist(pos)%shep**2))
+        res2=0.0_dp
+
+        t1=merge((4.0_dp-(6.0*(radial**2)/smln**2)+ &
+        (3.0*(radial**3)/smln**3)),(2.0_dp-radial/smln)**3, &
+        (radial<smln)) !Cubic spline
+
+        t2=merge(((radial/smln)**3-(6.0*radial/smln)+6.0_dp), &
+        ((2.0_dp-radial/smln)**3),(radial<smln)) !Hyperbolic
+
+        res2=alp*t1*(10._dp/(28.0*3.14*smln**2)) + &
+            (1.0_dp-alp)*t2*(1.0_dp/(3.0*3.14*smln**2))
+
         
-    ! end function sWabx
 
-    ! function sWaby(p1,p2,radial,smln,rw,col,pos) result(res)
-    !     implicit none
-    !     type(particles),intent(in) :: p1,p2
-    !     real(dp) :: res
-    !     real(dp),intent(in) :: smln
-    !     real(dp) ,intent(in):: radial
-    !     integer,intent(in) :: rw,col,pos
+    end function hWab
 
-    !     res= (Waby(p1,p2,radial,smln)/dpcell(rw,col)%pplist(pos)%shep)- &
-    !     (Wab(radial,smln)*dpcell(rw,col)%pplist(pos)%shep_grady/ &
-    !     (dpcell(rw,col)%pplist(pos)%shep**2))
+    function hWo(smln) result(res2)
+        implicit none
+        real(dp) :: res2,t1,t2
+        real(dp),intent(in) ::smln 
 
-    ! end function sWaby
+        res2=0.0_dp
+        t1=(4.0_dp) !Cubic spline
 
+        t2=(6.0_dp) !Hyperbolic
+
+        res2=alp*t1*(10._dp/(28.0*3.14*smln**2)) + &
+            (1.0_dp-alp)*t2*(1.0_dp/(3.0*3.14*smln**2))
+
+
+
+
+    end function hWo
+
+    function hWabx(p1,p2,radial,smln) result(res)
+        implicit none
+        type(particles),intent(in) :: p1,p2
+        real(dp) :: res,t1,t2
+        real(dp),intent(in) :: smln
+        real(dp) ,intent(in):: radial
+
+        res=0.0_dp
+
+        t1=merge(((9.0*radial/smln**3)-(12.0_dp/smln**2))*(p2%x-p1%x),&
+        ((3.0/(radial*smln))*((2.0_dp-radial/smln)**2))*(p1%x-p2%x), &
+        (radial<smln)) !Cubic spline
+
+        t2=merge(((3.0*radial/smln**3)-6.0_dp/(radial*smln))*(p2%x-p1%x), &
+        ((3.0/(radial*smln))*((2.0_dp-radial/smln)**2))*(p1%x-p2%x),& 
+        (radial<smln)) !Hyperbolic
+
+        res=alp*t1*(10._dp/(28.0*3.14*smln**2)) + &
+            (1.0_dp-alp)*t2*(1.0_dp/(3.0*3.14*smln**2))
+
+
+    end function hWabx
+
+    function hWaby(p1,p2,radial,smln) result(res)
+        implicit none
+        type(particles),intent(in) :: p1,p2
+        real(dp) :: res,t1,t2
+        real(dp),intent(in) :: smln
+        real(dp) ,intent(in):: radial
+
+        res=0.0_dp
+
+        t1=merge(((9.0*radial/smln**3)-(12.0_dp/smln**2))*(p2%y-p1%y),&
+        ((3.0/(radial*smln))*((2.0_dp-radial/smln)**2))*(p1%y-p2%y), &
+        (radial<smln)) !Cubic spline
+
+        t2=merge(((3.0*radial/smln**3)-6.0_dp/(radial*smln))*(p2%y-p1%y), &
+        ((3.0/(radial*smln))*((2.0_dp-radial/smln)**2))*(p1%y-p2%y),& 
+        (radial<smln)) !Hyperbolic
+
+        res=alp*t1*(10._dp/(28.0*3.14*smln**2)) + &
+            (1.0_dp-alp)*t2*(1.0_dp/(3.0*3.14*smln**2))
+
+
+    end function hWaby
 
 end module kernel

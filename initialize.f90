@@ -51,7 +51,7 @@ real(dp),allocatable,public :: fval(:),fvec(:),fsol(:),fguess(:),ploc(:,:),probe
 
 !cellx=domain cells in x dir,celly=domain cells in y dir,bl=number of boundary layers
 !maxdiv= maximun values of surface divergence
-integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2,spx,spy,open_lhs=34, &
+integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2,spx,spy,open_lhs=40, &
                 bnx=0,bny=0,count=0,fpx=0,fpy=0,totc=0,incr=4,cout=0,tempct=0,reserve_par=100, &
                 binmax=0,binmin=0,finmax=0,finmin=0,totalct=0,pbno=1,matidct=0,solsteps=0 !,i=0,j=0,k=0,m=0
 

@@ -67,7 +67,7 @@ module part_shift
                     normx=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
                     normy=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
                     pint=merge(0,0,(.not.(dpcell(i,j)%plist(k)%free)))
-                    frac=merge(0.002_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
+                    frac=merge(0.004_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
@@ -86,7 +86,8 @@ module part_shift
 
                     ! dpcell(i,j)%plist(k)%xs=xs
 
-                    dpcell(i,j)%plist(k)%xs=min(abs(xs),maxshift*dl)*xs/abs(xs)
+                    dpcell(i,j)%plist(k)%xs=min(abs(xs),maxshift*dl &
+                    )*xs/abs(xs)
 
                     t1=0.0_dp
                     t2=0.0_dp
@@ -108,7 +109,8 @@ module part_shift
 
                     ! dpcell(i,j)%plist(k)%ys=ys
 
-                    dpcell(i,j)%plist(k)%ys=min(abs(ys),maxshift*dl)*ys/abs(ys)
+                    dpcell(i,j)%plist(k)%ys=min(abs(ys),maxshift*dl &
+                    )*ys/abs(ys)
 
                     t1=0.0_dp
                     t2=0.0_dp
