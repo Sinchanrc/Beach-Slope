@@ -79,7 +79,7 @@ module setup
 
         icount=0
         count=0
-        lam=0.00010_dp*(h1**2)
+        lam=0.0010_dp*(h1**2)
         sx=2
         sy=2
         ex=cellx-1

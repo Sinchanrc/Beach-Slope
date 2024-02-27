@@ -95,8 +95,7 @@ module scalar
                 do i=sy,ey            
                     do k=1,dpcell(i,j)%ptot
     
-                    if((dpcell(i,j)%plist(k)%tid==3).and. &
-                    (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                    if((dpcell(i,j)%plist(k)%tid==3)) then
     
     
                         dpcell(i,j)%plist(k)%con=dpcell(i,j)%plist(k)%con+ &
@@ -126,8 +125,7 @@ module scalar
             
                 do k=1,dpcell(i,j)%ptot
 
-                if((dpcell(i,j)%plist(k)%tid==3).and. &
-                (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                if((dpcell(i,j)%plist(k)%tid==3)) then
 
                 dpcell(i,j)%pplist(k)%cdiff=0.0_dp
 
@@ -155,7 +153,7 @@ module scalar
                         y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
                         z=>dpcell(i,j)%list(k)%klt)
 
-                    if ((x%tid==3).and.(.not.(x%buffer))) then
+                    if ((x%tid==3)) then
 
                         con2=x%con
 
@@ -173,7 +171,7 @@ module scalar
                         Dyj=merge(Dyj,Dm,Dyj>0.0_dp)
                         Dyj=merge(Dyj,0.12_dp*dl**2/dt,Dyj<=0.12_dp*dl**2/dt)
 
-                        if ((dpcell(i,j)%pplist(k)%porosity>=0.65_dp).or.(y%porosity>=0.65_dp)) then
+                        if ((dpcell(i,j)%pplist(k)%porosity>=0.8_dp).or.(y%porosity>=0.8_dp)) then
 
                         if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
 
@@ -245,11 +243,16 @@ module scalar
                 do i=sy,ey            
                     do k=1,dpcell(i,j)%ptot
 
-                    if((dpcell(i,j)%plist(k)%tid==3).and. &
-                    (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                    if((dpcell(i,j)%plist(k)%tid==3)) then
 
                         dpcell(i,j)%plist(k)%con=dpcell(i,j)%plist(k)%con+ &
                         dpcell(i,j)%pplist(k)%cdiff*stime
+
+                        if ((dpcell(i,j)%plist(k)%buffer).and.(dpcell(i,j)%plist(k)%x<1.6_dp)) then
+
+                            dpcell(i,j)%plist(k)%con=0.5_dp
+
+                        end if
                         
 
 
@@ -273,8 +276,7 @@ module scalar
                 do i=sy,ey            
                     do k=1,dpcell(i,j)%ptot
 
-                    if((dpcell(i,j)%plist(k)%tid==3).and. &
-                    (.not.(dpcell(i,j)%plist(k)%buffer))) then
+                    if((dpcell(i,j)%plist(k)%tid==3)) then
 
                         ! dpcell(i,j)%plist(k)%density=0.5*(rhomax+rhomin)+dpcell(i,j)%plist(k)%con*(rhomax-rhomin)
                         ! dpcell(i,j)%plist(k)%mass=dpcell(i,j)%plist(k)%density*dpcell(i,j)%plist(k)%ovol
