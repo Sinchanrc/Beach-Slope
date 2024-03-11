@@ -132,12 +132,15 @@ module solver
         real(dp),intent(in) :: val(:),bvecs(ls)   
         integer,intent(in) :: row(ls+1),col(:)
         real(dp) :: rs(ls),p(ls),res(ls),alpha,mm1(ls),&
-                            mm2(ls),si(ls),wi,betas,prevr!,tmp(ls)
+                            mm2(ls),si(ls),wi,betas,prevr,reschk(ls)
         real(dp),intent(out) ::  sl(ls)
         real(dp),intent(inout) :: guess(ls)
         real(dp),intent(in) :: tls
         integer :: tcal=1,ks,n
-        real(dp) :: error,gerror
+        real(dp) :: error,gerror,itls
+
+
+        itls=1e-2
     
         error=0.0_dp
         gerror=0.0_dp
@@ -168,7 +171,8 @@ module solver
 
         ! !$omp parallel do default(shared) reduction(+:gerror) schedule(static)
         !     do ks=1,ls 
-        !         gerror=gerror+real(rs(ks)**2,dp)
+        !         gerror=gerror+(rs(ls))**2
+        !         ! gerror=gerror+bvecs(ls)**2
         !     end do
         ! !$omp end parallel do 
 
@@ -180,8 +184,8 @@ module solver
             n=n+1
             ! call spmv(ls,val,row,col,p,mm1)
             call spmv2(ls,p,mm1)
-            prevr=real(kahanvecvec(ls,res,rs),dp)
-            alpha=(prevr/real(kahanvecvec(ls,mm1,res),dp))
+            prevr=real(vecvec(ls,res,rs),dp)
+            alpha=(prevr/real(vecvec(ls,mm1,res),dp))
 
             !$omp parallel do simd default(shared) schedule(static)
             do ks=1,ls
@@ -191,7 +195,7 @@ module solver
 
             ! call spmv(ls,val,row,col,si,mm2)
             call spmv2(ls,si,mm2)
-            wi=(real(kahanvecvec(ls,mm2,si),dp)/real(kahanvecvec(ls,mm2,mm2),dp))
+            wi=(real(vecvec(ls,mm2,si),dp)/real(vecvec(ls,mm2,mm2),dp))
 
             !$omp parallel do simd default(shared) schedule(static)
             do ks=1,ls
@@ -200,7 +204,7 @@ module solver
             end do
             !$omp end parallel do simd
             
-            betas=(real(kahanvecvec(ls,rs,res),dp)/real(prevr,dp))*(real(alpha,dp)/real(wi,dp))
+            betas=(real(vecvec(ls,rs,res),dp)/real(prevr,dp))*(real(alpha,dp)/real(wi,dp))
 
             !$omp parallel do simd default(shared) schedule(static)
             do ks=1,ls 
@@ -208,28 +212,29 @@ module solver
             end do
             !$omp end parallel do simd
 
-            !$omp parallel do simd default(shared) reduction(+:error) schedule(runtime)
-            do ks=1,ls 
-                error=error+rs(ls)**2
-            end do
-            !$omp end parallel do simd
-            gerror=error 
-            error=sqrt(error)
+            ! call spmv2(ls,sl,reschk)
 
-            ! if(abs(error-gerror)/(gerror+1e-4)>tls) then
+            ! error=0.0_dp
+
+            ! !$omp parallel do default(shared) reduction(+:error) schedule(runtime)
+            ! do ks=1,ls 
+            !     error=error+(bvecs(ls)-reschk(ls))**2
+            ! end do
+            ! !$omp end parallel do
+            ! error=sqrt(error)
+
+            ! if(real((error/gerror),dp)>itls) then
             !     tcal=1
-            !     gerror=error
-            !     error=0.0_dp
-
+            !     guess=sl
             ! else
             !     tcal=0
             ! end if
 
             do ks=1,ls
 
-            if(abs(real((sl(ks)-guess(ks)),dp)/real((guess(ks)+1e-5),dp))>tls) then
+            if(abs(real((sl(ks)-guess(ks)),dp)/real((guess(ks)+1e-5),dp))>itls) then
                 tcal=1
-                guess(:)=sl(:)
+                guess=sl
                 exit
             else
                 tcal=0
@@ -306,6 +311,11 @@ module solver
 
         implicit none
 
+        integer :: ipar(128),rci_request,gmresct=0 
+        
+
+        ! allocate(dpar(128),tmp(finmax*(2*150+1)+(150*(150+9))/2+1))
+
         call dfgmres_init(finmax,fsol,fvec,rci_request,ipar,dpar,tmp)
 
             ipar(9)=1
@@ -331,6 +341,8 @@ module solver
 
 
             end if
+
+            ! deallocate(dpar,tmp)
         
     end subroutine
 

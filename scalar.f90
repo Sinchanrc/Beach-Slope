@@ -115,7 +115,7 @@ module scalar
 
         integer :: i,j,k,m
         real(dp) :: t1x,t1y,t2,t3,con1,con2,Dxi,Dyi,Dxj,Dyj,vi,vj
-        real(dp),parameter :: al=0.001_dp,at=0.0001_dp,Dm=1e-9
+        real(dp),parameter :: al=0.004_dp,at=0.0004_dp,Dm=1e-9,tor=1.0_dp
         real(dp) :: ali,ati,alj,atj
 
         !$omp do schedule (runtime) collapse(2) &
@@ -133,17 +133,23 @@ module scalar
 
                 vi=sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2)
 
-                call dispersivity(Dm,dpcell(i,j)%plist(k)%oden,&
-                dpcell(i,j)%pplist(k)%porosity,vi,ali,ati)
+                ! call dispersivity(Dm,dpcell(i,j)%plist(k)%oden,&
+                ! dpcell(i,j)%pplist(k)%porosity,vi,ali,ati)
 
-                Dxi=Dm+((ali*dpcell(i,j)%plist(k)%vx**2)+(ati*dpcell(i,j)%plist(k)%vy**2)+ &
-                ((ali-ati)*dpcell(i,j)%plist(k)%vx*dpcell(i,j)%plist(k)%vy))/(vi*dpcell(i,j)%pplist(k)%porosity)
+                ! Dxi=Dm+((ali*dpcell(i,j)%plist(k)%vx**2)+(ati*dpcell(i,j)%plist(k)%vy**2)+ &
+                ! ((ali-ati)*dpcell(i,j)%plist(k)%vx*dpcell(i,j)%plist(k)%vy))/(vi*dpcell(i,j)%pplist(k)%porosity)
+
+                Dxi=Dm+((al*dpcell(i,j)%plist(k)%vx**2)+(at*dpcell(i,j)%plist(k)%vy**2)+ &
+                ((al-at)*dpcell(i,j)%plist(k)%vx*dpcell(i,j)%plist(k)%vy))/(vi*dpcell(i,j)%pplist(k)%porosity)
 
                     Dxi=merge(Dxi,Dm,Dxi>0.0_dp)
                     Dxi=merge(Dxi,0.12_dp*dl**2/dt,Dxi<=0.12_dp*dl**2/dt)
 
-                Dyi=Dm+((ati*dpcell(i,j)%plist(k)%vx**2)+(ali*dpcell(i,j)%plist(k)%vy**2)+ &
-                ((ali-ati)*dpcell(i,j)%plist(k)%vx*dpcell(i,j)%plist(k)%vy))/(vi*dpcell(i,j)%pplist(k)%porosity)
+                ! Dyi=Dm+((ati*dpcell(i,j)%plist(k)%vx**2)+(ali*dpcell(i,j)%plist(k)%vy**2)+ &
+                ! ((ali-ati)*dpcell(i,j)%plist(k)%vx*dpcell(i,j)%plist(k)%vy))/(vi*dpcell(i,j)%pplist(k)%porosity)
+
+                Dyi=Dm+((at*dpcell(i,j)%plist(k)%vx**2)+(al*dpcell(i,j)%plist(k)%vy**2)+ &
+                ((al-at)*dpcell(i,j)%plist(k)%vx*dpcell(i,j)%plist(k)%vy))/(vi*dpcell(i,j)%pplist(k)%porosity)
 
                 Dyi=merge(Dyi,Dm,Dyi>0.0_dp)
                 Dyi=merge(Dyi,0.12_dp*dl**2/dt,Dyi<=0.12_dp*dl**2/dt)
@@ -159,11 +165,15 @@ module scalar
 
                         vj=sqrt(x%vx**2+x%vy**2)
 
-                        call dispersivity(Dm,x%oden,y%porosity,vj,alj,atj)
+                        ! call dispersivity(Dm,x%oden,y%porosity,vj,alj,atj)
 
-                        Dxj=Dm+((alj*x%vx**2)+(atj*x%vy**2)+((alj-atj)*x%vx*x%vy))/(vj*y%porosity)
+                        ! Dxj=Dm+((alj*x%vx**2)+(atj*x%vy**2)+((alj-atj)*x%vx*x%vy))/(vj*y%porosity)
 
-                        Dyj=Dm+((atj*x%vx**2)+(alj*x%vy**2)+((alj-atj)*x%vx*x%vy))/(vj*y%porosity)
+                        ! Dyj=Dm+((atj*x%vx**2)+(alj*x%vy**2)+((alj-atj)*x%vx*x%vy))/(vj*y%porosity)
+
+                        Dxj=Dm+((al*x%vx**2)+(at*x%vy**2)+((al-at)*x%vx*x%vy))/(vj*y%porosity)
+
+                        Dyj=Dm+((at*x%vx**2)+(al*x%vy**2)+((al-at)*x%vx*x%vy))/(vj*y%porosity)
 
                         Dxj=merge(Dxj,Dm,Dxj>0.0_dp)
                         Dxj=merge(Dxj,0.12_dp*dl**2/dt,Dxj<=0.12_dp*dl**2/dt)
@@ -171,7 +181,7 @@ module scalar
                         Dyj=merge(Dyj,Dm,Dyj>0.0_dp)
                         Dyj=merge(Dyj,0.12_dp*dl**2/dt,Dyj<=0.12_dp*dl**2/dt)
 
-                        if ((dpcell(i,j)%pplist(k)%porosity>=0.8_dp).or.(y%porosity>=0.8_dp)) then
+                        if ((dpcell(i,j)%pplist(k)%porosity>=0.5_dp).or.(y%porosity>=0.5_dp)) then
 
                         if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
 
@@ -187,8 +197,8 @@ module scalar
 
                         else
 
-                            t1x=2.0_dp*Dxi*Dxj/(Dxi+Dxj)
-                            t1y=2.0_dp*Dyi*Dyj/(Dyi+Dyj)
+                            t1x=2.0_dp*tor*Dxi*Dxj/(Dxi+Dxj)
+                            t1y=2.0_dp*tor*Dyi*Dyj/(Dyi+Dyj)
 
 
                         end if

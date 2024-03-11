@@ -23,7 +23,7 @@ module porous
 
 
         solidfrac=0.0_dp
-        redfac=0.9830_dp
+        redfac=1.0_dp !0.9830_dp
 
             do counter2=1,cell1%porct
 
@@ -88,7 +88,7 @@ module porous
     
         implicit none
 
-        real(dp) :: solidfrac,lamk=299.71_dp,d50=0.001020_dp,Fch,kper
+        real(dp) :: solidfrac,lamk=500.0_dp,d50=0.001020_dp,Fch,kper !299.71_dp
 
         type(cell),pointer :: cell1,cell2,cell3,cell4
 

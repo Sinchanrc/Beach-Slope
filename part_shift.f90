@@ -67,7 +67,7 @@ module part_shift
                     normx=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
                     normy=merge(0.0_dp,0.0_dp,dpcell(i,j)%plist(k)%free.or.dpcell(i,j)%plist(k)%vicinity)
                     pint=merge(0,0,(.not.(dpcell(i,j)%plist(k)%free)))
-                    frac=merge(0.004_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
+                    frac=merge(0.01_dp,1.0_dp,(dpcell(i,j)%plist(k)%free))
 
                     do m=1,dpcell(i,j)%list(k)%count
                         associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &

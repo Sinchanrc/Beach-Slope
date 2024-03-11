@@ -20,9 +20,9 @@ real(dp),public :: wc=0.650_dp,L=3.11_dp ,H=0.80_dp,&
                     h1,pr=0.0050_dp*0.90_dp,br=0.00490_dp*0.90_dp, & !5.366*0.3 1.2
                     wl=3.10_dp,rho=1000.0_dp,g=-9.810_dp,tl=1e-3,&
                     csh=0.50_dp,rx,ry,lid_driven=0.0010_dp,rhomin=1000.0_dp, &
-                    rhomax,atwood=0.25870_dp,tschmidt=0.750_dp,soill=3.230_dp,soilh=0.80_dp,set_ht=0.20_dp,&
+                    rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.230_dp,soilh=0.80_dp,set_ht=0.20_dp,&
                     outlet_ht=0.7_dp,coastal_ht=0.450_dp,por=0.380_dp,bulkden=1800_dp,entry_vel=-2.5_dp/(3600*24), &
-                    lhs_btm=0.23_dp,rel_den=1.0250_dp,con_fac,rv_buf_l,rv_buf_r
+                    lhs_btm=0.20_dp,rel_den=1.0250_dp,con_fac,rv_buf_l,rv_buf_r
 
 ! dt=time step,t=simulation time
 real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=2100.0_dp,displaytime=100.0_dp,dtsol=0.0010_dp, &
@@ -51,7 +51,7 @@ real(dp),allocatable,public :: fval(:),fvec(:),fsol(:),fguess(:),ploc(:,:),probe
 
 !cellx=domain cells in x dir,celly=domain cells in y dir,bl=number of boundary layers
 !maxdiv= maximun values of surface divergence
-integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2,spx,spy,open_lhs=40, &
+integer,public :: cellx=0,celly=0,fplist=0,fplistmax=0,l1=0,bp=0,bl=3,num2,spx,spy,open_lhs=43, &
                 bnx=0,bny=0,count=0,fpx=0,fpy=0,totc=0,incr=4,cout=0,tempct=0,reserve_par=100, &
                 binmax=0,binmin=0,finmax=0,finmin=0,totalct=0,pbno=1,matidct=0,solsteps=0 !,i=0,j=0,k=0,m=0
 
@@ -71,7 +71,6 @@ type(MKL_PARDISO_HANDLE) :: pt(64)
 
 type(pprob),allocatable :: probe(:)
 
-integer :: ipar(128),rci_request,gmresct=0 
 real(dp),allocatable :: dpar(:),tmp(:)
 
 type(buffer),allocatable :: input(:)
