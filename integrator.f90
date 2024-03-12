@@ -18,7 +18,7 @@ module integrator
         Sp=oden-1000.0_dp
         Acn=1.474_dp*(1e-3)+1.5_dp*(1e-5)*tem-3.927_dp*(1e-8)*tem**2
         Bcn=1.073_dp*(1e-5)-8.5_dp*(1e-8)*tem+2.230_dp*(1e-10)*tem**2
-        dmu=exp(−0.00379418_dp+(0.604129_dp/(139.18_dp+tem)))*(1e-3)* &
+        dmu=exp(-0.00379418_dp+(0.604129_dp/(139.18_dp+tem)))*(1e-3)* &
             (1.0_dp + Acn*Sp + Bcn*Sp**2)
 
 
