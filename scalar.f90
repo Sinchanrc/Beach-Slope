@@ -181,7 +181,7 @@ module scalar
                         Dyj=merge(Dyj,Dm,Dyj>0.0_dp)
                         Dyj=merge(Dyj,0.12_dp*dl**2/dt,Dyj<=0.12_dp*dl**2/dt)
 
-                        if ((dpcell(i,j)%pplist(k)%porosity>=0.5_dp).or.(y%porosity>=0.5_dp)) then
+                        if ((dpcell(i,j)%pplist(k)%porosity>=0.65_dp).or.(y%porosity>=0.65_dp)) then
 
                         if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
 
