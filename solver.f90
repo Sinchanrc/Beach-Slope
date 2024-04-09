@@ -323,6 +323,9 @@ module solver
             ipar(12)=1
             dpar(1)=0.001
 
+        ! ipar(5)=maxit
+        ! ipar(15)=restart
+
 
 
         11   call dfgmres(finmax,fsol,fvec,rci_request,ipar,dpar,tmp)

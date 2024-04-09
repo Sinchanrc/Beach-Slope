@@ -47,7 +47,7 @@ module setup
         h1=(max(prrealx,prrealy)*hfac)/(2.0_dp*sqrt(por)) 
         totc=max((floor(real(wc,dp)/(incr*h1)))*(floor(wl/(incr*h1))),1)
         fplist=ceiling(real((fpx*fpy),dp)/(totc)*1.0_dp) 
-        fplistmax=ceiling(1.20_dp*real(fplist,dp))
+        fplistmax=ceiling(1.30_dp*real(fplist,dp))
         cellx= ceiling(real(L,dp)/(incr*h1))+4
         celly= ceiling(real(H,dp)/(incr*h1))+3     
         dl=(min(2*prrealx,2*prrealy))

@@ -140,7 +140,7 @@ module memory
 
             end do
 
-            allocate(dpar(128),tmp(finmax*(2*150+1)+(150*(150+9))/2+1))
+            allocate(dpar(128),tmp(finmax*(2*restart+1)+(restart*(restart+9))/2+1))
             fsol=fguess
             
         

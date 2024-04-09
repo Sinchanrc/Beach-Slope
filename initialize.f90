@@ -20,9 +20,11 @@ real(dp),public :: wc=0.650_dp,L=3.11_dp ,H=0.80_dp,&
                     h1,pr=0.0050_dp*0.90_dp,br=0.00490_dp*0.90_dp, & !5.366*0.3 1.2
                     wl=3.10_dp,rho=1000.0_dp,g=-9.810_dp,tl=1e-3,&
                     csh=0.50_dp,rx,ry,lid_driven=0.0010_dp,rhomin=1000.0_dp, &
-                    rhomax,atwood=0.25870_dp,tschmidt=1.05_dp,soill=3.230_dp,soilh=0.80_dp,set_ht=0.20_dp,&
+                    rhomax,atwood=0.25870_dp,tschmidt=1.0_dp,soill=3.230_dp,soilh=0.80_dp,set_ht=0.20_dp,&
                     outlet_ht=0.7_dp,coastal_ht=0.450_dp,por=0.380_dp,bulkden=1800_dp,entry_vel=-2.5_dp/(3600*24), &
                     lhs_btm=0.20_dp,rel_den=1.0250_dp,con_fac,rv_buf_l,rv_buf_r
+
+integer :: restart=150,maxit=160
 
 ! dt=time step,t=simulation time
 real(dp),public :: dt=0.001,t=0.0_dp,told=0.0_dp,time=7320.0_dp,displaytime=100.0_dp,dtsol=0.0010_dp, &
@@ -40,7 +42,7 @@ real(dp),public :: fmass=0.0_dp,bfdist=0.0_dp,prrealx=0.0_dp,prrealy=0.0_dp,brre
 ! r=particle shifting value,lamfs=surface tracking coeffincient,umax=max velocity
 real(dp),public :: r=0.0_dp,maxdivr=2.0_dp, &
                         dl,lamfs=0.80_dp,umax=0.0_dp,ker=0.0_dp,normx,normy,co,t_gam=7, &
-                        pll=1.60_dp,pul=1.80_dp,hfac=4.80_dp,fac2=0.80_dp,numax=0.0_dp !term1=0.0_dp,term2=0.0_dp,
+                        pll=1.60_dp,pul=1.80_dp,hfac=4.840_dp,fac2=0.80_dp,numax=0.0_dp !term1=0.0_dp,term2=0.0_dp,
 
 ! bcor1,bcor2=domain corner points,ref1,ref2=reference points for mirroring interpolation nodes
 ! type(corner) :: bcor1,bcor2,ref1,ref2
