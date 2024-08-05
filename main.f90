@@ -209,7 +209,7 @@ program dam_break
         ! else
         do j1=1,solsteps
         !$omp parallel default(shared)
-        call scalart
+        call scalart_anisotropic
         call scalarupdate(dtsol)
         !$omp end parallel
         end do

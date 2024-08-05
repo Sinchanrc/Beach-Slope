@@ -1,6 +1,8 @@
 include 'mkl_rci.f90'
 include 'mkl_blas.f90'
 include "mkl_pardiso.f90"
+include "mkl_spblas.f90"
+include "mkl_sparse_handle.f90"
 
 module initialize
 

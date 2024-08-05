@@ -7,6 +7,7 @@ module isph
     use functions
     use solver
     use output
+    use qsort1
 
 
     implicit none
@@ -438,7 +439,9 @@ module isph
                     fmatrix(pos)%val(m)=fmatrix(pos)%val(m)/real(t1,dp) !Jacobi Preconditioning
                     end do 
 
-                    ! end if
+                    if (num>0) then
+                    call sort(fmatrix(pos)%val(1:(num+1)),fmatrix(pos)%col(1:(num+1)),(num+1))
+                    end if
 
 
                 end associate
@@ -452,11 +455,14 @@ module isph
         end do
         !$omp end parallel do
 
+        ! write(*,*) fmatrix(600)%col(1:fmatrix(600)%sz),fmatrix(600)%val(1:fmatrix(600)%sz)
+
         ! call format(fmatrix,fval,frow,fcol,finmax)
         ! call bicgstab(tl,fguess,finmax,fval,frow,fcol,fvec,fsol)
         call fgmres
+        ! call fgmres_mkl(fval(1:nnz),frow(1:(finmax+1)),fcol(1:nnz),fvec(1:finmax),fsol(1:finmax),finmax,nnz)
 
-        ! call pardisosolver(fval,frow,fcol,fvec,fsol)
+        ! call pardisosolver(fval(1:nnz),frow(1:(finmax+1)),fcol(1:nnz),fvec(1:finmax),fsol(1:finmax),nnz)
         
         ! Assigning pressures
         !$omp parallel do schedule(runtime) default(shared) private(i,k,j) collapse(2)       

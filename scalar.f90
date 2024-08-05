@@ -115,7 +115,7 @@ module scalar
 
         integer :: i,j,k,m
         real(dp) :: t1x,t1y,t2,t3,con1,con2,Dxi,Dyi,Dxj,Dyj,vi,vj
-        real(dp),parameter :: al=0.0024_dp,at=0.00024_dp,Dm=1e-9,tor=1.0_dp
+        real(dp),parameter :: al=0.0024_dp,at=0.0024_dp,Dm=1e-9,tor=1.0_dp
         real(dp) :: ali,ati,alj,atj
 
         !$omp do schedule (runtime) collapse(2) &
@@ -215,6 +215,128 @@ module scalar
                         ! (dpcell(i,j)%plist(k)%x-x%x)*z(1,m)/(dpcell(i,j)%list(k)%dist(m)**2+lam))+ &
                         ! (t1y*t2*t3*(con1-con2)* &
                         ! (dpcell(i,j)%plist(k)%y-x%y)*z(2,m)/(dpcell(i,j)%list(k)%dist(m)**2+lam))
+
+                        dpcell(i,j)%pplist(k)%cdiff=dpcell(i,j)%pplist(k)%cdiff + &
+                        (t1x*t2*t3*(con1-con2)* &
+                        (dpcell(i,j)%plist(k)%x-x%x)*hWabx(x,dpcell(i,j)%plist(k),&
+                        dpcell(i,j)%list(k)%dist(m),h1)/(dpcell(i,j)%list(k)%dist(m)**2+lam))+ &
+                        (t1y*t2*t3*(con1-con2)* &
+                        (dpcell(i,j)%plist(k)%y-x%y)*hWaby(x,dpcell(i,j)%plist(k),&
+                        dpcell(i,j)%list(k)%dist(m),h1)/(dpcell(i,j)%list(k)%dist(m)**2+lam))
+
+                    end if
+                    end associate
+
+                end do
+
+                end if
+
+                end do
+
+                end do
+            end do
+        !$omp end do
+
+    end subroutine
+
+    subroutine scalart_anisotropic
+
+        integer :: i,j,k,m
+        real(dp) :: t1x,t1y,t2,t3,con1,con2,Dxxi,Dxyi,Dyxi,Dyyi,Dxxj,Dxyj,Dyxj,Dyyj,vi,vj,p_dist
+        real(dp),parameter :: al=0.0025_dp,at=0.00025_dp,Dm=1e-9,tor=1.0_dp,threshpor=0.7_dp
+        real(dp) :: ali,ati,alj,atj
+
+        !$omp do schedule (runtime) collapse(2) &
+        !$omp private(m,k,i,j,t1x,t1y,t2,t3,con1,con2,vi,vj,Dxxi,Dxyi,Dyxi,Dyyi,Dxxj,Dxyj,Dyxj,Dyyj,p_dist)
+            do j=sx,ex
+                do i=sy,ey            
+            
+                do k=1,dpcell(i,j)%ptot
+
+                if((dpcell(i,j)%plist(k)%tid==3)) then
+
+                dpcell(i,j)%pplist(k)%cdiff=0.0_dp
+
+                con1=dpcell(i,j)%plist(k)%con
+
+                do m=1,dpcell(i,j)%list(k)%count
+                    associate(x=>dpcell(i,j)%list(k)%nh(m)%part, &
+                        y=>dpcell(i,j)%list(k)%pnh(m)%ppart, &
+                        z=>dpcell(i,j)%list(k)%klt)
+
+                        vi=sqrt(dpcell(i,j)%plist(k)%vx**2+dpcell(i,j)%plist(k)%vy**2) &
+                        /dpcell(i,j)%pplist(k)%porosity
+
+                    if ((x%tid==3)) then
+
+                        con2=x%con
+
+                        vj=sqrt(x%vx**2+x%vy**2)/y%porosity
+
+                        Dxxi=merge((dpcell(i,j)%plist(k)%vx)/(sqrt((al*vi)+Dm)*vi*dpcell(i,j)%pplist(k)%porosity) &
+                        ,Dm+dpcell(i,j)%pplist(k)%nut/tschmidt, &
+                        (dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+                        Dxyi=merge((dpcell(i,j)%plist(k)%vy)/(sqrt((al*vi)+Dm)*vi*dpcell(i,j)%pplist(k)%porosity) &
+                        ,0.0_dp,(dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+                        Dyxi=merge((-dpcell(i,j)%plist(k)%vy)/(sqrt((at*vi)+Dm)*vi*dpcell(i,j)%pplist(k)%porosity) &
+                        ,0.0_dp,(dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+                        Dyyi=merge((dpcell(i,j)%plist(k)%vx)/(sqrt((at*vi)+Dm)*vi*dpcell(i,j)%pplist(k)%porosity) &
+                        ,Dm+dpcell(i,j)%pplist(k)%nut/tschmidt, &
+                        (dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+              
+
+                        Dxxj=merge((x%vx)/(sqrt((al*vj)+Dm)*vj*y%porosity) &
+                        ,Dm+y%nut/tschmidt,(dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+                        Dxyj=merge((x%vy)/(sqrt((al*vj)+Dm)*vj*y%porosity) &
+                        ,0.0_dp,(dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+                        Dyxj=merge((-x%vy)/(sqrt((at*vj)+Dm)*vj*y%porosity) &
+                        ,0.0_dp,(dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+                        Dyyj=merge((x%vx)/(sqrt((at*vj)+Dm)*vj*y%porosity) &
+                        ,Dm+y%nut/tschmidt,(dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor))
+
+
+                        if ((dpcell(i,j)%pplist(k)%porosity<threshpor).and.(y%porosity<threshpor)) then
+
+                            p_dist=dpcell(i,j)%list(k)%dist(m)**(-1)
+
+                            t1x=((((Dxxi+Dxxj)*(dpcell(i,j)%plist(k)%x-x%x)*p_dist*0.5_dp) + &
+                            ((Dxyi+Dxyj)*(dpcell(i,j)%plist(k)%y-x%y)*p_dist*0.5_dp))**2 ) + &
+                            ((((Dyxi+Dyxj)*(dpcell(i,j)%plist(k)%x-x%x)*p_dist*0.5_dp) + &
+                            ((Dyyi+Dyyj)*(dpcell(i,j)%plist(k)%y-x%y)*p_dist*0.5_dp))**2 )
+
+                            t1x=t1x**(-1)
+
+                            t1x=merge(t1x,0.12_dp*dl**2/dt,t1x<=0.12_dp*dl**2/dt)
+
+                            t1y=t1x
+
+
+                        else
+
+                            if ((dpcell(i,j)%pplist(k)%nut<1e-6).and.(y%nut<1e-6)) then
+
+                                t1x=(Dxxi+Dxxj)*0.50_dp
+                            else
+    
+                            t1x=2*Dxxi*Dxxj/(Dxxi+Dxxj)
+                            
+    
+                            end if
+
+                            t1y=t1x
+
+                        end if
+
+                        t2=1.0_dp
+                        
+                        t3=(dpcell(i,j)%plist(k)%ovol)*(dpcell(i,j)%pplist(k)%porosity+y%porosity)/&
+                        (dpcell(i,j)%pplist(k)%porosity*y%porosity)
 
                         dpcell(i,j)%pplist(k)%cdiff=dpcell(i,j)%pplist(k)%cdiff + &
                         (t1x*t2*t3*(con1-con2)* &

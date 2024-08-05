@@ -349,7 +349,101 @@ module solver
         
     end subroutine
 
-    subroutine pardisosolver(fval1,frow1,fcol1,fvec1,fsol1)
+    subroutine fgmres_mkl(array1,array_r,array_c,bval,sol,size_r,size_nnz)
+
+        use mkl_rci
+        use initialize
+        use blas95
+        use mkl_spblas
+        use mkl_sparse_handle
+        use iso_c_binding
+
+        implicit none
+
+        integer,intent(inout) :: size_r,size_nnz
+
+        real(dp),intent(inout) :: array1(size_nnz)
+
+        integer,intent(inout) :: array_r(size_nnz),array_c(size_nnz)
+
+        real(dp),intent(inout) :: bval(size_r),sol(size_r)
+
+        real(dp) :: bilu(size_nnz),alfa,bta
+
+        integer :: ipar(128),rci_request,gmresct=0,ierr=0,info,is,exact_r(size_r+1),exact_c(size_nnz)
+
+        INTEGER(C_INT) :: indexing
+        TYPE(C_PTR)    :: rows_start_c, rows_end_c, col_indx_c, values_c
+        INTEGER         , POINTER :: rows_start_f(:), rows_end_f(:), col_indx_f(:)
+        real(dp), POINTER :: values_f(:)
+
+        !   Matrix descriptor
+        TYPE(MATRIX_DESCR) descrA
+        !   CSR matrix representation
+        TYPE(SPARSE_MATRIX_T) csrA,cooA
+
+        descrA % TYPE = SPARSE_MATRIX_TYPE_GENERAL
+        ! descrA % MODE = SPARSE_FILL_MODE_UPPER
+        descrA % DIAG = SPARSE_DIAG_UNIT
+        alfa=1.0_dp 
+        bta=0.0_dp
+
+        info= mkl_sparse_d_create_coo (cooA, SPARSE_INDEX_BASE_ZERO,size_r, size_r,size_nnz, array_r, array_c, array1)
+        info = mkl_sparse_convert_csr (cooA, SPARSE_OPERATION_NON_TRANSPOSE, csrA)
+        info = mkl_sparse_d_export_csr(csrA, indexing, size_r, size_r, rows_start_c, rows_end_c, col_indx_c, values_c)
+
+        call C_F_POINTER(rows_start_c, rows_start_f, [size_r])
+        call C_F_POINTER(rows_end_c  , rows_end_f  , [size_r])
+        call C_F_POINTER(col_indx_c  , col_indx_f  , [size_nnz])
+        call C_F_POINTER(values_c    , values_f    , [size_nnz])
+
+        exact_c=col_indx_f
+        exact_r(1:size_r)=rows_start_f(1:size_r)
+        exact_r(size_r+1)=size_nnz
+
+        ! info = MKL_SPARSE_D_CREATE_CSR(csrA,SPARSE_INDEX_BASE_ONE,size_r,size_r,array_r(1:(size_r-1)),array_r(2),array_c,array1)
+
+        ! info= mkl_sparse_order(csrA)
+
+        ! ierr=sparse_matrix_checker(csrA)
+
+        call dfgmres_init(finmax,sol,bval,rci_request,ipar,dpar,tmp)
+
+            ipar(9)=1
+            ipar(10)=0
+            ipar(12)=1
+            dpar(1)=0.001
+
+        ! ipar(5)=maxit
+        ! ipar(15)=restart
+
+        call dcsrilu0(size_r,array1(1:(size_nnz)),exact_r,array_c(1:(size_nnz)),bilu,ipar,dpar,ierr)
+
+
+        11   call dfgmres(finmax,sol,bval,rci_request,ipar,dpar,tmp)
+
+            if (rci_request==0) then
+
+                call dfgmres_get(finmax,sol,bval,rci_request,ipar,dpar,tmp,gmresct)
+
+            elseif (rci_request==1) then
+
+                info = MKL_SPARSE_D_MV(SPARSE_OPERATION_NON_TRANSPOSE,alfa,csrA,descrA,tmp(ipar(22)),bta,tmp(ipar(23)))
+
+                ! call mkl_dcsrgemv('N',size_r, array1,array_r, array_c, tmp(ipar(22)), tmp(ipar(23)))
+                ! call spmv (finmax,fval,frow,fcol,tmp(ipar(22)),tmp(ipar(23)))
+                ! call spmv2(finmax,tmp(ipar(22)),tmp(ipar(23)))
+
+                goto 11
+
+
+            end if
+
+            ! deallocate(dpar,tmp)
+        
+    end subroutine
+
+    subroutine pardisosolver(fval1,frow1,fcol1,fvec1,fsol1,size_nnz)
 
         use omp_lib
         use mkl_pardiso
@@ -357,10 +451,10 @@ module solver
 
         implicit none
 
-
-        real(dp),intent(inout) :: fval1(finmax*ceiling(fac2*fplistmax)),fvec1(finmax)
+        integer,intent(in) :: size_nnz
+        real(dp),intent(inout) :: fval1(1:size_nnz),fvec1(finmax)
         real(dp),intent(inout) :: fsol1(finmax)
-        integer,intent(in) :: frow1(finmax+1),fcol1(finmax*ceiling(fac2*fplistmax))
+        integer,intent(in) :: frow1(finmax+1),fcol1(1:size_nnz)
 
         real(dp),allocatable ::ar(:)
         integer :: i,perm1(finmax),idum(1)

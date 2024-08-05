@@ -4,9 +4,6 @@ use particle
 implicit none
 
 
-!call pardiso (pt, maxfct, mnum, mtype, phase, n, a, ia, ja, perm, nrhs, iparm, msglvl, b, x, error)
-
-
 contains
 
 recursive subroutine QSort(A,nA)
@@ -57,71 +54,36 @@ recursive subroutine QSort(A,nA)
 end subroutine QSort
 
 
-subroutine pformat(array,val,row,col,len) 
+subroutine sort(array1,array2,len) 
     use initialize
     use particle
     implicit none
-    type(matrixsetup),intent(inout) :: array(:)
-    double precision,intent(out) :: val(:)
-    integer,intent(out) :: row(:)
-    integer,intent(out) ::col(:)
     integer,intent(in) :: len
-    integer :: is,js,rancol,ks,tcal=0
-    type(group) :: Alist(len,fplistmax)
-    real :: random,ranint
-
-        do is=1,len
-        do js =array(is)%sz+1,fplistmax
-            do while(tcal==0)
-            if (array(is)%col(array(is)%sz)<=finmax/2) then
-                call random_number(ranint)
-                rancol=finmax/2 + FLOOR(((finmax)+1-finmax/2)*ranint)
-                do ks=1,js
-                    if(array(is)%col(ks)==rancol) then
-                    tcal=0
-                    exit
-                    else
-                    tcal=1
-                    array(is)%col(js)=rancol
-                    end if
-                end do
-            else
-                call random_number(ranint)
-                rancol=1 + FLOOR(((finmax/2))*ranint)
-                do ks=1,js
-                    if(array(is)%col(ks)==rancol) then
-                    tcal=0
-                    exit
-                    else
-                    tcal=1
-                    array(is)%col(js)=rancol
-                    end if
-                end do
-            end if
-            end do
-        end do
-        end do
-
-        do is=1,len
-        do js =1,fplistmax
-            Alist(is,js)%order=js
-            Alist(is,js)%value=array(is)%col(js)
-        end do
-        call QSort(Alist(is,:),fplistmax)
-        end do
-
-
-
-        row(1)=1
-        val=0.0d0
-        do is=1,len
-            row(is+1)=fplistmax+row(is)
-            do js=1,fplistmax
-            val(row(is)-1+js)=array(is)%val(Alist(is,js)%order)
-            col(row(is)-1+js)=array(is)%col(Alist(is,js)%order)
-            end do
-        end do
+    real(dp),intent(inout) :: array1(1:len)
+    integer,intent(inout) :: array2(1:len)
     
-end subroutine pformat
+    integer :: is
+    type(group) :: Alist(1:len)
+    real(dp) :: temp(1:len)
+
+
+
+    do is=1,len 
+        Alist(is)%order=is
+        Alist(is)%value=array2(is)
+    end do
+
+    call QSort(Alist,len)
+
+    do is=1,len 
+        array2(is)=Alist(is)%value
+        temp(is)=array1(Alist(is)%order)
+    end do
+
+    array1(1:len)=temp(1:len)
+
+
+    
+end subroutine sort
 
 end module qsort1
